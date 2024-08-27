@@ -5,13 +5,9 @@
 #ifndef OPENGL_ENGINE_SHADER_H
 #define OPENGL_ENGINE_SHADER_H
 
-namespace GLE {
-    namespace glm {
-        struct vec3 {
-            float x, y, z;
-        };
-    }
+#include <glm/glm.hpp>
 
+namespace GLE {
     class Shader {
     public:
         inline static std::shared_ptr<Shader> Create(const std::string& srcPath) {return std::make_shared<Shader>(srcPath);}
@@ -26,8 +22,18 @@ namespace GLE {
 
 
         uint32_t GetUniformLoc(const char* name);
-        void SetFloat3(const char* name, glm::vec3 v);
+        void SetFloat(const char* name, float v);
+        void SetFloat2(const char* name, const glm::vec2& v);
+        void SetFloat3(const char* name, const glm::vec3& v);
+        void SetFloat4(const char* name, const glm::vec4& v);
 
+        void SetInt(const char* name, int v);
+        void SetInt2(const char* name, const glm::ivec2& v);
+        void SetInt3(const char* name, const glm::ivec3& v);
+        void SetInt4(const char* name, const glm::ivec4& v);
+
+        void SetFloat4x4(const char* name, const glm::mat4& v);
+        void SetFloat3x3(const char* name, const glm::mat3& v);
 
 
 

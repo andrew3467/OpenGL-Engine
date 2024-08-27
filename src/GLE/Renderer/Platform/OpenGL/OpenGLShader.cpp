@@ -5,6 +5,8 @@
 #ifdef GLE_PLATFORM_GLFW
 
 #include "Renderer/Shader.h"
+
+#include <glm/gtc/type_ptr.hpp>
 #include "Glad/glad.h"
 
 
@@ -194,8 +196,46 @@ namespace GLE {
         return mUniforms[name];
     }
 
-    void Shader::SetFloat3(const char *name, glm::vec3 v) {
+
+
+    void Shader::SetFloat(const char *name, float v) {
+        glUniform1f(GetUniformLoc(name), v);
+    }
+
+    void Shader::SetFloat2(const char *name, const glm::vec2 &v) {
+        glUniform2f(GetUniformLoc(name), v.x, v.y);
+    }
+
+    void Shader::SetFloat3(const char *name, const glm::vec3& v) {
         glUniform3f(GetUniformLoc(name), v.x, v.y, v.z);
+    }
+
+    void Shader::SetFloat4(const char *name, const glm::vec4 &v) {
+        glUniform4f(GetUniformLoc(name), v.x, v.y, v.z, v.w);
+    }
+
+    void Shader::SetInt(const char *name, int v) {
+        glUniform1i(GetUniformLoc(name), v);
+    }
+
+    void Shader::SetInt2(const char *name, const glm::ivec2 &v) {
+        glUniform2i(GetUniformLoc(name), v.x, v.y);
+    }
+
+    void Shader::SetInt3(const char *name, const glm::ivec3 &v) {
+        glUniform3i(GetUniformLoc(name), v.x, v.y, v.z);
+    }
+
+    void Shader::SetInt4(const char *name, const glm::ivec4 &v) {
+        glUniform4i(GetUniformLoc(name), v.x, v.y, v.z, v.w);
+    }
+
+    void Shader::SetFloat4x4(const char *name, const glm::mat4 &v) {
+        glUniformMatrix4fv(GetUniformLoc(name), 1, GL_FALSE, glm::value_ptr(v));
+    }
+
+    void Shader::SetFloat3x3(const char *name, const glm::mat3 &v) {
+        glUniformMatrix3fv(GetUniformLoc(name), 1, GL_FALSE, glm::value_ptr(v));
     }
 }
 

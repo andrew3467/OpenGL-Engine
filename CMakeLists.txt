@@ -15,6 +15,9 @@ add_compile_definitions(GLFW_INCLUDE_NONE)
 add_subdirectory(external/glad)
 include_directories(external/glad/include)
 
+add_subdirectory(external/glm)
+include_directories(external/glm)
+
 
 
 #if (WIN32)
@@ -56,5 +59,6 @@ target_link_libraries(
         spdlog
         glfw
         glad
+        glm
         ${OPENGL_LIBRARY}
 )
