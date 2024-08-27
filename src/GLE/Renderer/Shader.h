@@ -14,6 +14,8 @@ namespace GLE {
 
     class Shader {
     public:
+        inline static std::shared_ptr<Shader> Create(const std::string& srcPath) {return std::make_shared<Shader>(srcPath);}
+
         Shader(const std::string &srcPath);
         ~Shader();
 

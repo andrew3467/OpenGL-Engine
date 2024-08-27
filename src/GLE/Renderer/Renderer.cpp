@@ -3,9 +3,12 @@
 //
 
 #include "Renderer/Renderer.h"
+#include "Renderer/PrimitiveType.h"
 
 #include "GLFW/glfw3.h"
 #include "Glad/glad.h"
+#include "Shader.h"
+#include "VertexArray.h"
 #include <windows.h>
 
 #ifdef GLE_PLATFORM_WINDOWS
@@ -13,6 +16,46 @@
 #endif
 
 namespace GLE {
+    struct RendererData {
+        std::shared_ptr<Shader> StandardShader;
+
+        std::vector<std::shared_ptr<VertexArray>> VAs;
+    };
+
+    RendererData sData = {};
+
+    void InitData() {
+        sData.StandardShader = Shader::Create("../assets/shaders/Standard.glsl");
+
+        sData.VAs.resize(2);
+
+        {
+            float vertices[] = {
+                    -0.5f, -0.5f, 0.0f,
+                    -0.5f, 0.5f, 0.0f,
+                    0.5f, -0.5f, 0.0f
+            };
+
+            uint32_t indices[] = {
+                    0, 1, 2
+            };
+
+            auto VA = VertexArray::Create();
+
+            auto VB = VertexBuffer::Create(vertices, sizeof(vertices) / sizeof(float));
+            VB->SetLayout({
+                                  {3, GL_FLOAT, 0, false},
+
+                          });
+            VA->SetVertexBuffer(VB);
+
+            auto IB = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+            VA->SetIndexBuffer(IB);
+
+            sData.VAs[0] = VA;
+        }
+    }
+
     bool Renderer::sInitialized = false;
 
     void Renderer::Init() {
@@ -92,6 +135,7 @@ namespace GLE {
         GLE_ASSERT(success, "ERROR: Failed to initialize GLAD!");
 #endif
 
+        InitData();
         sInitialized = true;
     }
 
@@ -99,7 +143,28 @@ namespace GLE {
         glClearColor(r,g,b,a);
     }
 
+    void Renderer::UpdateViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
+        glViewport(x, y, width, height);
+    }
+
     void Renderer::Clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void Renderer::StartScene() {
+        sData.StandardShader->Bind();
+        sData.StandardShader->SetFloat3("uColor", {1.0f, 0.0f, 1.0f});
+    }
+
+    void Renderer::RenderScene() {
+
+    }
+
+    void Renderer::SubmitPrimitive(PrimitiveType primitive) {
+        auto& VA = sData.VAs[(int)primitive];
+
+        VA->Bind();
+        sData.StandardShader->Bind();
+        glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, 0);
     }
 }

@@ -6,6 +6,9 @@
 
 #include "Core/Log.h"
 
+
+#include "Renderer/Renderer.h"
+
 SandboxLayer::SandboxLayer() : GLE::Layer("Sandbox Layer") {
 
 }
@@ -19,7 +22,11 @@ void SandboxLayer::OnUpdate() {
 }
 
 void SandboxLayer::OnRender() {
+    GLE::Renderer::StartScene();
 
+    GLE::Renderer::SubmitPrimitive(GLE::PrimitiveType::Square);
+
+    GLE::Renderer::RenderScene();
 }
 
 void SandboxLayer::OnEvent(Event &e) {
