@@ -11,6 +11,7 @@
 
 
 namespace GLE {
+    //region Shader Load
     static GLenum ShaderTypeFromString(const std::string &type) {
         if(type == "vertex") return GL_VERTEX_SHADER;
         if(type == "fragment") return GL_FRAGMENT_SHADER;
@@ -169,7 +170,7 @@ namespace GLE {
 
         return id;
     }
-
+    //endregion
 
 
     Shader::Shader(const std::string &srcPath) : mFileLoc(srcPath) {
@@ -197,6 +198,8 @@ namespace GLE {
     }
 
 
+
+    //region Uniforms
 
     void Shader::SetFloat(const char *name, float v) {
         glUniform1f(GetUniformLoc(name), v);
@@ -237,6 +240,8 @@ namespace GLE {
     void Shader::SetFloat3x3(const char *name, const glm::mat3 &v) {
         glUniformMatrix3fv(GetUniformLoc(name), 1, GL_FALSE, glm::value_ptr(v));
     }
+
+    //endregion
 }
 
 

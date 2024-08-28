@@ -4,15 +4,17 @@
 
 #include "Renderer/Renderer.h"
 #include "Renderer/PrimitiveType.h"
+#include "Renderer/Shader.h"
+#include "Renderer/VertexArray.h"
+#include "Core/Window.h"
 
 #include "GLFW/glfw3.h"
 #include "Glad/glad.h"
-#include "Shader.h"
-#include "VertexArray.h"
-#include <windows.h>
+
 
 #ifdef GLE_PLATFORM_WINDOWS
 #include <Glad/glad_wgl.h>
+#include <windows.h>
 #endif
 
 namespace GLE {
@@ -33,11 +35,13 @@ namespace GLE {
             float vertices[] = {
                     -0.5f, -0.5f, 0.0f,
                     -0.5f, 0.5f, 0.0f,
-                    0.5f, -0.5f, 0.0f
+                    0.5f, -0.5f, 0.0f,
+                    0.5f, 0.5f, 0.0f
             };
 
             uint32_t indices[] = {
-                    0, 1, 2
+                    0, 1, 2,
+                    2, 3, 1
             };
 
             auto VA = VertexArray::Create();
@@ -154,6 +158,12 @@ namespace GLE {
     void Renderer::StartScene() {
         sData.StandardShader->Bind();
         sData.StandardShader->SetFloat3("uColor", {1.0f, 0.0f, 1.0f});
+
+
+        //glm::ivec4 viewport;
+        //glGetIntegerv(GL_VIEWPORT, &viewport.x);
+        //ViewProj == Proj * View
+        sData.StandardShader->SetFloat4x4("uViewProj", glm::mat4(1));
     }
 
     void Renderer::RenderScene() {
@@ -165,6 +175,7 @@ namespace GLE {
 
         VA->Bind();
         sData.StandardShader->Bind();
+        sData.StandardShader->SetFloat4x4("uModel", glm::mat4(1));
         glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, 0);
     }
 }
