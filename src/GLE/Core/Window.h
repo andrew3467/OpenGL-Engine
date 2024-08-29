@@ -20,26 +20,24 @@ namespace GLE {
             uint32_t Height = 720;
             std::string Title = "GLE Engine";
         };
-
-    public:
         static std::shared_ptr<Window> Create(const WindowProps& props);
 
-    public:
         Window(const WindowProps& props);
         ~Window();
 
         void Update();
 
-        inline void* GetNativeWindow() const {return mWindowContainer.nativeWindow;}
-        inline uint32_t GetWidth() const {return mData.Width;}
+        void* GetNativeWindow() const {return mWindowContainer.nativeWindow;}
+        uint32_t GetWidth() const {return mData.Width;}
 
 
-        inline uint32_t GetHeight() const {return mData.Height;}
+        uint32_t GetHeight() const {return mData.Height;}
 
-        inline void SetEventCallback(const EventCallbackFn &callback) {
+        void SetEventCallback(const EventCallbackFn &callback) {
             mData.EventCallback = callback;
         }
-    public:
+
+
         void SetupCallbacks();
 
 

@@ -175,7 +175,7 @@ namespace GLE {
 
     void Renderer::StartScene(Camera& camera) {
         //ViewProj == Proj * View
-        sData.ViewProj = camera.ViewProj();
+        sData.ViewProj = camera.View();
     }
 
     void Renderer::RenderScene() {

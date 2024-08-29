@@ -17,7 +17,7 @@ namespace GLE {
 
     class Camera {
     public:
-        inline static std::shared_ptr<Camera> Create(const glm::vec3& position) {return std::make_shared<Camera>(position);}
+        static std::shared_ptr<Camera> Create(const glm::vec3& position) {return std::make_shared<Camera>(position);}
 
         Camera(const glm::vec3& position);
         ~Camera();
