@@ -7,8 +7,7 @@
 
 namespace GLE {
     enum class PrimitiveType {
-        Square = 0,
-        Cube = 1
+        Cube = 0
     };
 }
 

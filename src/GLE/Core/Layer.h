@@ -19,8 +19,11 @@ namespace GLE {
         virtual void OnEvent(Event &e) {}
 
         virtual void OnCreate() {}
+        virtual void OnRun() {}
+
+
         virtual void OnStart() {}
-        virtual void OnUpdate() {}
+        virtual void OnUpdate(float dt) {}
         virtual void OnRender() {}
         virtual void OnDestroy() {}
 

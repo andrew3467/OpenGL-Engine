@@ -15,6 +15,7 @@ add_compile_definitions(GLFW_INCLUDE_NONE)
 add_subdirectory(external/glad)
 include_directories(external/glad/include)
 
+add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 add_subdirectory(external/glm)
 include_directories(external/glm)
 

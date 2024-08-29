@@ -23,6 +23,8 @@ namespace GLE {
         Application();
         ~Application();
 
+        const Window& GetWindow() const {return *mWindow;}
+
         void Run();
 
         void OnEvent(Event &e);

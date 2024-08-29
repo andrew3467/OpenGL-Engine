@@ -7,7 +7,12 @@
 
 #include "PrimitiveType.h"
 
+
 namespace GLE {
+class Camera;
+class Shader;
+
+
     class Renderer {
     public:
         static void Init();
@@ -16,10 +21,10 @@ namespace GLE {
         static void SetClearColor(float r, float g, float b, float a = 1.0f);
         static void Clear();
 
-        static void StartScene();
+        static void StartScene(Camera& camera);
         static void RenderScene();
 
-        static void SubmitPrimitive(PrimitiveType primitive);
+        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader);
 
     private:
         static bool sInitialized;

@@ -7,6 +7,7 @@
 
 
 #include "Core/Layer.h"
+#include "Renderer/Camera.h"
 
 class SandboxLayer : public GLE::Layer {
 public:
@@ -18,8 +19,12 @@ public:
     void OnEvent(Event &e) override;
 
     void OnCreate() override;
-    void OnUpdate() override;
+    void OnRun() override;
+    void OnUpdate(float dt) override;
     void OnRender() override;
+
+private:
+    std::shared_ptr<GLE::Camera> mCamera;
 };
 
 

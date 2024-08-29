@@ -6,6 +6,7 @@
 #include "Renderer/PrimitiveType.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/Camera.h"
 #include "Core/Window.h"
 
 #include "GLFW/glfw3.h"
@@ -19,7 +20,7 @@
 
 namespace GLE {
     struct RendererData {
-        std::shared_ptr<Shader> StandardShader;
+        glm::mat4 ViewProj;
 
         std::vector<std::shared_ptr<VertexArray>> VAs;
     };
@@ -27,21 +28,37 @@ namespace GLE {
     RendererData sData = {};
 
     void InitData() {
-        sData.StandardShader = Shader::Create("../assets/shaders/Standard.glsl");
-
         sData.VAs.resize(2);
 
         {
-            float vertices[] = {
-                    -0.5f, -0.5f, 0.0f,
-                    -0.5f, 0.5f, 0.0f,
-                    0.5f, -0.5f, 0.0f,
-                    0.5f, 0.5f, 0.0f
+            uint32_t indices[] = {
+                    0, 1, 5,  5, 1, 6,
+                    1, 2, 6,  6, 2, 7,
+                    2, 3, 7,  7, 3, 8,
+                    3, 4, 8,  8, 4, 9,
+                    10,11, 0,  0,11, 1,
+                    5, 6,12, 12, 6,13
             };
 
-            uint32_t indices[] = {
-                    0, 1, 2,
-                    2, 3, 1
+            //Position, TexCoord
+             float vertices[] = {
+                     -1,-1,-1, 0, 0,
+                    1,-1,-1, 1, 0,
+                    1, 1,-1, 2, 0,
+                    -1, 1,-1, 3, 0,
+                    -1,-1,-1, 4, 0,
+
+                    -1,-1, 1, 0, 1,
+                    1,-1, 1, 1, 1,
+                    1, 1, 1, 2, 1,
+                    -1, 1, 1, 3, 1,
+                    -1,-1, 1, 4, 1,
+
+                    -1, 1,-1, 0,-1,
+                    1, 1,-1, 1,-1,
+
+                    -1, 1, 1, 0, 2,
+                    1, 1, 1, 1, 2
             };
 
             auto VA = VertexArray::Create();
@@ -49,6 +66,7 @@ namespace GLE {
             auto VB = VertexBuffer::Create(vertices, sizeof(vertices) / sizeof(float));
             VB->SetLayout({
                                   {3, GL_FLOAT, 0, false},
+                                  {2, GL_FLOAT, 3, false},
 
                           });
             VA->SetVertexBuffer(VB);
@@ -155,27 +173,25 @@ namespace GLE {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::StartScene() {
-        sData.StandardShader->Bind();
-        sData.StandardShader->SetFloat3("uColor", {1.0f, 0.0f, 1.0f});
-
-
-        //glm::ivec4 viewport;
-        //glGetIntegerv(GL_VIEWPORT, &viewport.x);
+    void Renderer::StartScene(Camera& camera) {
         //ViewProj == Proj * View
-        sData.StandardShader->SetFloat4x4("uViewProj", glm::mat4(1));
+        sData.ViewProj = camera.ViewProj();
     }
 
     void Renderer::RenderScene() {
 
     }
 
-    void Renderer::SubmitPrimitive(PrimitiveType primitive) {
+    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader) {
         auto& VA = sData.VAs[(int)primitive];
 
         VA->Bind();
-        sData.StandardShader->Bind();
-        sData.StandardShader->SetFloat4x4("uModel", glm::mat4(1));
+
+        shader.SetFloat3("uColor", {1,0,1});
+
+        shader.Bind();
+        shader.SetFloat4x4("uViewProj", sData.ViewProj);
+        shader.SetFloat4x4("uModel", glm::mat4(1));
         glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, 0);
     }
 }

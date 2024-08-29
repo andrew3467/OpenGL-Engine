@@ -17,6 +17,9 @@
 #include "Glad/glad.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
+#include "Renderer/Camera.h"
+#include "glm/gtx/string_cast.hpp"
+#include "Time.h"
 
 namespace GLE {
     Application* Application::sInstance = nullptr;
@@ -45,6 +48,7 @@ namespace GLE {
         GLE_INFO("Running Application");
         mRunning = true;
 
+        Time::Init();
 
         mWindow = Window::Create({1280, 720, "GL Engine"});
         mWindow->SetEventCallback(GLE_BIND_EVENT_FUNC(Application::OnEvent));
@@ -53,14 +57,21 @@ namespace GLE {
 
         Renderer::SetClearColor(0.2, 0.2, 0.2);
 
+        //Init layers
+        for(auto layer : mLayerStack.GetLayers()) {
+            layer->OnRun();
+        }
+
         while (mRunning) {
             for(auto layer : mLayerStack.GetLayers()) {
-                layer->OnUpdate();
+                layer->OnUpdate(Time::GetTime());
                 layer->OnRender();
 
                 mWindow->Update();
 
                 Renderer::Clear();
+
+                Time::Update();
             }
         }
     }
