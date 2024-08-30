@@ -11,6 +11,7 @@
 
 #include "GLFW/glfw3.h"
 #include "Glad/glad.h"
+#include "glm/gtx/rotate_vector.hpp"
 
 
 #ifdef GLE_PLATFORM_WINDOWS
@@ -74,7 +75,7 @@ namespace GLE {
             auto IB = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
             VA->SetIndexBuffer(IB);
 
-            sData.VAs[0] = VA;
+            sData.VAs[(int)PrimitiveType::Cube] = VA;
         }
     }
 
@@ -173,9 +174,9 @@ namespace GLE {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::StartScene(Camera& camera) {
+    void Renderer::StartScene(PerspectiveCamera& camera) {
         //ViewProj == Proj * View
-        sData.ViewProj = camera.View();
+        sData.ViewProj = camera.GetViewProjection();
     }
 
     void Renderer::RenderScene() {
@@ -183,7 +184,7 @@ namespace GLE {
     }
 
     void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader) {
-        auto& VA = sData.VAs[(int)primitive];
+        const auto& VA = sData.VAs[(int)primitive];
 
         VA->Bind();
 
@@ -192,6 +193,6 @@ namespace GLE {
         shader.Bind();
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", glm::mat4(1));
-        glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 }

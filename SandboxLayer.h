@@ -24,7 +24,7 @@ public:
     void OnRender() override;
 
 private:
-    std::shared_ptr<GLE::Camera> mCamera;
+    std::shared_ptr<GLE::PerspectiveCamera> mCamera;
 };
 
 

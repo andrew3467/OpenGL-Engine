@@ -14,66 +14,88 @@
 #define CAMERA_MAX_PITCH 89.0f
 
 namespace GLE {
-    Camera::Camera(const glm::vec3 &position)
-        : mPosition(position)
-    {
-        GLE_INFO("Created Orthographic camera at position: {0}", glm::to_string(position));
+#define CAMERA_MIN_ZOOM 1.0f
+#define CAMERA_MAX_ZOOM 90.0f
+
+#define CAMERA_MIN_PITCH -89.0f
+#define CAMERA_MAX_PITCH 89.0f
+
+    PerspectiveCamera::PerspectiveCamera()
+            : PerspectiveCamera({0.0f, 0.0f, 0.0f}) {
+
+    }
+
+    PerspectiveCamera::PerspectiveCamera(const glm::vec3 &position)
+            : mNear(0.1f), mFar(1000.0f) {
         RecalculateMatrices();
+
+        SetPosition(position);
     }
 
-    Camera::~Camera() {
+    PerspectiveCamera::~PerspectiveCamera() {
 
     }
 
-    void Camera::Move(MoveDir dir, float val) {
-        switch (dir) {
-            case MoveDir::Forward:
-                mPosition += mFront * val;
-                break;
-            case MoveDir::Backward:
-                mPosition += -mFront * val;
-                break;
-            case MoveDir::Right:
-                mPosition += mRight * val;
-                break;
-            case MoveDir::Left:
-                mPosition += -mRight * val;
-                break;
+    void PerspectiveCamera::RecalculateMatrices() {
+        glm::ivec4 viewport = {};
+        glGetIntegerv(GL_VIEWPORT, &viewport.x);
+        float aspect = (float)viewport.z / (float)viewport.w;
+
+
+        glm::vec3 front = {
+            cos(glm::radians(mYaw)) * cos(glm::radians(mPitch)),
+            sin(glm::radians(mPitch)),
+            sin(glm::radians(mYaw)) * cos(glm::radians(mPitch))
+    };
+
+        mFront = glm::normalize(front);
+
+        mRight = glm::normalize(glm::cross(mFront, mWorldUp));
+        mUp = glm::normalize(glm::cross(mRight, mFront));
+
+        mView = glm::lookAt(mPosition, mPosition + mFront, mUp);
+        mProjection = glm::perspective(glm::radians(mFOV), aspect, mNear, mFar);
+        mViewProjection = mProjection * mView;
+    }
+
+    void PerspectiveCamera::SetRotation(const glm::vec3 &rotation) {
+        mFront = glm::normalize(rotation);
+
+        mRight = glm::normalize(glm::cross(mFront, glm::vec3(0.0f, 1.0f, 0.0f)));
+        mUp = glm::normalize(glm::cross(mRight, mFront));
+    }
+
+    void PerspectiveCamera::ProcessMouseMovement(float xoffset, float yoffset, float sensitivity, bool constrainPitch) {
+        xoffset *= sensitivity;
+        yoffset *= sensitivity;
+
+        mYaw += xoffset;
+        mPitch += yoffset;
+
+        // make sure that when pitch is out of bounds, screen doesn't get flipped
+        if (constrainPitch) {
+            mPitch = glm::clamp(mPitch, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH);
         }
 
         RecalculateMatrices();
     }
 
-    void Camera::Rotate(float yawOffset, float pitchOffset) {
-        mYaw += yawOffset;
-        mPitch += pitchOffset;
-
-        mPitch = glm::clamp(mPitch, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH);
+    void PerspectiveCamera::ProcessKeyboard(MoveDir direction, float deltaTime, float moveSpeed) {
+        float velocity = moveSpeed * deltaTime;
+        if (direction == FORWARD)
+            mPosition += mFront * velocity;
+        if (direction == BACKWARD)
+            mPosition -= mFront * velocity;
+        if (direction == LEFT)
+            mPosition -= mRight * velocity;
+        if (direction == RIGHT)
+            mPosition += mRight * velocity;
 
         RecalculateMatrices();
     }
 
-    void Camera::RecalculateMatrices() {
-        glm::ivec4 viewport;
-        glGetIntegerv(GL_VIEWPORT, &viewport.x);
-        float aspect = (float)viewport.z / (float)viewport.w;
-
-
-
-        glm::vec3 front = {
-                cos(glm::radians(mYaw)) * cos(glm::radians(mPitch)),
-                sin(glm::radians(mPitch)),
-                sin(glm::radians(mYaw)) * cos(glm::radians(mPitch))
-        };
-        mFront = glm::normalize(front);
-
-
-        const glm::vec3 worldUp = {0,1,0};
-        mRight = glm::normalize(glm::cross(mFront, worldUp));
-        mUp = glm::normalize(glm::cross(mRight, mFront));
-
-        mView = glm::lookAt(mPosition, mPosition + mFront, mUp);
-        mProjection = glm::perspective(glm::radians(mFOV), aspect, mNear, mFar);
-        mViewProj = mProjection * mView;
+    void PerspectiveCamera::ProcessMouseScroll(float yoffset) {
+        mFOV -= yoffset;
+        mFOV = glm::clamp(mFOV, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM);
     }
 }

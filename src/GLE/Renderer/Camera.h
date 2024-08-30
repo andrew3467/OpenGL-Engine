@@ -8,43 +8,56 @@
 #include <glm/glm.hpp>
 
 namespace GLE {
-    enum class MoveDir {
-        Forward = 0,
-        Backward = 1,
-        Right = 2,
-        Left = 3,
+    enum MoveDir {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT
     };
 
-    class Camera {
+    class PerspectiveCamera {
     public:
-        static std::shared_ptr<Camera> Create(const glm::vec3& position) {return std::make_shared<Camera>(position);}
+        static std::shared_ptr<PerspectiveCamera> Create(const glm::vec3& position) {return std::make_shared<PerspectiveCamera>(position);}
 
-        Camera(const glm::vec3& position);
-        ~Camera();
+        PerspectiveCamera();
 
+        PerspectiveCamera(const glm::vec3 &position);
 
-        glm::mat4 Projection() {return mProjection;}
-        glm::mat4 View() {return mView;}
-        glm::mat4 ViewProj() {return mViewProj;}
+        ~PerspectiveCamera();
 
-        void Move(MoveDir dir, float val);
-        void Rotate(float yawOffset, float pitchOffset);
+        void SetPosition(const glm::vec3 &position) {
+            mPosition = position;
+            RecalculateMatrices();
+        }
+
+        void SetRotation(const glm::vec3 &rotation);
+
+        void ProcessKeyboard(MoveDir direction, float deltaTime, float moveSpeed);
+
+        void ProcessMouseMovement(float xoffset, float yoffset, float sensitivity, bool constrainPitch = true);
+
+        void ProcessMouseScroll(float yoffset);
+
+        const glm::mat4 &GetViewProjection() const { return mViewProjection; }
+        const glm::mat4 &GetView() const { return mView; }
+        const glm::mat4 &GetProjection() const { return mProjection; }
 
     private:
         void RecalculateMatrices();
 
-
     private:
-        glm::mat4 mView, mProjection, mViewProj;
+        glm::mat4 mView;
+        glm::mat4 mProjection;
+        glm::mat4 mViewProjection;
 
-        glm::vec3 mPosition = {0,0,0};
+        glm::vec3 mPosition;
+        glm::vec3 mFront = {0.0f, 0.0f, 1.0f};
+        glm::vec3 mUp = {0.0f, 1.0f, 0.0f};
+        glm::vec3 mRight = {1.0f, 0.0f, 0.0f};
+        glm::vec3 mWorldUp = {0.0f, 1.0f, 0.0f};
 
-        float mFOV = 45.0f;
+        float mFOV = 60.0f;
         float mNear = 0.1f, mFar = 100.0f;
-
-        glm::vec3 mUp = {0,1,0};
-        glm::vec3 mFront = {0, 0, 1};
-        glm::vec3 mRight = {-1,0,0};
 
         float mYaw = -90.0f;
         float mPitch = 0.0f;

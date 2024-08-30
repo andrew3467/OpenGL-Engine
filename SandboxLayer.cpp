@@ -25,26 +25,55 @@ void SandboxLayer::OnCreate() {
 }
 
 void SandboxLayer::OnRun() {
-    mCamera = GLE::Camera::Create({0,0, -6});
+    mCamera = GLE::PerspectiveCamera::Create({0,0,6});
 
     StandardShader = GLE::Shader::Create("../assets/shaders/Standard.glsl");
 }
 
-void SandboxLayer::OnUpdate(float dt) {
+void SandboxLayer::OnUpdate(const float dt) {
 
     const float moveSpeed = 5.0f;
     if(GLE::Input::GetKey(GLFW_KEY_W)) {
-        mCamera->Move(GLE::MoveDir::Forward, dt * moveSpeed);
+        mCamera->ProcessKeyboard(GLE::MoveDir::FORWARD, dt, moveSpeed);
     }
     if(GLE::Input::GetKey(GLFW_KEY_S)) {
-        mCamera->Move(GLE::MoveDir::Backward, dt * moveSpeed);
+        mCamera->ProcessKeyboard(GLE::MoveDir::BACKWARD, dt, moveSpeed);
     }
     if(GLE::Input::GetKey(GLFW_KEY_A)) {
-        mCamera->Move(GLE::MoveDir::Left, dt * moveSpeed);
+        mCamera->ProcessKeyboard(GLE::MoveDir::LEFT, dt, moveSpeed);
     }
     if(GLE::Input::GetKey(GLFW_KEY_D)) {
-        mCamera->Move(GLE::MoveDir::Right, dt * moveSpeed);
+        mCamera->ProcessKeyboard(GLE::MoveDir::RIGHT, dt, moveSpeed);
     }
+
+    static uint32_t prevX = 0, prevY = 0;
+    static bool firstMouse = true;
+    static bool firstScrollDown = true;
+
+    if(GLE::Input::GetMouseButton(GLFW_MOUSE_BUTTON_MIDDLE)) {
+        auto [x,y] = GLE::Input::GetMousePosition();
+        if(firstMouse) {
+            prevX = x;
+            prevY = y;
+            firstMouse = false;
+        }
+
+        if (firstScrollDown) {
+            GLE::Input::SetMousePosition(prevX, prevY);
+            firstScrollDown = false;
+        }
+
+        float xOffset = x - prevX;
+        float yOffset = prevY - y;
+
+        const float sensitivity = 2.f;
+        mCamera->ProcessMouseMovement(xOffset, yOffset, sensitivity * dt);
+        prevX = x;
+        prevY = y;
+    }else {
+        firstScrollDown = true;
+    }
+
 }
 
 void SandboxLayer::OnRender() {
