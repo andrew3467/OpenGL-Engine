@@ -10,8 +10,6 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/gtx/string_cast.hpp"
 
-#define CAMERA_MIN_PITCH (-89.0f)
-#define CAMERA_MAX_PITCH 89.0f
 
 namespace GLE {
 #define CAMERA_MIN_ZOOM 1.0f

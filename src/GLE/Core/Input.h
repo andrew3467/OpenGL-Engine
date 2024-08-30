@@ -10,8 +10,8 @@ namespace GLE {
     public:
         static bool GetKey(uint32_t keycode);
         static bool GetMouseButton(uint32_t mousecode);
-        static std::pair<uint32_t, uint32_t> GetMousePosition();
-        static void SetMousePosition(uint32_t x, uint32_t y);
+        static std::pair<double, double> GetMousePosition();
+        static void SetMousePosition(double x, double y);
     };
 }
 

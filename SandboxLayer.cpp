@@ -46,7 +46,7 @@ void SandboxLayer::OnUpdate(const float dt) {
         mCamera->ProcessKeyboard(GLE::MoveDir::RIGHT, dt, moveSpeed);
     }
 
-    static uint32_t prevX = 0, prevY = 0;
+    static double prevX = 0, prevY = 0;
     static bool firstMouse = true;
     static bool firstScrollDown = true;
 

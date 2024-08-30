@@ -17,13 +17,13 @@ namespace GLE {
         return glfwGetMouseButton((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), mousecode);
     }
 
-    std::pair<uint32_t, uint32_t> Input::GetMousePosition() {
+    std::pair<double, double> Input::GetMousePosition() {
         double x,y;
         glfwGetCursorPos((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), &x, &y);
         return std::make_pair(x, y);
     }
 
-    void Input::SetMousePosition(uint32_t x, uint32_t y) {
+    void Input::SetMousePosition(double x, double y) {
         glfwSetCursorPos((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), x, y);
     }
 }
