@@ -195,7 +195,7 @@ namespace GLE {
 
         auto translation = glm::translate(glm::mat4(1), transform.Position);
         auto scale = glm::scale(glm::mat4(1), transform.Scale);
-        auto rot = glm::rotate(glm::radians(1.0f), transform.Rotation);
+        auto rot = glm::rotate(glm::mat4(1), 3.14f, transform.Rotation);
         auto model = translation * rot * scale;
 
 

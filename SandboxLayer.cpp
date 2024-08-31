@@ -8,7 +8,7 @@
 #include "Core/CameraController.h"
 #include "Core/Log.h"
 #include "Core/Input.h"
-#include "Core/Random.h"
+#include "Core/Util/Random.h"
 #include "Core/Transform.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
@@ -24,13 +24,21 @@ GLE::CameraController sCameraController;
 GLE::Random sRandom(4321312);
 
 
+glm::vec3 RandomVec3(float min, float max) {
+    return {
+        sRandom.Range(min, max),
+        sRandom.Range(min, max),
+        sRandom.Range(min, max)
+    };
+}
+
 GLE::Transform RandomPosition() {
     const float min = -10.0f, max = 10.0f;
 
     return {
-        {sRandom.Range(min, max), sRandom.Range(min, max), sRandom.Range(min, max)},
-        {0,0,0},
-        {1,1,1},
+        RandomVec3(min, max),
+        RandomVec3(min, max),
+        RandomVec3(0.2, 1),
     };
 }
 
