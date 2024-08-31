@@ -28,10 +28,11 @@ namespace GLE {
         void Update();
 
         void* GetNativeWindow() const {return mWindowContainer.nativeWindow;}
+
         uint32_t GetWidth() const {return mData.Width;}
-
-
         uint32_t GetHeight() const {return mData.Height;}
+
+        void ToggleCursor(bool toggle) const;
 
         void SetEventCallback(const EventCallbackFn &callback) {
             mData.EventCallback = callback;

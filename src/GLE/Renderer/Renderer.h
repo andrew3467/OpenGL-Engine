@@ -9,8 +9,10 @@
 
 
 namespace GLE {
-    class PerspectiveCamera;
+    class Camera;
     class Shader;
+
+    struct Transform;
 
 
     class Renderer {
@@ -21,10 +23,10 @@ namespace GLE {
         static void SetClearColor(float r, float g, float b, float a = 1.0f);
         static void Clear();
 
-        static void StartScene(PerspectiveCamera& camera);
+        static void StartScene(Camera& camera);
         static void RenderScene();
 
-        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader);
+        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const Transform& transform);
 
     private:
         static bool sInitialized;

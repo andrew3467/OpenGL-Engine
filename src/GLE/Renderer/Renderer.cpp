@@ -3,6 +3,8 @@
 //
 
 #include "Renderer/Renderer.h"
+
+#include "Core/Transform.h"
 #include "Renderer/PrimitiveType.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
@@ -11,6 +13,7 @@
 
 #include "GLFW/glfw3.h"
 #include "Glad/glad.h"
+#include "glm/detail/type_quat.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
 
@@ -174,7 +177,7 @@ namespace GLE {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::StartScene(PerspectiveCamera& camera) {
+    void Renderer::StartScene(Camera& camera) {
         //ViewProj == Proj * View
         sData.ViewProj = camera.GetViewProjection();
     }
@@ -183,16 +186,23 @@ namespace GLE {
 
     }
 
-    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader) {
+    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const Transform& transform) {
         const auto& VA = sData.VAs[(int)primitive];
 
         VA->Bind();
 
         shader.SetFloat3("uColor", {1,0,1});
 
+        auto translation = glm::translate(glm::mat4(1), transform.Position);
+        auto scale = glm::scale(glm::mat4(1), transform.Scale);
+        auto rot = glm::rotate(glm::radians(1.0f), transform.Rotation);
+        auto model = translation * rot * scale;
+
+
+
         shader.Bind();
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
-        shader.SetFloat4x4("uModel", glm::mat4(1));
+        shader.SetFloat4x4("uModel", model);
         glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 }

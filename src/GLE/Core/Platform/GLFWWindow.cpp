@@ -3,6 +3,8 @@
 //
 
 
+#include "Glad/glad.h"
+#include "glm/vec4.hpp"
 #ifdef GLE_PLATFORM_GLFW
 
 
@@ -62,12 +64,16 @@ namespace GLE {
         glfwMakeContextCurrent(window);
         glfwSetWindowUserPointer(window, &mData);
 
+
         mWindowContainer.nativeWindow = window;
 
         SetupCallbacks();
     }
 
-#include "Events/MouseEvent.h"
+    void Window::ToggleCursor(bool toggle) const {
+        glfwSetInputMode((GLFWwindow*)mWindowContainer.nativeWindow, GLFW_CURSOR, toggle ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+    }
+
     void Window::SetupCallbacks() {
         glfwSetWindowCloseCallback((GLFWwindow*)GetNativeWindow(), [](GLFWwindow* window) {
             auto& data = *(WindowData*)glfwGetWindowUserPointer(window);

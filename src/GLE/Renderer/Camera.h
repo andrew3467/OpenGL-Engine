@@ -12,18 +12,20 @@ namespace GLE {
         FORWARD,
         BACKWARD,
         LEFT,
-        RIGHT
+        RIGHT,
+        UP,
+        DOWN
     };
 
-    class PerspectiveCamera {
+    class Camera {
     public:
-        static std::shared_ptr<PerspectiveCamera> Create(const glm::vec3& position) {return std::make_shared<PerspectiveCamera>(position);}
+        static std::shared_ptr<Camera> Create(const glm::vec3& position) {return std::make_shared<Camera>(position);}
 
-        PerspectiveCamera();
+        Camera();
 
-        PerspectiveCamera(const glm::vec3 &position);
+        Camera(const glm::vec3 &position);
 
-        ~PerspectiveCamera();
+        ~Camera();
 
         void SetPosition(const glm::vec3 &position) {
             mPosition = position;

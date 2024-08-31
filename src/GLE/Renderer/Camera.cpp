@@ -18,23 +18,23 @@ namespace GLE {
 #define CAMERA_MIN_PITCH -89.0f
 #define CAMERA_MAX_PITCH 89.0f
 
-    PerspectiveCamera::PerspectiveCamera()
-            : PerspectiveCamera({0.0f, 0.0f, 0.0f}) {
+    Camera::Camera()
+            : Camera({0.0f, 0.0f, 0.0f}) {
 
     }
 
-    PerspectiveCamera::PerspectiveCamera(const glm::vec3 &position)
+    Camera::Camera(const glm::vec3 &position)
             : mNear(0.1f), mFar(1000.0f) {
         RecalculateMatrices();
 
         SetPosition(position);
     }
 
-    PerspectiveCamera::~PerspectiveCamera() {
+    Camera::~Camera() {
 
     }
 
-    void PerspectiveCamera::RecalculateMatrices() {
+    void Camera::RecalculateMatrices() {
         glm::ivec4 viewport = {};
         glGetIntegerv(GL_VIEWPORT, &viewport.x);
         float aspect = (float)viewport.z / (float)viewport.w;
@@ -56,14 +56,14 @@ namespace GLE {
         mViewProjection = mProjection * mView;
     }
 
-    void PerspectiveCamera::SetRotation(const glm::vec3 &rotation) {
+    void Camera::SetRotation(const glm::vec3 &rotation) {
         mFront = glm::normalize(rotation);
 
         mRight = glm::normalize(glm::cross(mFront, glm::vec3(0.0f, 1.0f, 0.0f)));
         mUp = glm::normalize(glm::cross(mRight, mFront));
     }
 
-    void PerspectiveCamera::ProcessMouseMovement(float xoffset, float yoffset, float sensitivity, bool constrainPitch) {
+    void Camera::ProcessMouseMovement(float xoffset, float yoffset, float sensitivity, bool constrainPitch) {
         xoffset *= sensitivity;
         yoffset *= sensitivity;
 
@@ -72,13 +72,13 @@ namespace GLE {
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
         if (constrainPitch) {
-            mPitch = glm::clamp(mPitch, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH);
+            //mPitch = glm::clamp(mPitch, CAMERA_MIN_PITCH, CAMERA_MAX_PITCH);
         }
 
         RecalculateMatrices();
     }
 
-    void PerspectiveCamera::ProcessKeyboard(MoveDir direction, float deltaTime, float moveSpeed) {
+    void Camera::ProcessKeyboard(MoveDir direction, float deltaTime, float moveSpeed) {
         float velocity = moveSpeed * deltaTime;
         if (direction == FORWARD)
             mPosition += mFront * velocity;
@@ -88,11 +88,15 @@ namespace GLE {
             mPosition -= mRight * velocity;
         if (direction == RIGHT)
             mPosition += mRight * velocity;
+        if (direction == UP)
+            mPosition += mUp * velocity;
+        if (direction == DOWN)
+            mPosition -= mUp * velocity;
 
         RecalculateMatrices();
     }
 
-    void PerspectiveCamera::ProcessMouseScroll(float yoffset) {
+    void Camera::ProcessMouseScroll(float yoffset) {
         mFOV -= yoffset;
         mFOV = glm::clamp(mFOV, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM);
     }
