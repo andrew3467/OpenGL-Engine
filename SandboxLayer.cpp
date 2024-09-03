@@ -8,8 +8,9 @@
 #include "Core/CameraController.h"
 #include "Core/Log.h"
 #include "Core/Input.h"
+#include "Core/Scene/ECS/Entity.h"
 #include "Core/Util/Random.h"
-#include "Core/Transform.h"
+#include "Core/Scene/ECS/Component/TransformComponent.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 
@@ -23,7 +24,6 @@ std::shared_ptr<GLE::Shader> StandardShader;
 GLE::CameraController sCameraController;
 GLE::Random sRandom(4321312);
 
-
 glm::vec3 RandomVec3(float min, float max) {
     return {
         sRandom.Range(min, max),
@@ -32,23 +32,10 @@ glm::vec3 RandomVec3(float min, float max) {
     };
 }
 
-GLE::Transform RandomPosition() {
-    const float min = -10.0f, max = 10.0f;
-
-    return {
-        RandomVec3(min, max),
-        RandomVec3(min, max),
-        RandomVec3(0.2, 1),
-    };
-}
+std::vector<GLE::Entity> sEntities;
 
 
-std::vector<GLE::Transform> sTransforms;
-
-
-SandboxLayer::SandboxLayer() : GLE::Layer("Sandbox Layer") {
-
-}
+SandboxLayer::SandboxLayer() : GLE::Layer("Sandbox Layer") {}
 
 void SandboxLayer::OnCreate() {
     GLE_INFO("Created Layer: {0}", mName);
@@ -65,15 +52,16 @@ void SandboxLayer::OnUpdate(const float dt) {
     sCameraController.Update(dt);
 
     if(GLE::Input::GetKey(GLFW_KEY_SPACE)) {
-        sTransforms.push_back(RandomPosition());
+        GLE::Entity entity;
+
     }
 }
 
 void SandboxLayer::OnRender() {
     GLE::Renderer::StartScene(*mCamera);
 
-    for(auto& transform : sTransforms) {
-        GLE::Renderer::SubmitPrimitive(GLE::PrimitiveType::Cube, *StandardShader, transform);
+    for(auto& entity : sEntities) {
+        //GLE::Renderer::SubmitPrimitive(GLE::PrimitiveType::Cube, *StandardShader, *entity.transform);
     }
 
     GLE::Renderer::RenderScene();

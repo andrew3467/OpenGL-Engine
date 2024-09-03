@@ -20,6 +20,7 @@
 #include "Renderer/Camera.h"
 #include "glm/gtx/string_cast.hpp"
 #include "Time.h"
+#include "UI/ImGuiLayer.h"
 
 namespace GLE {
     Application* Application::sInstance = nullptr;
@@ -48,6 +49,9 @@ namespace GLE {
         GLE_INFO("Running Application");
         mRunning = true;
 
+        GLE_INFO("Setting up ImGui");
+        mLayerStack.Push(new ImGuiLayer());
+
         Time::Init();
 
         mWindow = Window::Create({1280, 720, "GL Engine"});
@@ -59,6 +63,7 @@ namespace GLE {
 
         //Init layers
         for(auto layer : mLayerStack.GetLayers()) {
+            GLE_INFO("Init layer: {0}", layer->GetName());
             layer->OnRun();
         }
 

@@ -19,6 +19,9 @@ add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
 add_subdirectory(external/glm)
 include_directories(external/glm)
 
+add_subdirectory(external/entt)
+include_directories(external/entt/src)
+
 
 
 #if (WIN32)

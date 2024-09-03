@@ -4,7 +4,7 @@
 
 #include "Renderer/Renderer.h"
 
-#include "Core/Transform.h"
+#include "Core/Scene/ECS/Component/TransformComponent.h"
 #include "Renderer/PrimitiveType.h"
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
@@ -186,7 +186,7 @@ namespace GLE {
 
     }
 
-    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const Transform& transform) {
+    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const TransformComponent& transform) {
         const auto& VA = sData.VAs[(int)primitive];
 
         VA->Bind();

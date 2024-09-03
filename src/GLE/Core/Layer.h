@@ -28,6 +28,9 @@ namespace GLE {
         virtual void OnDestroy() {}
 
 
+        const std::string &GetName() const {return mName;}
+
+
     protected:
         std::string mName;
     };

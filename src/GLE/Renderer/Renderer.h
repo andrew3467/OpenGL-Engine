@@ -12,7 +12,7 @@ namespace GLE {
     class Camera;
     class Shader;
 
-    struct Transform;
+    struct TransformComponent;
 
 
     class Renderer {
@@ -26,7 +26,7 @@ namespace GLE {
         static void StartScene(Camera& camera);
         static void RenderScene();
 
-        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const Transform& transform);
+        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const TransformComponent& transform);
 
     private:
         static bool sInitialized;
