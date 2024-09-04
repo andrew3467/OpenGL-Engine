@@ -22,6 +22,7 @@ public:
     void OnRun() override;
     void OnUpdate(float dt) override;
     void OnRender() override;
+    void OnImGuiRender() override;
 
 private:
     std::shared_ptr<GLE::Camera> mCamera;

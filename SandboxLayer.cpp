@@ -4,6 +4,7 @@
 
 #include "SandboxLayer.h"
 
+#include "imgui.h"
 #include "Core/Application.h"
 #include "Core/CameraController.h"
 #include "Core/Log.h"
@@ -54,6 +55,11 @@ void SandboxLayer::OnRender() {
     sScene.Render(*StandardShader);
 
     GLE::Renderer::RenderScene();
+}
+
+void SandboxLayer::OnImGuiRender() {
+    static bool show = true;
+    if(show) ImGui::ShowDemoWindow(&show);
 }
 
 void SandboxLayer::OnEvent(Event &e) {
