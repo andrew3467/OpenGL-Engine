@@ -5,15 +5,16 @@
 #ifndef IDCOMPONENT_H
 #define IDCOMPONENT_H
 
-#include "BaseComponent.h"
 #include "Core/Util/UUID.h"
 
 namespace GLE {
-    struct IDComponent : Component {
+    struct IDComponent {
         GLE::UUID ID;
 
+        IDComponent(GLE::UUID ID) : ID(ID) {}
         IDComponent() = default;
         IDComponent(const IDComponent&) = default;
+        ~IDComponent() = default;
     };
 }
 

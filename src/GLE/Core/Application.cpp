@@ -20,6 +20,8 @@
 #include "Renderer/Camera.h"
 #include "glm/gtx/string_cast.hpp"
 #include "Time.h"
+#include "Scene/Scene.h"
+#include "Scene/ECS/Entity.h"
 #include "UI/ImGuiLayer.h"
 
 namespace GLE {

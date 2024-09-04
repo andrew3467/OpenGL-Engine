@@ -2,15 +2,12 @@
 // Created by Andrew Graser on 8/31/2024.
 //
 
-#ifndef ENTITY_H
-#define ENTITY_H
-
+#pragma once
 
 #include "Core/Scene/Scene.h"
 
 
 namespace GLE {
-    class Scene;
 
     class Entity {
     public:
@@ -21,20 +18,19 @@ namespace GLE {
         ~Entity() = default;
 
 
-
-        template <typename C, typename ... Args>
-        C& AddComponent(Args&&... args) {
-            C& component = mScene->mRegistry.emplace<C>(std::forward<Args>(args)...);
-            return component;
+        template <typename C>
+        C& GetComponent() {
+            return mScene->mRegistry.get<C>(mEntityHandle);
         }
 
+        template <typename C, typename ... Args>
+        C& AddComponent(Args&... args) {
+            C& component = mScene->mRegistry.emplace<C>(mEntityHandle, std::forward<Args>(args)...);
+            return component;
+        }
 
     private:
         entt::entity mEntityHandle;
         Scene* mScene = nullptr;
     };
 }
-
-
-
-#endif //ENTITY_H

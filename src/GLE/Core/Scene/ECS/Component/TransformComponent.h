@@ -5,12 +5,11 @@
 #ifndef TRANSFORMCOMPONENT_H
 #define TRANSFORMCOMPONENT_H
 
-#include "BaseComponent.h"
 #include "glm/glm.hpp"
 #include "glm/gtx/quaternion.hpp"
 
 namespace GLE {
-    struct TransformComponent : BaseComponent {
+    struct TransformComponent {
         glm::vec3 Position = {0,0,0};
         glm::vec3 Rotation = {0,0,0};
         glm::vec3 Scale = {1,1,1};
@@ -26,6 +25,8 @@ namespace GLE {
             * rotation
             * glm::scale(glm::mat4(1), Scale);
         }
+
+        operator glm::mat4() const {return GetTransform();}
 
     };
 }

@@ -10,6 +10,8 @@
 #include "Window.h"
 
 namespace GLE {
+    class Scene;
+
     class Application {
     public:
         inline static Application& Get() {return *sInstance;}

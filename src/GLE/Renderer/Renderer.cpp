@@ -186,23 +186,19 @@ namespace GLE {
 
     }
 
-    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const TransformComponent& transform) {
-        const auto& VA = sData.VAs[(int)primitive];
-
-        VA->Bind();
-
+    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform) {
+        shader.Bind();
         shader.SetFloat3("uColor", {1,0,1});
 
-        auto translation = glm::translate(glm::mat4(1), transform.Position);
-        auto scale = glm::scale(glm::mat4(1), transform.Scale);
-        auto rot = glm::rotate(glm::mat4(1), 3.14f, transform.Rotation);
-        auto model = translation * rot * scale;
+        Submit(*sData.VAs[(int)primitive], shader, transform);
+    }
 
-
+    void Renderer::Submit(VertexArray &VA, Shader &shader, const glm::mat4 &transform) {
+        VA.Bind();
 
         shader.Bind();
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
-        shader.SetFloat4x4("uModel", model);
-        glDrawElements(GL_TRIANGLES, VA->GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
+        shader.SetFloat4x4("uModel", transform);
+        glDrawElements(GL_TRIANGLES, VA.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 }

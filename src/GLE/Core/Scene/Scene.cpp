@@ -5,38 +5,33 @@
 #include "Scene.h"
 
 #include "Core/Util/UUID.h"
-#include "ECS/Component/IDComponent.h"
-#include "ECS/Component/NameComponent.h"
-#include "ECS/Component/TransformComponent.h"
+
+#include "ECS/Component/Components.h"
+#include "ECS/Entity.h"
+#include "Renderer/Renderer.h"
 
 
 namespace GLE {
     Scene::Scene() {
-        auto entity = mRegistry.create();
 
-
-        mRegistry.emplace<NameComponent>(entity, "entt");
-        mRegistry.emplace<TransformComponent>(entity);
-
-
-        //get all entities with a Name
-        auto view = mRegistry.view<NameComponent>();
-        for(auto entity : view) {
-            auto name = view.get<NameComponent>(entity);
-            GLE_INFO("Entity Name: {0}", name);
-        }
-
-        //get the name of every entity that has a transform
-        auto group = mRegistry.group<TransformComponent>(entt::get<NameComponent>);
-        for(auto entity : group) {
-            auto&[transform, name] = group.get<TransformComponent, NameComponent>(entity);
-            GLE_INFO("Entity Name: {0}", name);
-            GLE_INFO("Entity Transform: {0}", transform.Position.x);
-        }
     }
-
     Scene::~Scene() {
 
+    }
+
+    void Scene::Update(float dt) {
+
+    }
+
+    void Scene::Render(Shader& shader) {
+        auto entitiesToRender = mRegistry.group<PrimitiveRendererComponent, TransformComponent>();
+
+        for(auto entity : entitiesToRender) {
+            auto [renderer, transform] =
+                entitiesToRender.get<PrimitiveRendererComponent, TransformComponent>(entity);
+
+            Renderer::SubmitPrimitive(renderer.RenderType, shader, transform);
+        }
     }
 
     Entity Scene::CreateEntity(const std::string &name) {
@@ -45,8 +40,9 @@ namespace GLE {
 
     Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string &name) {
         Entity entity = {mRegistry.create(), this};
-        entity.AddComponent<NameComponent>(name);
         entity.AddComponent<IDComponent>(uuid);
+        entity.AddComponent<NameComponent>(name);
+        entity.AddComponent<TransformComponent>();
 
         //Add to map of all entities
 

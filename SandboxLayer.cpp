@@ -9,6 +9,7 @@
 #include "Core/Log.h"
 #include "Core/Input.h"
 #include "Core/Scene/ECS/Entity.h"
+#include "Core/Scene/ECS/Component/PrimitiveRendererComponent.h"
 #include "Core/Util/Random.h"
 #include "Core/Scene/ECS/Component/TransformComponent.h"
 #include "Renderer/Renderer.h"
@@ -23,6 +24,8 @@ std::shared_ptr<GLE::Shader> StandardShader;
 
 GLE::CameraController sCameraController;
 GLE::Random sRandom(4321312);
+
+GLE::Scene sScene;
 
 glm::vec3 RandomVec3(float min, float max) {
     return {
@@ -46,23 +49,20 @@ void SandboxLayer::OnRun() {
     sCameraController.AddCamera(mCamera);
 
     StandardShader = GLE::Shader::Create("../assets/shaders/Standard.glsl");
+
+    auto entity = sScene.CreateEntity();
+    entity.AddComponent<GLE::PrimitiveRendererComponent>().RenderType = GLE::PrimitiveType::Cube;
 }
 
 void SandboxLayer::OnUpdate(const float dt) {
     sCameraController.Update(dt);
-
-    if(GLE::Input::GetKey(GLFW_KEY_SPACE)) {
-        GLE::Entity entity;
-
-    }
+    sScene.Update(dt);
 }
 
 void SandboxLayer::OnRender() {
     GLE::Renderer::StartScene(*mCamera);
 
-    for(auto& entity : sEntities) {
-        //GLE::Renderer::SubmitPrimitive(GLE::PrimitiveType::Cube, *StandardShader, *entity.transform);
-    }
+    sScene.Render(*StandardShader);
 
     GLE::Renderer::RenderScene();
 }

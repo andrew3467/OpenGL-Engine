@@ -6,6 +6,8 @@
 #define OPENGL_ENGINE_RENDERER_H
 
 #include "PrimitiveType.h"
+#include "VertexArray.h"
+#include "glm/fwd.hpp"
 
 
 namespace GLE {
@@ -26,7 +28,8 @@ namespace GLE {
         static void StartScene(Camera& camera);
         static void RenderScene();
 
-        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const TransformComponent& transform);
+        static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform);
+        static void Submit(VertexArray& VA, Shader& shader, const glm::mat4& transform);
 
     private:
         static bool sInitialized;

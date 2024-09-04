@@ -4,15 +4,13 @@
 
 #ifndef NAMECOMPONENT_H
 #define NAMECOMPONENT_H
-#include <string>
-
-#include "BaseComponent.h"
 
 
 namespace GLE {
-    struct NameComponent : BaseComponent {
+    struct NameComponent {
         NameComponent(const std::string &name) : name(name) {}
         NameComponent() : name("Entity") {}
+        ~NameComponent() = default;
 
         std::string name;
 
