@@ -32,9 +32,9 @@ namespace GLE {
 
         void OnEvent(Event &e);
 
-        inline void Stop() {mRunning = false;}
+        void Stop() {mRunning = false;}
 
-        inline void PushLayer(Layer* layer) {mLayerStack.Push(layer);}
+        void PushLayer(Layer* layer) {mLayerStack.Push(layer);}
 
     private:
         bool OnWindowClosed(WindowCloseEvent &e);

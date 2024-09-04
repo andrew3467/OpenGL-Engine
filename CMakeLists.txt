@@ -22,6 +22,9 @@ include_directories(external/glm)
 add_subdirectory(external/entt)
 include_directories(external/entt/src)
 
+add_subdirectory(external/imgui)
+include_directories(external/imgui)
+
 
 
 #if (WIN32)
@@ -37,9 +40,9 @@ file(GLOB_RECURSE HEADERS src/*.h)
 file(GLOB_RECURSE SRC src/*.cpp)
 
 if(WIN32)
-# OpenGL
-set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL REQUIRED)
+    # OpenGL
+    set(OpenGL_GL_PREFERENCE GLVND)
+    find_package(OpenGL REQUIRED)
 endif ()
 
 include_directories(src/GLE)
@@ -50,8 +53,6 @@ add_executable(
         main.cpp
         SandboxLayer.h
         SandboxLayer.cpp
-        src/GLE/Renderer/RenderCommand.h
-        src/GLE/Renderer/Platform/OpenGL/OpenGLRenderCommand.cpp
 )
 
 target_precompile_headers(
@@ -67,5 +68,7 @@ target_link_libraries(
         glfw
         glad
         glm
+        EnTT
+        ImGui
         ${OPENGL_LIBRARY}
 )

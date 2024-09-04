@@ -19,7 +19,6 @@ namespace GLE {
 
         void OnCreate() override;
 
-        void OnUpdate(float dt) override;
         void OnRender() override;
         void OnDestroy() override;
     };
