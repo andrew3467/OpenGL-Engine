@@ -22,7 +22,7 @@ namespace GLE {
         static void Init();
 
         static void UpdateViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-        static void SetClearColor(float r, float g, float b, float a = 1.0f);
+        static void SetClearColor(float r, float g, float b);
         static void Clear();
 
         static void StartScene(Camera& camera);

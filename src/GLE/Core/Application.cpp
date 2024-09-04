@@ -52,7 +52,7 @@ namespace GLE {
         mRunning = true;
 
         GLE_INFO("Setting up ImGui");
-        mLayerStack.Push(new ImGuiLayer());
+        mImguiLayer = std::make_unique<ImGuiLayer>();
 
         Time::Init();
 
@@ -68,18 +68,26 @@ namespace GLE {
             GLE_INFO("Init layer: {0}", layer->GetName());
             layer->OnRun();
         }
+        GLE_INFO("Init Layer {0}", mImguiLayer->GetName());
+        mImguiLayer->OnRun();
 
         while (mRunning) {
             for(auto layer : mLayerStack.GetLayers()) {
                 layer->OnUpdate(Time::GetTime());
                 layer->OnRender();
-
-                mWindow->Update();
-
-                Renderer::Clear();
-
-                Time::Update();
             }
+
+            //Render ImGui
+
+            mImguiLayer->OnRender();
+
+
+
+            mWindow->Update();
+
+            Renderer::Clear();
+
+            Time::Update();
         }
     }
 

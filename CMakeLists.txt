@@ -30,6 +30,7 @@ include_directories(external/entt/src)
 #    add_compile_definitions(GLE_PLATFORM_LINUX)
 #else ()
     add_compile_definitions(GLE_PLATFORM_GLFW)
+    add_compile_definitions(GLE_PLATFORM_OPENGL)
 #endif ()
 
 file(GLOB_RECURSE HEADERS src/*.h)
@@ -49,6 +50,8 @@ add_executable(
         main.cpp
         SandboxLayer.h
         SandboxLayer.cpp
+        src/GLE/Renderer/RenderCommand.h
+        src/GLE/Renderer/Platform/OpenGL/OpenGLRenderCommand.cpp
 )
 
 target_precompile_headers(

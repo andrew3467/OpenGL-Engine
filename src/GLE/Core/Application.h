@@ -8,6 +8,7 @@
 #include "LayerStack.h"
 #include "Events/ApplicationEvent.h"
 #include "Window.h"
+#include "Core/UI/ImGuiLayer.h"
 
 namespace GLE {
     class Scene;
@@ -43,6 +44,7 @@ namespace GLE {
         bool mRunning = false;
 
         LayerStack mLayerStack;
+        std::unique_ptr<ImGuiLayer> mImguiLayer;
 
 
         std::shared_ptr<Window> mWindow;

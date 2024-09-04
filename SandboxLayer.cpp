@@ -23,19 +23,8 @@
 std::shared_ptr<GLE::Shader> StandardShader;
 
 GLE::CameraController sCameraController;
-GLE::Random sRandom(4321312);
 
 GLE::Scene sScene;
-
-glm::vec3 RandomVec3(float min, float max) {
-    return {
-        sRandom.Range(min, max),
-        sRandom.Range(min, max),
-        sRandom.Range(min, max)
-    };
-}
-
-std::vector<GLE::Entity> sEntities;
 
 
 SandboxLayer::SandboxLayer() : GLE::Layer("Sandbox Layer") {}

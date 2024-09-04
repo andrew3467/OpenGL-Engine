@@ -15,6 +15,7 @@
 #include "Glad/glad.h"
 #include "glm/detail/type_quat.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "RenderCommand.h"
 
 
 #ifdef GLE_PLATFORM_WINDOWS
@@ -159,23 +160,26 @@ namespace GLE {
 #ifdef GLE_PLATFORM_GLFW
         int success = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         GLE_ASSERT(success, "ERROR: Failed to initialize GLAD!");
+
+        glEnable(GL_DEPTH_TEST);
 #endif
 
         InitData();
         sInitialized = true;
     }
 
-    void Renderer::SetClearColor(float r, float g, float b, float a) {
-        glClearColor(r,g,b,a);
+    void Renderer::SetClearColor(float r, float g, float b) {
+        RenderCommand::SetClearColor(r,g,b);
     }
 
     void Renderer::UpdateViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
-        glViewport(x, y, width, height);
+        RenderCommand::SetViewport(x, y, width, height);
     }
 
     void Renderer::Clear() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        RenderCommand::ClearBuffers();
     }
+
 
     void Renderer::StartScene(Camera& camera) {
         //ViewProj == Proj * View
@@ -187,18 +191,17 @@ namespace GLE {
     }
 
     void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform) {
-        shader.Bind();
-        shader.SetFloat3("uColor", {1,0,1});
-
-        Submit(*sData.VAs[(int)primitive], shader, transform);
+         Submit(*sData.VAs[(int)primitive], shader, transform);
     }
 
     void Renderer::Submit(VertexArray &VA, Shader &shader, const glm::mat4 &transform) {
-        VA.Bind();
-
         shader.Bind();
+
+        shader.SetFloat3("uColor", {1,0,1});
+
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", transform);
-        glDrawElements(GL_TRIANGLES, VA.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
+
+        RenderCommand::DrawIndexed(VA);
     }
 }
