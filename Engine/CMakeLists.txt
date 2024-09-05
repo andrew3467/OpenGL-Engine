@@ -4,37 +4,37 @@ project(OpenGL_Engine)
 set(CMAKE_CXX_STANDARD 23)
 
 
-add_subdirectory(/external/spdlog)
-include_directories(external/spdlog/include)
 
-add_subdirectory(/external/glfw)
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/spdlog bin)
+include_directories(external/spdlog/include bin)
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glfw bin)
 include_directories(external/glfw/include)
 #Tell glfw not to src OpenGL
 add_compile_definitions(GLFW_INCLUDE_NONE)
 
-add_subdirectory(/external/glad)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glad bin)
 include_directories(external/glad/include)
 
 add_compile_definitions(GLM_ENABLE_EXPERIMENTAL)
-add_subdirectory(/external/glm)
-include_directories(external/glm)
+add_subdirectory(${CMAKE_SOURCE_DIR}/external/glm bin)
+include_directories(${CMAKE_SOURCE_DIR}/external/glm)
 
-add_subdirectory(/external/entt)
+add_subdirectory(external/entt bin)
 include_directories(external/entt/src)
 
-add_subdirectory(/external/imgui)
-include_directories(external/imgui)
+add_subdirectory(external/imgui)
+include_directories(external/imgui bin)
 
 
 
-#if (WIN32)
-    #add_compile_definitions(GLE_PLATFORM_WINDOWS)
-#elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-#    add_compile_definitions(GLE_PLATFORM_LINUX)
-#else ()
-    add_compile_definitions(GLE_PLATFORM_GLFW)
-    add_compile_definitions(GLE_PLATFORM_OPENGL)
-#endif ()
+
+add_compile_definitions(GLE_PLATFORM_GLFW)
+add_compile_definitions(GLE_PLATFORM_OPENGL)
+
+
+
 
 file(GLOB_RECURSE HEADERS src/*.h)
 file(GLOB_RECURSE SRC src/*.cpp)
@@ -45,7 +45,7 @@ if(WIN32)
     find_package(OpenGL REQUIRED)
 endif ()
 
-include_directories(Engine/src/GLE)
+include_directories(src/GLE)
 add_library(
         OpenGL_Engine
         ${HEADERS}
@@ -55,17 +55,18 @@ add_library(
 target_precompile_headers(
         OpenGL_Engine
         PRIVATE
-        Engine/src/GLE/glepch.h
+        src/GLE/glepch.h
 )
 
 target_link_libraries(
         OpenGL_Engine
-        PRIVATE
+        PUBLIC
         spdlog
+        ImGui
+        PRIVATE
         glfw
         glad
         glm
         EnTT
-        ImGui
         ${OPENGL_LIBRARY}
 )

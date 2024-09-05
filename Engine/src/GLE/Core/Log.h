@@ -5,7 +5,6 @@
 #ifndef OPENGL_ENGINE_LOG_H
 #define OPENGL_ENGINE_LOG_H
 
-#include "glepch.h"
 
 #include "spdlog/logger.h"
 
@@ -15,7 +14,7 @@ namespace GLE {
         static void Init();
 
 
-        inline static std::shared_ptr<spdlog::logger> &GetCoreLogger() { return mCoreLogger; }
+        static std::shared_ptr<spdlog::logger> &GetCoreLogger() { return mCoreLogger; }
 
     private:
         static std::shared_ptr<spdlog::logger> mCoreLogger;
