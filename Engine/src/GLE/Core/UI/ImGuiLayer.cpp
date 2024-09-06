@@ -4,6 +4,8 @@
 
 #include "ImGuiLayer.h"
 
+#include <entt/entity/entity.hpp>
+
 #include "imgui.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_glfw.h"
@@ -53,13 +55,33 @@ namespace GLE {
 
         ImGui::StyleColorsDark();
 
+        ImGuiStyle &style = ImGui::GetStyle();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            style.WindowRounding = 0.0f;
+            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
+
         const char* glVersion = "#version 330";
         ImGui_ImplOpenGL3_Init(glVersion);
         ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), true);
+
+        io.IniFilename = "imgui.ini";
+        ImGui::LoadIniSettingsFromDisk("imgui.ini");
+
+        SetupDockspace();
     }
 
     void ImGuiLayer::OnDestroy() {
+        //Update ini file
+        ImGui::SaveIniSettingsToDisk("imgui.ini");
+
+
         ImGui_ImplGlfw_Shutdown();
+        ImGui_ImplOpenGL3_Shutdown();
         ImGui::DestroyContext();
+    }
+
+    void ImGuiLayer::SetupDockspace() {
+
     }
 }

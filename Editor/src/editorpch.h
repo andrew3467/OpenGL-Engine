@@ -20,7 +20,7 @@
 
 #include <cstdio>
 
-#include "GLE/Core/Log.h"
+#include "Core/Log.h"
 #include <set>
 
 

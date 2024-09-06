@@ -2,15 +2,15 @@
 // Created by Andrew Graser on 7/28/2024.
 //
 
-#ifndef OPENGL_ENGINE_WINDOW_H
-#define OPENGL_ENGINE_WINDOW_H
+#pragma once
 
-#include "Events/ApplicationEvent.h"
 
 //class Event;
 class GLFWwindow;
 
 namespace GLE {
+    class Event;
+
     class Window {
     public:
         using EventCallbackFn = std::function<void(Event&)>;
@@ -60,5 +60,3 @@ namespace GLE {
         WindowData mData;
     };
 }
-
-#endif //OPENGL_ENGINE_WINDOW_H

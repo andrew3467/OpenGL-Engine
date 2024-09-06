@@ -2,14 +2,13 @@
 // Created by Andrew Graser on 2/8/2024.
 //
 
-#ifndef GLE_MOUSEEVENT_H
-#define GLE_MOUSEEVENT_H
+#pragma once
 
 #include <sstream>
 #include "Event.h"
 
-
-class MouseMovedEvent : public Event {
+namespace GLE {
+    class MouseMovedEvent : public Event {
 public:
     MouseMovedEvent(float x, float y)
             : mMouseX(x), mMouseY(y) {
@@ -103,6 +102,4 @@ public:
 
     EVENT_CLASS_TYPE(MouseButtonReleased)
 };
-
-
-#endif //GLE_MOUSEEVENT_H
+}

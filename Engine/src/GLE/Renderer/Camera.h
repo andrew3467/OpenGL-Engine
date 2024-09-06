@@ -44,6 +44,8 @@ namespace GLE {
         const glm::mat4 &GetView() const { return mView; }
         const glm::mat4 &GetProjection() const { return mProjection; }
 
+        const glm::vec3 &GetPosition() const { return mPosition; }
+
     private:
         void RecalculateMatrices();
 

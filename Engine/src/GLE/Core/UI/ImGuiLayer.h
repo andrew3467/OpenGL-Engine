@@ -23,6 +23,9 @@ namespace GLE {
         void OnCreate() override;
 
         void OnDestroy() override;
+
+        private:
+            void SetupDockspace();
     };
 }
 

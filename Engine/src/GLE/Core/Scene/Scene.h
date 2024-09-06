@@ -42,5 +42,6 @@ namespace GLE {
 
 
         friend class Entity;
+        friend class SceneHeirarchy;
     };
 }

@@ -2,27 +2,26 @@
 // Created by Andrew Graser on 7/28/2024.
 //
 
-#ifndef OPENGL_ENGINE_APPLICATION_H
-#define OPENGL_ENGINE_APPLICATION_H
+#pragma once
+
 
 #include "LayerStack.h"
-#include "Events/ApplicationEvent.h"
 #include "Window.h"
-#include "Core/UI/ImGuiLayer.h"
+#include "UI/ImGuiLayer.h"
+
+#include "Events/ApplicationEvent.h"
 
 namespace GLE {
     class Scene;
 
     class Application {
     public:
-        inline static Application& Get() {return *sInstance;}
+        static Application& Get() {return *sInstance;}
     private:
         static Application* sInstance;
 
 
     public:
-        static Application* Create(Layer* startLayer);
-
         Application();
         ~Application();
 
@@ -49,6 +48,6 @@ namespace GLE {
 
         std::shared_ptr<Window> mWindow;
     };
-}
 
-#endif //OPENGL_ENGINE_APPLICATION_H
+    Application* CreateApplication();
+}

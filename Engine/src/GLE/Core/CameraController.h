@@ -4,10 +4,12 @@
 
 #ifndef CAMERACONTROLLER_H
 #define CAMERACONTROLLER_H
+#include <glm/vec3.hpp>
+
+#include "Renderer/Camera.h"
 
 
 namespace GLE {
-    class Camera;
 
 
     class CameraController {
@@ -20,6 +22,7 @@ namespace GLE {
 
         void Update(float dt);
 
+        const glm::vec3& GetPosition() const {return mCamera->GetPosition();}
 
 
     private:

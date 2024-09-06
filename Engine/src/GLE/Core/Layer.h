@@ -2,19 +2,17 @@
 // Created by Andrew Graser on 7/26/2024.
 //
 
-#ifndef OPENGL_ENGINE_LAYER_H
-#define OPENGL_ENGINE_LAYER_H
-
-
-#include "Events/Event.h"
+#pragma once
 
 
 namespace GLE {
+    class Event;
+
     class Layer {
     public:
         Layer(const std::string& name = "");
 
-        ~Layer() = default;
+        virtual ~Layer() = default;
 
         virtual void OnEvent(Event &e) {}
 
@@ -36,6 +34,3 @@ namespace GLE {
         std::string mName;
     };
 }
-
-
-#endif //OPENGL_ENGINE_LAYER_H

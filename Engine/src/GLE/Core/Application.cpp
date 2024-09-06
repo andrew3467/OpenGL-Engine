@@ -6,48 +6,39 @@
 #include "Core/Application.h"
 #include "Core/Window.h"
 
+#include "Events/Event.h"
+
 #include "Renderer/Renderer.h"
 
-#include "Events/MouseEvent.h"
-
-//temp
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-
-#include "GLFW/glfw3.h"
-
-
-#include "Glad/glad.h"
-#include "Renderer/Shader.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Camera.h"
-#include "glm/gtx/string_cast.hpp"
 #include "Time.h"
 #include "Scene/Scene.h"
-#include "Scene/ECS/Entity.h"
 #include "UI/ImGuiLayer.h"
+
+
+#include "GLFW/glfw3.h"
+#include "glm/gtx/string_cast.hpp"
+
+
+#include <string>
+#include <functional>
+
+#define BIT(x) (1 << x)
+
 
 namespace GLE {
     Application* Application::sInstance = nullptr;
-
-
-    Application *Application::Create(Layer *startLayer) {
-        Log::Init();
-
-        auto app = new Application();
-        app->PushLayer(startLayer);
-
-        return app;
-    }
 
     Application::Application() {
         sInstance = this;
     }
 
     Application::~Application() {
+        for(auto& layer : mLayerStack.GetLayers()) {
+            layer->OnDestroy();
+        }
 
+        mImguiLayer->OnDestroy();
     }
-
 
 
     void Application::Run() {
@@ -75,7 +66,6 @@ namespace GLE {
         GLE_INFO("Init Layer {0}", mImguiLayer->GetName());
         mImguiLayer->OnRun();
 
-        static bool demoWindow = true;
 
         while (mRunning) {
             for(auto layer : mLayerStack.GetLayers()) {

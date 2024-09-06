@@ -5,7 +5,7 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-#include <bits/random.h>
+#include <random>
 
 
 namespace GLE {

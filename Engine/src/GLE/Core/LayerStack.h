@@ -5,8 +5,6 @@
 #ifndef OPENGL_ENGINE_LAYERSTACK_H
 #define OPENGL_ENGINE_LAYERSTACK_H
 
-#include "glepch.h"
-
 #include "Layer.h"
 
 namespace GLE {

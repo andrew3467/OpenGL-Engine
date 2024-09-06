@@ -2,12 +2,13 @@
 // Created by Andrew Graser on 2/8/2024.
 //
 
-#ifndef GLE_APPLICATIONEVENT_H
-#define GLE_APPLICATIONEVENT_H
+#pragma once
 
 #include <sstream>
 #include "Event.h"
 
+
+namespace GLE {
     class WindowResizeEvent : public Event {
     public:
         WindowResizeEvent(unsigned int width, unsigned int height)
@@ -62,5 +63,4 @@
         EVENT_CLASS_TYPE(AppRender)
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
-
-#endif //GLE_APPLICATIONEVENT_H
+}

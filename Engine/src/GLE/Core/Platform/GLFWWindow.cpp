@@ -11,8 +11,10 @@
 #include "GLFW/glfw3.h"
 
 #include "Core/Window.h"
+
 #include "Events/ApplicationEvent.h"
 #include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
 
 namespace GLE {
     static void GLFWErrorCallback(int error_code, const char* description){
@@ -63,7 +65,6 @@ namespace GLE {
 
         glfwMakeContextCurrent(window);
         glfwSetWindowUserPointer(window, &mData);
-
 
         mWindowContainer.nativeWindow = window;
 
