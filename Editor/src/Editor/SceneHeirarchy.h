@@ -5,22 +5,30 @@
 
 #pragma once
 
+#include "EditorWindow.h"
+#include "Core/Scene/ECS/Entity.h"
 #include "GLE/Core/Scene/Scene.h"
 
 namespace GLE {
-    class SceneHeirarchy {
+    class SceneHeirarchy : public EditorWindow {
     public:
         SceneHeirarchy();
-        ~SceneHeirarchy() = default;
+        ~SceneHeirarchy() override;
 
         void SetScene(const std::shared_ptr<Scene>& scene) {mActiveScene = scene;}
 
-        void Render();
+        void ImGuiRender() override;
 
+
+    private:
+        void DrawEntityNode(Entity& entity);
 
     private:
         std::shared_ptr<Scene> mActiveScene;
 
+        Entity mSelectedEntity;
+
         friend class Scene;
+        friend class InspectorWindow;
     };
 }

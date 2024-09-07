@@ -11,6 +11,7 @@
 #include "Core/Scene/ECS/Entity.h"
 #include "Core/Scene/ECS/Component/PrimitiveRendererComponent.h"
 #include "Renderer/Camera.h"
+#include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 
 namespace GLE {
@@ -33,7 +34,12 @@ namespace GLE {
 
         StandardShader = Shader::Create("../../assets/shaders/Standard.glsl");
 
-        mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0,0,-6)));
+        mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0,0,6)));
+
+        auto sceneHeirarchy = new SceneHeirarchy;
+        sceneHeirarchy->SetScene(mScene);
+
+        EditorWindow::PushWindow(sceneHeirarchy);
 
 
         auto entity = mScene->CreateEntity("Test Object");
@@ -44,18 +50,25 @@ namespace GLE {
         mainCamera.Update(dt);
         mScene->Update(dt);
 
+        Renderer::StartScene(mainCamera.GetCamera());
         mScene->Render(*StandardShader);
+        Renderer::RenderScene();
     }
 
     void EditorLayer::OnImGuiRender() {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
-        mSceneHeirarchy.Render();
+        EditorWindow::RenderWindows();
 
         ImGui::Begin("Frame Data");
 
         glm::vec3 pos = mainCamera.GetPosition();
         ImGui::InputFloat3("Cam Postition", &pos.x);
+
+        if(ImGui::Button("Create entity")) {
+            auto entity = mScene->CreateEntity("Test Object");
+            entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+        }
 
         ImGui::End();
     }

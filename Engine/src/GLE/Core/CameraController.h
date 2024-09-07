@@ -18,6 +18,7 @@ namespace GLE {
         ~CameraController() = default;
 
         void AddCamera(const std::shared_ptr<Camera>& camera) {mCamera = camera;}
+        Camera& GetCamera() {return *mCamera;}
 
 
         void Update(float dt);

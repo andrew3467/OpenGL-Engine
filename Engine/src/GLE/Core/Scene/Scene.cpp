@@ -4,6 +4,8 @@
 
 #include "Scene.h"
 
+#include <glm/gtx/string_cast.hpp>
+
 #include "Core/Util/UUID.h"
 
 #include "ECS/Component/Components.h"

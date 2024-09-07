@@ -5,20 +5,52 @@
 #include "SceneHeirarchy.h"
 
 #include "imgui.h"
-#include "Core/Scene/ECS/Component/TransformComponent.h"
+#include "Core/Scene/ECS/Component/Components.h"
 
 namespace GLE {
     SceneHeirarchy::SceneHeirarchy() {
 
     }
 
-    void SceneHeirarchy::Render() {
-        auto transforms = mActiveScene->mRegistry.view<TransformComponent>();
+    SceneHeirarchy::~SceneHeirarchy() {
 
-        ImGui::Begin("Scene Heirarchy");
+    }
 
-        ImGui::Text("Transform Count: %i", transforms.size());
+    void SceneHeirarchy::ImGuiRender() {
+
+
+        ImGui::Begin("Scene Hierarchy");
+
+        auto view = mActiveScene->mRegistry.view<NameComponent>();
+        for(auto entityID : view) {
+            Entity entity = {entityID, mActiveScene.get()};
+
+            DrawEntityNode(entity);
+        }
 
         ImGui::End();
+    }
+
+    void SceneHeirarchy::DrawEntityNode(Entity& entity) {
+        auto& name = entity.GetComponent<NameComponent>().name;
+
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected;
+        flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, name.c_str());
+        if(ImGui::IsItemClicked()) {
+            mSelectedEntity = entity;
+        }
+
+        if(opened) {
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+            bool opened = ImGui::TreeNodeEx((void*)9817239, flags, name.c_str());
+            if(opened) {
+                ImGui::TreePop();
+            }
+            ImGui::TreePop();
+        }
+
+
     }
 }
