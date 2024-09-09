@@ -8,6 +8,8 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(EnTT CONFIG REQUIRED)
+find_package(soil2 CONFIG REQUIRED)
+
 
 add_subdirectory(External)
 

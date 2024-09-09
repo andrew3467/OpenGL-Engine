@@ -5,7 +5,7 @@
 #ifndef OPENGL_ENGINE_GLEPCH_H
 #define OPENGL_ENGINE_GLEPCH_H
 
-
+#define ASSETS_FOLDER std::string("../../assets/")
 
 //std
 #include <string>

@@ -6,6 +6,8 @@
 #pragma once
 
 namespace GLE {
+    class Scene;
+
     class EditorWindow {
     public:
         static void PushWindow(EditorWindow* window);
@@ -15,8 +17,13 @@ namespace GLE {
         EditorWindow() = default;
         virtual ~EditorWindow() = default;
 
+        void SetScene(const std::shared_ptr<Scene>& scene) {mActiveScene = scene;}
+
         virtual void ImGuiRender() = 0;
         static void RenderWindows();
+
+    protected:
+        std::shared_ptr<Scene> mActiveScene;
 
 
     private:

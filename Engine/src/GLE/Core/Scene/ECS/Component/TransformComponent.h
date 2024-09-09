@@ -14,16 +14,36 @@ namespace GLE {
         glm::vec3 Rotation = {0,0,0};
         glm::vec3 Scale = {1,1,1};
 
+
+    private:
+        TransformComponent* Parent;
+        std::vector<TransformComponent*> Children;
+
+    public:
+
+        void SetParent(TransformComponent* parent) {Parent = parent; parent->Children.push_back(this);}
+        TransformComponent* GetParent() {return Parent;}
+
+        void AddChild(TransformComponent* child) {Children.push_back(child); child->Parent = this;}
+        std::vector<TransformComponent*> GetChildren() {return Children;}
+
+
+
         TransformComponent(glm::vec3 position) : Position(position) {}
         TransformComponent(const TransformComponent &other) = default;
         TransformComponent() = default;
 
         glm::mat4 GetTransform() const {
             glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
-
-            return glm::translate(glm::mat4(1), Position)
+            glm::mat4 translation = glm::translate(glm::mat4(1), Position)
             * rotation
             * glm::scale(glm::mat4(1), Scale);
+
+            if(Parent != nullptr) {
+                return Parent->GetTransform() * translation;
+            }
+
+            return translation;
         }
 
         operator glm::mat4() const {return GetTransform();}

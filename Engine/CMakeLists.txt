@@ -40,11 +40,13 @@ target_link_libraries(
         glm::glm
         EnTT::EnTT
         glfw
+        soil2
 )
 
 target_include_directories(
         OpenGL_Engine
         PUBLIC
         src/GLE
+
         ../External/imgui
 )

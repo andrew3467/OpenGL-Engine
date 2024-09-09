@@ -15,8 +15,6 @@ namespace GLE {
         SceneHeirarchy();
         ~SceneHeirarchy() override;
 
-        void SetScene(const std::shared_ptr<Scene>& scene) {mActiveScene = scene;}
-
         void ImGuiRender() override;
 
 
@@ -24,11 +22,9 @@ namespace GLE {
         void DrawEntityNode(Entity& entity);
 
     private:
-        std::shared_ptr<Scene> mActiveScene;
-
-        Entity mSelectedEntity;
-
         friend class Scene;
-        friend class InspectorWindow;
+
+    public:
+        static Entity mSelectedEntity;
     };
 }

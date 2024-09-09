@@ -16,9 +16,15 @@ namespace GLE {
 
     struct TransformComponent;
 
+    struct RendererStats {
+        uint32_t NumDrawCalls;
+    };
+
 
     class Renderer {
     public:
+        static RendererStats GetStats() { return mStats; }
+
         static void Init();
 
         static void UpdateViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
@@ -33,6 +39,7 @@ namespace GLE {
 
     private:
         static bool sInitialized;
+        static RendererStats mStats;
     };
 }
 

@@ -16,6 +16,7 @@
 #include "glm/detail/type_quat.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 #include "RenderCommand.h"
+#include "Texture.h"
 
 
 #ifdef GLE_PLATFORM_WINDOWS
@@ -28,50 +29,72 @@ namespace GLE {
         glm::mat4 ViewProj;
 
         std::vector<std::shared_ptr<VertexArray>> VAs;
+
+        std::shared_ptr<Texture2D> Texture;
     };
 
     RendererData sData = {};
+
+    RendererStats  Renderer::mStats = {};
 
     void InitData() {
         sData.VAs.resize(2);
 
         {
-            uint32_t indices[] = {
-                    0, 1, 5,  5, 1, 6,
-                    1, 2, 6,  6, 2, 7,
-                    2, 3, 7,  7, 3, 8,
-                    3, 4, 8,  8, 4, 9,
-                    10,11, 0,  0,11, 1,
-                    5, 6,12, 12, 6,13
+            GLuint indices[] = {
+                // front and back
+                0, 3, 2,
+                2, 1, 0,
+                4, 5, 6,
+                6, 7 ,4,
+                // left and right
+                11, 8, 9,
+                9, 10, 11,
+                12, 13, 14,
+                14, 15, 12,
+                // bottom and top
+                16, 17, 18,
+                18, 19, 16,
+                20, 21, 22,
+                22, 23, 20
             };
 
             //Position, TexCoord
-             float vertices[] = {
-                     -1,-1,-1, 0, 0,
-                    1,-1,-1, 1, 0,
-                    1, 1,-1, 2, 0,
-                    -1, 1,-1, 3, 0,
-                    -1,-1,-1, 4, 0,
+            GLfloat vertices[] = {
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  // A 0
+                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  // B 1
+                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  // C 2
+                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  // D 3
+                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  // E 4
+                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   // F 5
+                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   // G 6
+                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,   // H 7
 
-                    -1,-1, 1, 0, 1,
-                    1,-1, 1, 1, 1,
-                    1, 1, 1, 2, 1,
-                    -1, 1, 1, 3, 1,
-                    -1,-1, 1, 4, 1,
+                -0.5f,  0.5f, -0.5f,  0.0f, 0.0f,  // D 8
+                -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  // A 9
+                -0.5f, -0.5f,  0.5f,  1.0f, 1.0f,  // E 10
+                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  // H 11
+                0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   // B 12
+                0.5f,  0.5f, -0.5f,  1.0f, 0.0f,   // C 13
+                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   // G 14
+                0.5f, -0.5f,  0.5f,  0.0f, 1.0f,   // F 15
 
-                    -1, 1,-1, 0,-1,
-                    1, 1,-1, 1,-1,
-
-                    -1, 1, 1, 0, 2,
-                    1, 1, 1, 1, 2
+                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  // A 16
+                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,   // B 17
+                0.5f, -0.5f,  0.5f,  1.0f, 1.0f,   // F 18
+                -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  // E 19
+                0.5f,  0.5f, -0.5f,   0.0f, 0.0f,  // C 20
+                -0.5f,  0.5f, -0.5f,  1.0f, 0.0f,  // D 21
+                -0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  // H 22
+                0.5f,  0.5f,  0.5f,   0.0f, 1.0f,  // G 23
             };
 
             auto VA = VertexArray::Create();
 
             auto VB = VertexBuffer::Create(vertices, sizeof(vertices) / sizeof(float));
             VB->SetLayout({
-                                  {3, GL_FLOAT, 0, false},
-                                  {2, GL_FLOAT, 3, false},
+                                  {ShaderDataType::Float3, "aPosition"},
+                                  {ShaderDataType::Float2, "aTexCoord"},
 
                           });
             VA->SetVertexBuffer(VB);
@@ -81,6 +104,8 @@ namespace GLE {
 
             sData.VAs[(int)PrimitiveType::Cube] = VA;
         }
+
+        sData.Texture = Texture2D::Create("textures/bricks.jpg");
     }
 
     bool Renderer::sInitialized = false;
@@ -184,6 +209,8 @@ namespace GLE {
     void Renderer::StartScene(Camera& camera) {
         //ViewProj == Proj * View
         sData.ViewProj = camera.GetViewProjection();
+
+        mStats = {};
     }
 
     void Renderer::RenderScene() {
@@ -202,6 +229,10 @@ namespace GLE {
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", transform);
 
+        sData.Texture->Bind();
+        shader.SetInt("uTexture", 0);
+
+        mStats.NumDrawCalls++;
         RenderCommand::DrawIndexed(VA);
     }
 }

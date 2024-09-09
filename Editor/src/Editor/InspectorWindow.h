@@ -4,9 +4,14 @@
 
 
 #pragma once
+#include "EditorWindow.h"
 
 namespace GLE {
-    class InspectorWindow {
+    class InspectorWindow : public EditorWindow {
+    public:
+        InspectorWindow();
+        ~InspectorWindow() override;
 
+        void ImGuiRender() override;
     };
 }

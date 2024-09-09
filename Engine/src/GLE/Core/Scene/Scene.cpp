@@ -46,8 +46,6 @@ namespace GLE {
         entity.AddComponent<NameComponent>(name);
         entity.AddComponent<TransformComponent>();
 
-        //Add to map of all entities
-
         return entity;
 
     }

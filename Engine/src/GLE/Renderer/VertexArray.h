@@ -28,6 +28,7 @@ namespace GLE {
 
     private:
         uint32_t mRendererID;
+        uint32_t mVertexBufferIndex = 0;
 
         std::shared_ptr<VertexBuffer> mVertexBuffer;
         std::shared_ptr<IndexBuffer> mIndexBuffer;
