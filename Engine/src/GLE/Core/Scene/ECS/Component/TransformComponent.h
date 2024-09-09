@@ -7,6 +7,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtx/quaternion.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 namespace GLE {
     struct TransformComponent {
@@ -21,10 +22,12 @@ namespace GLE {
 
     public:
 
-        void SetParent(TransformComponent* parent) {Parent = parent; parent->Children.push_back(this);}
+        void SetParent(TransformComponent* parent) {
+            Parent = parent; parent->Children.push_back(this);
+        }
         TransformComponent* GetParent() {return Parent;}
 
-        void AddChild(TransformComponent* child) {Children.push_back(child); child->Parent = this;}
+        void AddChild(TransformComponent* child) {Children.push_back(child); child->SetParent(this);}
         std::vector<TransformComponent*> GetChildren() {return Children;}
 
 
@@ -39,11 +42,13 @@ namespace GLE {
             * rotation
             * glm::scale(glm::mat4(1), Scale);
 
-            if(Parent != nullptr) {
-                return Parent->GetTransform() * translation;
+            GLE_ASSERT(Parent != this, "Parent == this");
+
+            if(Parent == nullptr) {
+                return translation;
             }
 
-            return translation;
+            return translation * Parent->GetTransform();
         }
 
         operator glm::mat4() const {return GetTransform();}
