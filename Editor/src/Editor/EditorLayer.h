@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "Windows/SceneHeirarchy.h"
+#include "Windows/SceneHierarchy.h"
 #include "GLE/Core/Layer.h"
 
 
@@ -25,7 +25,7 @@ namespace GLE {
         void OnImGuiRender() override;
 
     private:
-        SceneHeirarchy mSceneHeirarchy;
+        SceneHierarchy mSceneHeirarchy;
         std::shared_ptr<Scene> mScene;
     };
 }

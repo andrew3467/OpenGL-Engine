@@ -42,7 +42,7 @@ namespace GLE {
 
 
         friend class Entity;
-        friend class SceneHeirarchy;
+        friend class SceneHierarchy;
         friend class InspectorWindow;
     };
 }

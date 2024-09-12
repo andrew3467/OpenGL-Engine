@@ -43,7 +43,7 @@ namespace GLE
 
         mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0, 0, 6)));
 
-        auto sceneHeirarchy = new SceneHeirarchy;
+        auto sceneHeirarchy = new SceneHierarchy;
         sceneHeirarchy->SetScene(mScene);
 
         EditorWindow::PushWindow(sceneHeirarchy);

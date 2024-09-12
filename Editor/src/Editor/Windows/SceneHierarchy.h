@@ -10,10 +10,10 @@
 #include "GLE/Core/Scene/Scene.h"
 
 namespace GLE {
-    class SceneHeirarchy : public EditorWindow {
+    class SceneHierarchy : public EditorWindow {
     public:
-        SceneHeirarchy();
-        ~SceneHeirarchy() override;
+        SceneHierarchy();
+        ~SceneHierarchy() override;
 
         void ImGuiRender() override;
 

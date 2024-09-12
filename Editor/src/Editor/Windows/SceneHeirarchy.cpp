@@ -2,26 +2,26 @@
 // Created by Andrew Graser on 9/5/2024.
 //
 
-#include "SceneHeirarchy.h"
+#include "SceneHierarchy.h"
 
 #include "imgui.h"
 #include "Core/Scene/ECS/Component/Components.h"
 
 namespace GLE
 {
-    Entity SceneHeirarchy::mSelectedEntity;
+    Entity SceneHierarchy::mSelectedEntity;
 
-    SceneHeirarchy::SceneHeirarchy()
+    SceneHierarchy::SceneHierarchy()
     {
 
     }
 
-    SceneHeirarchy::~SceneHeirarchy()
+    SceneHierarchy::~SceneHierarchy()
     {
 
     }
 
-    void SceneHeirarchy::ImGuiRender()
+    void SceneHierarchy::ImGuiRender()
     {
 
 
@@ -62,11 +62,8 @@ namespace GLE
         {
             Entity entity = {entityID, mActiveScene.get()};
 
-            auto &name = entity.GetComponent<NameComponent>().name;
-
             //Don't draw new tree if entity is a child
-            GLE_WARN("Name: {0}, {1}", name, entity.GetComponent<TransformComponent>().GetParent().GetHandle() == entt::null);
-            if(entity.GetComponent<TransformComponent>().GetParent().GetHandle() != entt::null) {
+            if(entity.GetComponent<TransformComponent>().GetParent().GetHandle() == entt::null) {
                 DrawEntityNode(entity);
             }
         }
@@ -74,7 +71,7 @@ namespace GLE
         ImGui::End();
     }
 
-    void SceneHeirarchy::DrawEntityNode(Entity &entity)
+    void SceneHierarchy::DrawEntityNode(Entity &entity)
     {
         auto &name = entity.GetComponent<NameComponent>().name;
 
