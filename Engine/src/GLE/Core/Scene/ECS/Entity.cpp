@@ -21,7 +21,9 @@ namespace GLE {
 
     }
 
-    Entity::Entity(const Entity &other) {
+    Entity::Entity(const Entity &other)
+        : mEntityHandle(other.GetHandle()), mScene(other.GetScene())
+    {
 
     }
 }

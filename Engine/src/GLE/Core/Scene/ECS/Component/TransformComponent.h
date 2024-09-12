@@ -9,26 +9,28 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+#include "Core/Scene/ECS/Entity.h"
+
 namespace GLE {
     struct TransformComponent {
-        glm::vec3 Position = {0,0,0};
-        glm::vec3 Rotation = {0,0,0};
-        glm::vec3 Scale = {1,1,1};
+        glm::vec3 Position = {0, 0, 0};
+        glm::vec3 Rotation = {0, 0, 0};
+        glm::vec3 Scale = {1, 1, 1};
 
 
     private:
-        TransformComponent* Parent;
-        std::vector<TransformComponent*> Children;
+        Entity Parent;
+        std::vector<Entity> Children = {};
 
     public:
 
-        void SetParent(TransformComponent* parent) {
-            Parent = parent; parent->Children.push_back(this);
+        void SetParent(Entity parent) {
+            Parent = parent;
         }
-        TransformComponent* GetParent() {return Parent;}
+        Entity GetParent() {return Parent;}
 
-        void AddChild(TransformComponent* child) {Children.push_back(child); child->SetParent(this);}
-        std::vector<TransformComponent*> GetChildren() {return Children;}
+        void AddChild(Entity child) {Children.push_back(child);}
+        std::vector<Entity> GetChildren() {return Children;}
 
 
 
@@ -36,22 +38,20 @@ namespace GLE {
         TransformComponent(const TransformComponent &other) = default;
         TransformComponent() = default;
 
-        glm::mat4 GetTransform() const {
+        [[nodiscard]] glm::mat4 GetTransform() {
             glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
             glm::mat4 translation = glm::translate(glm::mat4(1), Position)
             * rotation
             * glm::scale(glm::mat4(1), Scale);
 
-            GLE_ASSERT(Parent != this, "Parent == this");
 
-            if(Parent == nullptr) {
-                return translation;
-            }
+            if(Parent.GetHandle() == entt::null || Parent.GetScene() == nullptr) return translation;
 
-            return translation * Parent->GetTransform();
+            auto parentTrans = Parent.GetComponent<TransformComponent>().GetTransform();
+            return translation * parentTrans;
         }
 
-        operator glm::mat4() const {return GetTransform();}
+        operator glm::mat4() {return GetTransform();}
 
     };
 }

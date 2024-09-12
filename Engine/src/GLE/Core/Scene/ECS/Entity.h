@@ -17,7 +17,8 @@ namespace GLE {
 
         ~Entity() = default;
 
-        entt::entity GetHandle() const {return mEntityHandle;}
+        [[nodiscard]] entt::entity GetHandle() const {return mEntityHandle;}
+        [[nodiscard]] Scene* GetScene() const {return mScene;}
 
 
         void Destroy() {

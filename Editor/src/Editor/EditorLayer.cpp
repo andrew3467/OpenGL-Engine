@@ -51,16 +51,13 @@ namespace GLE {
 
 
         auto entity = mScene->CreateEntity("Test Object");
+        entity.AddComponent<PrimitiveRendererComponent>();
 
         auto child = mScene->CreateEntity("Test Child");
         child.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
 
-        auto& parentTrans = entity.GetComponent<TransformComponent>();
-        auto& childTrans = child.GetComponent<TransformComponent>();
-
-        childTrans.SetParent(&parentTrans);
-
-        GLE_ASSERT(parentTrans.GetParent() == nullptr, "Parent must be null!");
+        entity.GetComponent<TransformComponent>().AddChild(child);
+        child.GetComponent<TransformComponent>().SetParent(entity);
     }
 
     void EditorLayer::OnUpdate(float dt) {
