@@ -9,7 +9,7 @@
 #include <glm/vec3.hpp>
 
 #include "imgui.h"
-#include "InspectorWindow.h"
+#include "Windows/InspectorWindow.h"
 #include "Core/CameraController.h"
 #include "Core/Scene/ECS/Entity.h"
 #include "Core/Scene/ECS/Component/Components.h"
@@ -17,27 +17,31 @@
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 
-namespace GLE {
+namespace GLE
+{
     CameraController mainCamera;
 
     std::shared_ptr<Shader> StandardShader;
 
 
-    void EditorLayer::OnEvent(Event &e) {
+    void EditorLayer::OnEvent(Event &e)
+    {
 
     }
 
-    void EditorLayer::OnCreate() {
+    void EditorLayer::OnCreate()
+    {
 
     }
 
-    void EditorLayer::OnRun() {
+    void EditorLayer::OnRun()
+    {
         mScene = std::make_shared<Scene>();
         mSceneHeirarchy.SetScene(mScene);
 
         StandardShader = Shader::Create("shaders/Standard.glsl");
 
-        mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0,0,6)));
+        mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0, 0, 6)));
 
         auto sceneHeirarchy = new SceneHeirarchy;
         sceneHeirarchy->SetScene(mScene);
@@ -60,7 +64,8 @@ namespace GLE {
         child.GetComponent<TransformComponent>().SetParent(entity);
     }
 
-    void EditorLayer::OnUpdate(float dt) {
+    void EditorLayer::OnUpdate(float dt)
+    {
         mainCamera.Update(dt);
         mScene->Update(dt);
 
@@ -69,13 +74,13 @@ namespace GLE {
         Renderer::RenderScene();
     }
 
-    void EditorLayer::OnImGuiRender() {
+    void EditorLayer::OnImGuiRender()
+    {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
 
         EditorWindow::RenderWindows();
 
         ImGui::Begin("Frame Data");
-
 
 
         auto rendererStats = Renderer::GetStats();

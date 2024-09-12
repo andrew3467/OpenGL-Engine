@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "SceneHeirarchy.h"
+#include "Windows/SceneHeirarchy.h"
 #include "GLE/Core/Layer.h"
 
 
