@@ -76,12 +76,33 @@ namespace GLE
 
     void EditorLayer::OnImGuiRender()
     {
-        ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+
+        //Setup dockspace
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        if(dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) {
+            window_flags |= ImGuiWindowFlags_NoBackground;
+        }
+
+        ImGui::SetNextWindowSize(ImVec2(1280, 720));
+        ImGui::Begin("Dockspace", nullptr, window_flags);
+        ImGui::PopStyleVar(2);
+        ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+        ImGui::End();
 
         EditorWindow::RenderWindows();
 
         ImGui::Begin("Frame Data");
-
 
         auto rendererStats = Renderer::GetStats();
 

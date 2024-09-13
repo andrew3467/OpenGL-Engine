@@ -4,6 +4,8 @@
 
 
 #pragma once
+#include <glm/vec3.hpp>
+
 #include "EditorWindow.h"
 
 namespace GLE {
@@ -13,5 +15,10 @@ namespace GLE {
         ~InspectorWindow() override;
 
         void ImGuiRender() override;
+
+
+
+        void DrawVec3(const std::string& name, glm::vec3& vec);
     };
+    }
 }
