@@ -5,6 +5,7 @@
 #include "SceneHierarchy.h"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "Core/Scene/ECS/Component/Components.h"
 
 namespace GLE
@@ -34,7 +35,7 @@ namespace GLE
         }
 
         // Right-click on blank space
-        if (ImGui::BeginPopupContextWindow("Create Entity", ImGuiPopupFlags_MouseButtonRight))
+        if (!ImGui::IsAnyItemHovered() && ImGui::BeginPopupContextWindow("Create Entity", ImGuiPopupFlags_MouseButtonRight))
         {
             ImGui::MenuItem("Create", nullptr, false, false);
             if (ImGui::BeginMenu("Create Entity"))
@@ -84,10 +85,12 @@ namespace GLE
             mSelectedEntity = entity;
         }
 
+
         //Delete Entity Popup
-        if (ImGui::IsItemClicked())
+        if (ImGui::IsItemClicked(1))
         {
-            if (ImGui::BeginPopupContextWindow("Delete", ImGuiPopupFlags_MouseButtonRight))
+            ImGui::OpenPopup("Delete");
+            if (ImGui::BeginPopup("Delete"))
             {
                 ImGui::MenuItem("Delete", nullptr, false, false);
                 if (ImGui::BeginMenu("Delete Entity"))

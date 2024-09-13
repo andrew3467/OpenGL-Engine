@@ -20,5 +20,4 @@ namespace GLE {
 
         void DrawVec3(const std::string& name, glm::vec3& vec);
     };
-    }
 }
