@@ -9,5 +9,6 @@
 #include "TransformComponent.h"
 #include "IDComponent.h"
 #include "PrimitiveRendererComponent.h"
+#include "CameraComponent.h"
 
 #endif //COMPONENTS_H

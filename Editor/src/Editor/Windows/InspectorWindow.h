@@ -19,5 +19,9 @@ namespace GLE {
 
 
         void DrawVec3(const std::string& name, glm::vec3& vec);
+
+
+        template<typename C>
+        void AddComponentDisplay(const std::string& name);
     };
 }

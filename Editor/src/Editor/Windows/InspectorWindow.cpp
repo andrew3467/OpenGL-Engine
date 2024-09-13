@@ -56,10 +56,9 @@ namespace GLE {
         }
 
         if(ImGui::BeginPopup("Add Component")) {
-            if(ImGui::MenuItem("Transform")) {
-                curEntity.AddComponent<TransformComponent>();
-                ImGui::CloseCurrentPopup();
-            }
+            AddComponentDisplay<TransformComponent>("Transform");
+            AddComponentDisplay<PrimitiveRendererComponent>("Primitive Renderer");
+            AddComponentDisplay<CameraComponent>("Camera");
 
 
             ImGui::EndPopup();
@@ -78,33 +77,46 @@ namespace GLE {
             ImGui::TreePop();
         }
 
-        enabled = ImGui::TreeNodeEx((void*)1,flags, "Primitive Renderer");
-        if(enabled) {
-            ImGuiComboFlags flags = ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightRegular;
+        if(curEntity.HasComponent<PrimitiveRendererComponent>()){
+            enabled = ImGui::TreeNodeEx((void*)1,flags, "Primitive Renderer");
+            if(enabled) {
+                ImGuiComboFlags flags = ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightRegular;
 
-            const char* items[] = {"Cube", "Sphere", "Capsule"};
-            static const char* curItem = items[0];
+                const char* items[] = {"Cube", "Sphere", "Capsule"};
+                static const char* curItem = items[0];
 
-            auto& renderer = curEntity.GetComponent<PrimitiveRendererComponent>();
-            if(ImGui::BeginCombo(curItem, "", flags)) {
+                auto& renderer = curEntity.GetComponent<PrimitiveRendererComponent>();
+                if(ImGui::BeginCombo(curItem, "", flags)) {
 
-                for(int i = 0; i < IM_ARRAYSIZE(items); i++) {
-                    bool selected = curItem == items[i];
+                    for(int i = 0; i < IM_ARRAYSIZE(items); i++) {
+                        bool selected = curItem == items[i];
 
-                    if(ImGui::Selectable(items[i], selected)) {
-                        curItem = items[i];
-                        renderer.RenderType = (PrimitiveType)i;
+                        if(ImGui::Selectable(items[i], selected)) {
+                            curItem = items[i];
+                            renderer.RenderType = (PrimitiveType)i;
+                        }
+
+                        if(selected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
                     }
 
-                    if(selected) {
-                        ImGui::SetItemDefaultFocus();
-                    }
+                    ImGui::EndCombo();
                 }
 
-                ImGui::EndCombo();
+                ImGui::TreePop();
             }
+        }
 
-            ImGui::TreePop();
+        if(curEntity.HasComponent<CameraComponent>()) {
+            enabled = ImGui::TreeNodeEx((void*)2,flags, "Camera");
+            if(enabled) {
+
+                auto pos = curEntity.GetComponent<CameraComponent>().Camera->GetPosition();
+                ImGui::InputFloat3("Position", &pos.x);
+
+                ImGui::TreePop();
+            }
         }
 
         ImGui::End();
@@ -166,5 +178,17 @@ namespace GLE {
 
         ImGui::Columns();
         ImGui::PopID();
+    }
+
+    template<typename C>
+    void InspectorWindow::AddComponentDisplay(const std::string& name) {
+        auto& selection = SceneHierarchy::mSelectedEntity;
+        if(selection.GetHandle() != entt::null) {
+            if(!selection.HasComponent<C>()) {
+                if(ImGui::MenuItem(name.c_str())) {
+                    selection.AddComponent<C>();
+                }
+            }
+        }
     }
 }

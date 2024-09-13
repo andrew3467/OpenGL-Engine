@@ -35,7 +35,7 @@ namespace GLE
         }
 
         // Right-click on blank space
-        if (!ImGui::IsAnyItemHovered() && ImGui::BeginPopupContextWindow("Create Entity", ImGuiPopupFlags_MouseButtonRight))
+        if (ImGui::BeginPopupContextWindow("Create Entity", ImGuiPopupFlags_MouseButtonRight))
         {
             ImGui::MenuItem("Create", nullptr, false, false);
             if (ImGui::BeginMenu("Create Entity"))
@@ -79,7 +79,7 @@ namespace GLE
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected;
         flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
-        bool opened = ImGui::TreeNodeEx(&entity, flags, name.c_str());
+        bool opened = ImGui::TreeNodeEx((void*)entity.GetHandle(), flags, name.c_str());
         if (ImGui::IsMouseDown(0) && ImGui::IsItemClicked())
         {
             mSelectedEntity = entity;
