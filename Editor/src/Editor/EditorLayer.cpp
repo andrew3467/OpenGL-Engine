@@ -21,8 +21,6 @@ namespace GLE
 {
     CameraController mainCamera;
 
-    std::shared_ptr<Shader> StandardShader;
-
 
     void EditorLayer::OnEvent(Event &e)
     {
@@ -39,8 +37,6 @@ namespace GLE
         mScene = std::make_shared<Scene>();
         mSceneHeirarchy.SetScene(mScene);
 
-        StandardShader = Shader::Create("shaders/Standard.glsl");
-
         mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0, 0, 6)));
 
         auto sceneHeirarchy = new SceneHierarchy;
@@ -52,16 +48,6 @@ namespace GLE
         inspectorWindow->SetScene(mScene);
 
         EditorWindow::PushWindow(inspectorWindow);
-
-
-        auto entity = mScene->CreateEntity("Test Object");
-        entity.AddComponent<PrimitiveRendererComponent>();
-
-        auto child = mScene->CreateEntity("Test Child");
-        child.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
-
-        entity.GetComponent<TransformComponent>().AddChild(child);
-        child.GetComponent<TransformComponent>().SetParent(entity);
     }
 
     void EditorLayer::OnUpdate(float dt)
@@ -70,7 +56,7 @@ namespace GLE
         mScene->Update(dt);
 
         Renderer::StartScene(mainCamera.GetCamera());
-        mScene->Render(*StandardShader);
+        mScene->Render();
         Renderer::RenderScene();
     }
 

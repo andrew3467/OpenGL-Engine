@@ -5,6 +5,7 @@
 #ifndef OPENGL_ENGINE_RENDERER_H
 #define OPENGL_ENGINE_RENDERER_H
 
+#include "Material.h"
 #include "PrimitiveType.h"
 #include "VertexArray.h"
 #include "glm/fwd.hpp"
@@ -33,6 +34,8 @@ namespace GLE {
 
         static void StartScene(Camera& camera);
         static void RenderScene();
+
+        static void BindMaterial(const Material &material);
 
         static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform);
         static void Submit(VertexArray& VA, Shader& shader, const glm::mat4& transform);

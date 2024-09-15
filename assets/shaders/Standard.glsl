@@ -32,12 +32,12 @@ in vec2 vTexCoord;
 uniform vec3 uColor;
 
 
-uniform sampler2D uTexture;
+uniform sampler2D uAlbedoMap;
 
 
 in vec3 vPosition;
 
 
 void main() {
-    FragColor = texture(uTexture, vTexCoord);
+    FragColor = texture(uAlbedoMap, vTexCoord);
 }

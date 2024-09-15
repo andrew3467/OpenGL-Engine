@@ -6,11 +6,18 @@
 #define OPENGL_ENGINE_SHADER_H
 
 #include <glm/glm.hpp>
+#include "Core/../glepch.h"
+
 
 namespace GLE {
     class Shader {
     public:
         static std::shared_ptr<Shader> Create(const std::string& srcPath) {return std::make_shared<Shader>(ASSETS_FOLDER + srcPath);}
+        static void Init();
+
+        static std::shared_ptr<Shader> Get(const std::string& name) {
+            return mShaders[name];
+        }
 
         Shader(const std::string &srcPath);
         ~Shader();
@@ -42,6 +49,8 @@ namespace GLE {
         std::string mFileLoc;
 
         std::unordered_map<const char*, uint32_t> mUniforms;
+
+        static std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders;
     };
 }
 

@@ -29,8 +29,6 @@ namespace GLE {
         glm::mat4 ViewProj;
 
         std::vector<std::shared_ptr<VertexArray>> VAs;
-
-        std::shared_ptr<Texture2D> Texture;
     };
 
     RendererData sData = {};
@@ -104,8 +102,6 @@ namespace GLE {
 
             sData.VAs[(int)PrimitiveType::Cube] = VA;
         }
-
-        sData.Texture = Texture2D::Create("textures/bricks.jpg");
     }
 
     bool Renderer::sInitialized = false;
@@ -217,6 +213,34 @@ namespace GLE {
 
     }
 
+    /// Note: All texture in shader programs must follow below bindings
+    /// Albedo - 0
+    /// Diffuse - 1
+    /// Normal - 2
+    /// Roughness - 3
+    void Renderer::BindMaterial(const Material &material) {
+        auto& shader = material.Shader;
+
+        shader->Bind();
+
+        shader->SetFloat3("uColor", material.Albedo);
+
+        if(material.AlbedoMap != nullptr) {
+            material.AlbedoMap->Bind(0);
+            shader->SetInt("uAlbedoMap", 0);
+        }
+
+        if(material.DiffuseMap != nullptr) {
+            material.DiffuseMap->Bind(1);
+            shader->SetInt("uDiffuseMap", 1);
+        }
+
+        if(material.NormalMap != nullptr) {
+            material.NormalMap->Bind(2);
+            shader->SetInt("uNormalMap", 2);
+        }
+    }
+
     void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform) {
          Submit(*sData.VAs[(int)primitive], shader, transform);
     }
@@ -228,9 +252,6 @@ namespace GLE {
 
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", transform);
-
-        sData.Texture->Bind();
-        shader.SetInt("uTexture", 0);
 
         mStats.NumDrawCalls++;
         RenderCommand::DrawIndexed(VA);

@@ -5,7 +5,9 @@
 #ifndef OPENGL_ENGINE_GLEPCH_H
 #define OPENGL_ENGINE_GLEPCH_H
 
+
 #define ASSETS_FOLDER std::string("../../assets/")
+
 
 //std
 #include <string>
@@ -28,8 +30,6 @@
 
 //Engine Types
 #define GLE_BIND_EVENT_FUNC(x) std::bind(&x, this, std::placeholders::_1)
-
-typedef uint64_t id_t;
 
 
 #endif //OPENGL_ENGINE_GLEPCH_H

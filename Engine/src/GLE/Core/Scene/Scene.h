@@ -12,7 +12,6 @@
 namespace GLE {
     class UUID;
     class Entity;
-    class Shader;
 
     class Scene {
     public:
@@ -20,7 +19,7 @@ namespace GLE {
         ~Scene();
 
         void Update(float dt);
-        void Render(Shader& shader);
+        void Render();
 
         Entity CreateEntity(const std::string& name = std::string());
         Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());

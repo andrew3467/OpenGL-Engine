@@ -12,6 +12,8 @@ namespace GLE
 {
     Entity SceneHierarchy::mSelectedEntity;
 
+    static std::shared_ptr<Texture2D> BrickTexture;
+
     SceneHierarchy::SceneHierarchy()
     {
 
@@ -24,6 +26,9 @@ namespace GLE
 
     void SceneHierarchy::ImGuiRender()
     {
+        if(BrickTexture == nullptr) {
+            BrickTexture = Texture2D::Create("textures/bricks.jpg");
+        }
 
 
         ImGui::Begin("Scene Hierarchy");
@@ -48,6 +53,9 @@ namespace GLE
                 {
                     auto entity = mActiveScene->CreateEntity("Cube");
                     entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+                    auto& matComp = entity.AddComponent<MaterialComponent>();
+                    matComp.Material->Shader = Shader::Get("Standard");
+                    //matComp.Material->AlbedoMap = BrickTexture;
                 }
 
                 ImGui::EndMenu();

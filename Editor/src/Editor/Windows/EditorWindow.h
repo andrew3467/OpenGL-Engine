@@ -15,7 +15,11 @@ namespace GLE {
 
     public:
         EditorWindow() = default;
-        virtual ~EditorWindow() = default;
+        virtual ~EditorWindow() {
+            for(auto& window : sActiveWindows) {
+                delete window;
+            }
+        }
 
         void SetScene(const std::shared_ptr<Scene>& scene) {mActiveScene = scene;}
 

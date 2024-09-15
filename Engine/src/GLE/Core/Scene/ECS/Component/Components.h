@@ -10,5 +10,6 @@
 #include "IDComponent.h"
 #include "PrimitiveRendererComponent.h"
 #include "CameraComponent.h"
+#include "MaterialComponent.h"
 
 #endif //COMPONENTS_H

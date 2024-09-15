@@ -22,6 +22,8 @@
 #include <string>
 #include <functional>
 
+#include "Renderer/Shader.h"
+
 #define BIT(x) (1 << x)
 
 
@@ -51,6 +53,9 @@ namespace GLE {
         mWindow->SetEventCallback(GLE_BIND_EVENT_FUNC(Application::OnEvent));
 
         Renderer::Init();
+
+        //Init after opengl bindings are generated
+        Shader::Init();
 
         Renderer::SetClearColor(0.2, 0.2, 0.2);
 

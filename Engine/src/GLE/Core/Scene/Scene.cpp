@@ -25,14 +25,18 @@ namespace GLE {
 
     }
 
-    void Scene::Render(Shader& shader) {
-        auto entitiesToRender = mRegistry.group<PrimitiveRendererComponent, TransformComponent>();
+    void Scene::Render() {
+        auto entitiesToRender = mRegistry.group<PrimitiveRendererComponent, TransformComponent, MaterialComponent>();
 
-        for(auto entity : entitiesToRender) {
-            auto [renderer, transform] =
-                entitiesToRender.get<PrimitiveRendererComponent, TransformComponent>(entity);
+        for(auto e : entitiesToRender) {
+            Entity entity = {e, this};
 
-            Renderer::SubmitPrimitive(renderer.RenderType, shader, transform);
+            auto& transform = entity.GetComponent<TransformComponent>();
+            auto& renderer = entity.GetComponent<PrimitiveRendererComponent>();
+            auto& material = entity.GetComponent<MaterialComponent>().Material;
+
+            Renderer::BindMaterial(*material);
+            Renderer::SubmitPrimitive(renderer.RenderType, *material->Shader, transform);
         }
     }
 
