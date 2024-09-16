@@ -222,7 +222,7 @@ namespace GLE {
         auto& shader = material.Shader;
 
         if(shader == nullptr) {
-            GLE_ERROR("ERROR: Material passed to material missing shader");
+            GLE_ERROR("ERROR: Material passed to BindMaterial missing shader");
             return;
         }
 
@@ -252,8 +252,6 @@ namespace GLE {
 
     void Renderer::Submit(VertexArray &VA, Shader &shader, const glm::mat4 &transform) {
         shader.Bind();
-
-        shader.SetFloat3("uColor", {1,0,1});
 
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", transform);

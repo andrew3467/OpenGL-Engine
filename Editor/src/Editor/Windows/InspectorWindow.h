@@ -19,6 +19,7 @@ namespace GLE {
 
 
         void DrawVec3(const std::string& name, glm::vec3& vec);
+        void DrawTextureSelectionWindow(void* dest, const std::string& title);
 
 
         template<typename C>

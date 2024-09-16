@@ -4,16 +4,21 @@
 
 
 #pragma once
+
 #include "Renderer/Material.h"
 
 
+
 namespace GLE {
+
     struct MaterialComponent {
-        MaterialComponent() {Material = new GLE::Material;}
+        MaterialComponent() {
+            Material = new GLE::Material;
+        }
         MaterialComponent(const MaterialComponent&) = default;
-        ~MaterialComponent() {delete Material;}
+        ~MaterialComponent()  {delete Material;}
 
 
-        Material *Material = nullptr;
+        Material* Material;
     };
 }

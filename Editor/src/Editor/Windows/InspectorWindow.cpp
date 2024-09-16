@@ -123,7 +123,25 @@ namespace GLE {
         if(curEntity.HasComponent<MaterialComponent>()) {
             enabled = ImGui::TreeNodeEx((void*)3,flags, "Material");
             if(enabled) {
-                auto& material = *curEntity.GetComponent<MaterialComponent>().Material;
+                auto material = curEntity.GetComponent<MaterialComponent>().Material;
+
+                glm::vec3 color = material->Albedo;
+                ImGui::ColorPicker3("Albedo", &color.x);
+                material->Albedo = color;
+
+                ImGui::Text("Albedo Map");
+                ImGui::SameLine();
+                DrawTextureSelectionWindow((void*)material->AlbedoMap.get(), "Albedo Map");
+
+                ImGui::Text("Normal Map");
+                ImGui::SameLine();
+                DrawTextureSelectionWindow((void*)material->AlbedoMap.get(), "Normal Map");
+
+                ImGui::Text("Diffuse Map");
+                ImGui::SameLine();
+                DrawTextureSelectionWindow((void*)material->AlbedoMap.get(), "Diffuse Map");
+
+                ImGui::TreePop();
             }
         }
 
@@ -188,8 +206,24 @@ namespace GLE {
         ImGui::PopID();
     }
 
+    void InspectorWindow::DrawTextureSelectionWindow(void *dest, const std::string &title)
+    {
+        if(ImGui::Button(title.c_str()))
+        {
+            ImGui::OpenPopup("Texture Selection");
+        }
+
+        if(ImGui::BeginPopup("Texture Selection"))
+        {
+            ImGui::Text("Texture selector");
+
+            ImGui::EndPopup();
+        }
+    }
+
     template<typename C>
-    void InspectorWindow::AddComponentDisplay(const std::string& name) {
+    void InspectorWindow::AddComponentDisplay(const std::string& name)
+    {
         auto& selection = SceneHierarchy::mSelectedEntity;
         if(selection.GetHandle() != entt::null) {
             if(!selection.HasComponent<C>()) {

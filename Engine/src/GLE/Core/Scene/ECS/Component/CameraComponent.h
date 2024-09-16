@@ -10,7 +10,7 @@
 namespace GLE {
     struct CameraComponent {
         CameraComponent(std::shared_ptr<Camera> camera) : Camera(std::move(camera)) {}
-        CameraComponent() = default;
+        CameraComponent() : Camera(Camera::Create(glm::vec3(0))) {}
         CameraComponent(const CameraComponent&) = default;
         ~CameraComponent() = default;
 

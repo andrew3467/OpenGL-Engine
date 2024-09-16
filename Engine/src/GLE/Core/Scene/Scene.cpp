@@ -15,9 +15,7 @@
 
 namespace GLE {
     Scene::Scene() {
-        auto cube = CreateEntity("Cube");
-        cube.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
-        cube.AddComponent<MaterialComponent>();
+
     }
     Scene::~Scene() {
 
@@ -35,10 +33,10 @@ namespace GLE {
 
             auto& transform = entity.GetComponent<TransformComponent>();
             auto& renderer = entity.GetComponent<PrimitiveRendererComponent>();
-            auto& material = entity.GetComponent<MaterialComponent>().Material;
+            auto& material = *entity.GetComponent<MaterialComponent>().Material;
 
-            Renderer::BindMaterial(*material);
-            Renderer::SubmitPrimitive(renderer.RenderType, *material->Shader, transform);
+            Renderer::BindMaterial(material);
+            Renderer::SubmitPrimitive(renderer.RenderType, *material.Shader, transform);
         }
     }
 

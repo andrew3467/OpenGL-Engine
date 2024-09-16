@@ -39,5 +39,5 @@ in vec3 vPosition;
 
 
 void main() {
-    FragColor = texture(uAlbedoMap, vTexCoord);
+    FragColor = vec4(uColor, 1.0) * texture(uAlbedoMap, vTexCoord);
 }
