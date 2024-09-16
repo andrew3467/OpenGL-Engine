@@ -33,6 +33,8 @@ namespace GLE {
     class Texture2D :public Texture {
     public:
         static std::shared_ptr<Texture2D> Create(const std::string& path) {return std::make_shared<Texture2D>(ASSETS_FOLDER + path);}
+        static void Init();
+        static std::shared_ptr<Texture2D> Get(const std::string& name);
 
     public:
         Texture2D(const std::string& path);

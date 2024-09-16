@@ -25,7 +25,6 @@ namespace GLE {
         void OnImGuiRender() override;
 
     private:
-        SceneHierarchy mSceneHeirarchy;
         std::shared_ptr<Scene> mScene;
     };
 }

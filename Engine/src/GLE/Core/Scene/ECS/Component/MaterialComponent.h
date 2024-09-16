@@ -9,7 +9,7 @@
 
 namespace GLE {
     struct MaterialComponent {
-        MaterialComponent() {Material = new class Material;}
+        MaterialComponent() {Material = new GLE::Material;}
         MaterialComponent(const MaterialComponent&) = default;
         ~MaterialComponent() {delete Material;}
 

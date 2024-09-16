@@ -15,7 +15,9 @@
 
 namespace GLE {
     Scene::Scene() {
-
+        auto cube = CreateEntity("Cube");
+        cube.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+        cube.AddComponent<MaterialComponent>();
     }
     Scene::~Scene() {
 

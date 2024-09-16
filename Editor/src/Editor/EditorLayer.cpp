@@ -2,24 +2,20 @@
 // Created by Andrew Graser on 9/4/2024.
 //
 
-#define ASSETS_FOLDER "../../assets/"
-
 #include "EditorLayer.h"
 
 #include <glm/vec3.hpp>
 
+#include "EditorCameraController.h"
 #include "imgui.h"
 #include "Windows/InspectorWindow.h"
-#include "Core/CameraController.h"
-#include "Core/Scene/ECS/Entity.h"
 #include "Core/Scene/ECS/Component/Components.h"
-#include "Renderer/Camera.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Shader.h"
 
 namespace GLE
 {
-    CameraController mainCamera;
+    EditorCameraController sceneCamera;
 
 
     void EditorLayer::OnEvent(Event &e)
@@ -35,9 +31,8 @@ namespace GLE
     void EditorLayer::OnRun()
     {
         mScene = std::make_shared<Scene>();
-        mSceneHeirarchy.SetScene(mScene);
 
-        mainCamera.AddCamera(std::make_shared<Camera>(glm::vec3(0, 0, 6)));
+        sceneCamera.Init();
 
         auto sceneHeirarchy = new SceneHierarchy;
         sceneHeirarchy->SetScene(mScene);
@@ -52,10 +47,10 @@ namespace GLE
 
     void EditorLayer::OnUpdate(float dt)
     {
-        mainCamera.Update(dt);
+        sceneCamera.Update(dt);
         mScene->Update(dt);
 
-        Renderer::StartScene(mainCamera.GetCamera());
+        Renderer::StartScene(sceneCamera.GetCamera());
         mScene->Render();
         Renderer::RenderScene();
     }
@@ -96,7 +91,7 @@ namespace GLE
         ImGui::Text("Num Draw Calls: %i", rendererStats.NumDrawCalls);
         ImGui::NewLine();
 
-        glm::vec3 pos = mainCamera.GetPosition();
+        glm::vec3 pos = sceneCamera.GetPosition();
         ImGui::InputFloat3("Cam Postition", &pos.x);
 
         ImGui::End();

@@ -59,6 +59,7 @@ namespace GLE {
             AddComponentDisplay<TransformComponent>("Transform");
             AddComponentDisplay<PrimitiveRendererComponent>("Primitive Renderer");
             AddComponentDisplay<CameraComponent>("Camera");
+            AddComponentDisplay<MaterialComponent>("Material");
 
 
             ImGui::EndPopup();
@@ -116,6 +117,13 @@ namespace GLE {
                 ImGui::InputFloat3("Position", &pos.x);
 
                 ImGui::TreePop();
+            }
+        }
+
+        if(curEntity.HasComponent<MaterialComponent>()) {
+            enabled = ImGui::TreeNodeEx((void*)3,flags, "Material");
+            if(enabled) {
+                auto& material = *curEntity.GetComponent<MaterialComponent>().Material;
             }
         }
 

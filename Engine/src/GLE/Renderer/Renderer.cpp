@@ -221,6 +221,11 @@ namespace GLE {
     void Renderer::BindMaterial(const Material &material) {
         auto& shader = material.Shader;
 
+        if(shader == nullptr) {
+            GLE_ERROR("ERROR: Material passed to material missing shader");
+            return;
+        }
+
         shader->Bind();
 
         shader->SetFloat3("uColor", material.Albedo);

@@ -56,6 +56,7 @@ namespace GLE {
 
         //Init after opengl bindings are generated
         Shader::Init();
+        Texture2D::Init();
 
         Renderer::SetClearColor(0.2, 0.2, 0.2);
 

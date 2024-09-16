@@ -14,7 +14,9 @@ namespace GLE {
     public:
         static std::shared_ptr<Material> Create() {return std::make_shared<Material>(); }
 
-        Material() = default;
+        Material() {
+            Shader = Shader::Get("Standard");
+        }
         Material(const Material&) = delete;
 
         ~Material() = default;
@@ -22,7 +24,7 @@ namespace GLE {
 
 
     public:
-        std::shared_ptr<Shader> Shader;
+        std::shared_ptr<Shader> Shader = nullptr;
 
         glm::vec3 Albedo = glm::vec3(1.0f, 1.0f, 1.0f);
 
