@@ -17,13 +17,9 @@ namespace GLE {
         for(auto& file : fs::directory_iterator(ASSETS_FOLDER + "textures/")) {
             std::string path = file.path().string();
 
-            auto baseFileName = path.substr(path.find_last_of("\\/") + 1);
-            int const p = baseFileName.find_last_of('.');
-            auto fileName = baseFileName.substr(0, p);
-
             auto texture = Texture2D::Create(path);
-            sTextures.emplace(fileName, texture);
-            GLE_INFO("Created texture: {0}, resolution: ({1}, {2})", fileName.c_str(), texture->GetWidth(), texture->GetHeight());
+            sTextures.emplace(texture->GetName(), texture);
+            GLE_INFO("Created texture: {0}, resolution: ({1}, {2})", texture->GetName(), texture->GetWidth(), texture->GetHeight());
         }
     }
 

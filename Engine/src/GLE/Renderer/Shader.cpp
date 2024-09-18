@@ -6,11 +6,22 @@
 #include "Shader.h"
 
 
+#include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 namespace GLE {
-    std::unordered_map<std::string, std::shared_ptr<Shader>> Shader::mShaders;
+    std::unordered_map<std::string, std::shared_ptr<Shader>> sShaders;
 
     void Shader::Init() {
-        mShaders.emplace("Standard", Shader::Create(ASSETS_FOLDER + "shaders/Standard.glsl"));
+        for(auto& file : fs::directory_iterator(ASSETS_FOLDER + "textures/")) {
+            std::string path = file.path().string();
+
+            auto shader = Shader::Create(path);
+            sShaders.emplace(shader->GetName(), shader);
+            GLE_INFO("Created shader: {0}", shader->GetName());
+        }
     }
 
 }

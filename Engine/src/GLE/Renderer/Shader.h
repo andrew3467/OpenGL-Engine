@@ -15,9 +15,9 @@ namespace GLE {
         static std::shared_ptr<Shader> Create(const std::string& srcPath) {return std::make_shared<Shader>(srcPath);}
         static void Init();
 
-        static std::shared_ptr<Shader> Get(const std::string& name) {
-            return mShaders[name];
-        }
+        static std::shared_ptr<Shader> Get(const std::string& name);
+
+        [[nodiscard]] const std::string& GetName() const {return mName;}
 
         Shader(const std::string &srcPath);
         ~Shader();
@@ -47,10 +47,9 @@ namespace GLE {
     private:
         uint32_t mRendererID;
         std::string mFileLoc;
+        std::string mName;
 
         std::unordered_map<const char*, uint32_t> mUniforms;
-
-        static std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders;
     };
 }
 

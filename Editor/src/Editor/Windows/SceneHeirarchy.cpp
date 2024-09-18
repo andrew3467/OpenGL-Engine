@@ -44,13 +44,15 @@ namespace GLE
             {
                 if (ImGui::MenuItem("Empty"))
                 {
-                    mActiveScene->CreateEntity("Empty");
+                    mSelectedEntity = mActiveScene->CreateEntity("Empty");
                 }
                 if (ImGui::MenuItem("Cube"))
                 {
                     auto entity = mActiveScene->CreateEntity("Cube");
                     entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
                     entity.AddComponent<MaterialComponent>();
+
+                    mSelectedEntity = entity;
                 }
 
                 ImGui::EndMenu();

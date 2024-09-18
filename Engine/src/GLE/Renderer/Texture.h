@@ -37,7 +37,7 @@ namespace GLE {
         std::string mName;
     };
 
-    class Texture2D :public Texture {
+    class Texture2D : public Texture {
     public:
         static std::shared_ptr<Texture2D> Create(const std::string& path) {return std::make_shared<Texture2D>(path);}
         static void Init();

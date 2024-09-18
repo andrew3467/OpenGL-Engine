@@ -175,6 +175,10 @@ namespace GLE {
 
     Shader::Shader(const std::string &srcPath) : mFileLoc(srcPath) {
         mRendererID = CreateShaderProgram(srcPath);
+
+        auto baseFileName = srcPath.substr(srcPath.find_last_of("\\/") + 1);
+        int const p = baseFileName.find_last_of('.');
+        mName = baseFileName.substr(0, p);
     }
 
     Shader::~Shader() {

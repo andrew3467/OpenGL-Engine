@@ -12,8 +12,9 @@
 
 namespace GLE {
     uint32_t Texture::LoadTextureData(const std::string& path) {
-        stbi_set_flip_vertically_on_load(1);
-        auto* data = stbi_load(path.c_str(), &mWidth, &mHeight, &mChannels, 0);
+        stbi_set_flip_vertically_on_load(true);
+        stbi_uc* data = stbi_load(path.c_str(), &mWidth, &mHeight, &mChannels, 0);
+
 
         if(!data) {
             GLE_ERROR("Failed to load texture at {0}", path);
