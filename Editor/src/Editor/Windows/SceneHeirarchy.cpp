@@ -50,8 +50,7 @@ namespace GLE
                 {
                     auto entity = mActiveScene->CreateEntity("Cube");
                     entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
-                    entity.AddComponent<CameraComponent>();
-                    auto& matComp = entity.AddComponent<MaterialComponent>();
+                    entity.AddComponent<MaterialComponent>();
                 }
 
                 ImGui::EndMenu();

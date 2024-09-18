@@ -133,15 +133,15 @@ namespace GLE {
 
                 ImGui::Text("Albedo Map");
                 ImGui::SameLine();
-                DrawTextureSelectionWindow(material->AlbedoMap, "Albedo Map");
+                material->AlbedoMap = DrawTextureSelectionWindow(material->AlbedoMap, "Albedo Map");
 
                 ImGui::Text("Normal Map");
                 ImGui::SameLine();
-                DrawTextureSelectionWindow(material->NormalMap, "Normal Map");
+                material->NormalMap = DrawTextureSelectionWindow(material->NormalMap, "Normal Map");
 
                 ImGui::Text("Diffuse Map");
                 ImGui::SameLine();
-                DrawTextureSelectionWindow(material->DiffuseMap, "Diffuse Map");
+                material->DiffuseMap = DrawTextureSelectionWindow(material->DiffuseMap, "Diffuse Map");
 
                 ImGui::TreePop();
             }
@@ -209,28 +209,33 @@ namespace GLE {
         ImGui::PopID();
     }
 
-    void InspectorWindow::DrawTextureSelectionWindow(std::shared_ptr<Texture2D>& dest, const std::string &title)
+    std::shared_ptr<Texture2D> InspectorWindow::DrawTextureSelectionWindow(std::shared_ptr<Texture2D>& currentTex, const std::string &title)
     {
         if(ImGui::Button(title.c_str()))
         {
             ImGui::OpenPopup(title.c_str());
         }
 
-        auto& curName = dest->GetName();
+        auto selectedTex = currentTex;
+
         if(ImGui::BeginPopup(title.c_str()))
         {
-            ImGui::Text("Texture selector");
+            ImGui::Button("Texture selector");
 
             for(auto& tex : Texture2D::GetTextures()) {
                 auto& name = tex.first;
 
-                if(name == curName) continue;
+                if(currentTex != nullptr && currentTex->GetName() == name) continue;
 
-                ImGui::Spacing();
+                if(ImGui::MenuItem(name.c_str())) {
+                    selectedTex = tex.second;
+                    ImGui::CloseCurrentPopup();
+                }
             }
 
             ImGui::EndPopup();
         }
+        return selectedTex;
     }
 
     template<typename C>

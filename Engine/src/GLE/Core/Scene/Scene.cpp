@@ -26,17 +26,23 @@ namespace GLE {
     }
 
     void Scene::Render() {
-        auto entitiesToRender = mRegistry.group<PrimitiveRendererComponent, TransformComponent, MaterialComponent>();
+        auto entitiesToRender = mRegistry.group<PrimitiveRendererComponent, TransformComponent>();
 
         for(auto e : entitiesToRender) {
             Entity entity = {e, this};
 
             auto& transform = entity.GetComponent<TransformComponent>();
             auto& renderer = entity.GetComponent<PrimitiveRendererComponent>();
-            auto& material = entity.GetComponent<MaterialComponent>().Material;
 
-            Renderer::BindMaterial(*material);
-            Renderer::SubmitPrimitive(renderer.RenderType, *Shader::Get("Standard"), transform);
+
+            if(entity.HasComponent<MaterialComponent>()) {
+                auto& material = entity.GetComponent<MaterialComponent>().Material;
+                Renderer::BindMaterial(*material);
+                Renderer::SubmitPrimitive(renderer.RenderType, *material->Shader, transform);
+            }
+            else {
+                GLE_WARN("Tried to render entity with no material");
+            }
         }
     }
 

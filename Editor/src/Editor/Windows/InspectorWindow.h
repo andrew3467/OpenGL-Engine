@@ -20,7 +20,7 @@ namespace GLE {
 
 
         void DrawVec3(const std::string& name, glm::vec3& vec);
-        void DrawTextureSelectionWindow(std::shared_ptr<Texture2D>& dest, const std::string& title);
+        std::shared_ptr<Texture2D> DrawTextureSelectionWindow(std::shared_ptr<Texture2D>& currentTex, const std::string& title);
 
 
         template<typename C>
