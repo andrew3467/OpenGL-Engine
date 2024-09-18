@@ -3,24 +3,56 @@
 //
 
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include <Glad/glad.h>
-#include "SOIL2/SOIL2.h"
 
 #include "Renderer/Texture.h"
 
 
 namespace GLE {
     uint32_t Texture::LoadTextureData(const std::string& path) {
-        uint32_t tex2D = SOIL_load_OGL_texture(
-            path.c_str(),
-            SOIL_LOAD_AUTO,
-            SOIL_CREATE_NEW_ID,
-            SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT | SOIL_FLAG_TEXTURE_REPEATS
+        stbi_set_flip_vertically_on_load(1);
+        auto* data = stbi_load(path.c_str(), &mWidth, &mHeight, &mChannels, 0);
+
+        if(!data) {
+            GLE_ERROR("Failed to load texture at {0}", path);
+        }
+
+        GLenum format;
+        switch (mChannels) {
+            case 1: format = GL_RED;  break; //STBI_grey
+            case 2: format = GL_RG;   break; //STBI_grey_alpha
+            case 3: format = GL_RGB;  break; //STBI_rgb
+            case 4: format = GL_RGBA; break; //STBI_rgb_alpha
+        }
+
+        GLuint textureID;
+
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,                      //Mipmap level - 0
+            format,
+            mWidth,
+            mHeight,
+            0,
+            format,
+            GL_UNSIGNED_BYTE,
+            data
             );
 
-        GLE_ASSERT(tex2D, "Failed to load texture at {0}", path);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-        return tex2D;
+        stbi_image_free(data);
+
+        auto baseFileName = path.substr(path.find_last_of("\\/") + 1);
+        int const p = baseFileName.find_last_of('.');
+        mName = baseFileName.substr(0, p);
+
+        return textureID;
     }
 
 

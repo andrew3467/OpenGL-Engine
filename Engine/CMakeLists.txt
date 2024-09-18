@@ -40,7 +40,7 @@ target_link_libraries(
         glm::glm
         EnTT::EnTT
         glfw
-        soil2
+        stb
 )
 
 target_include_directories(
@@ -49,4 +49,5 @@ target_include_directories(
         src/GLE
 
         ../External/imgui
+        ../External/stb
 )

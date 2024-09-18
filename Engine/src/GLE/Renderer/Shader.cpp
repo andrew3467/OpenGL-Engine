@@ -10,7 +10,7 @@ namespace GLE {
     std::unordered_map<std::string, std::shared_ptr<Shader>> Shader::mShaders;
 
     void Shader::Init() {
-        mShaders.emplace("Standard", Shader::Create("shaders/Standard.glsl"));
+        mShaders.emplace("Standard", Shader::Create(ASSETS_FOLDER + "shaders/Standard.glsl"));
     }
 
 }

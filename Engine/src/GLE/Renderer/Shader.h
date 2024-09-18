@@ -12,7 +12,7 @@
 namespace GLE {
     class Shader {
     public:
-        static std::shared_ptr<Shader> Create(const std::string& srcPath) {return std::make_shared<Shader>(ASSETS_FOLDER + srcPath);}
+        static std::shared_ptr<Shader> Create(const std::string& srcPath) {return std::make_shared<Shader>(srcPath);}
         static void Init();
 
         static std::shared_ptr<Shader> Get(const std::string& name) {

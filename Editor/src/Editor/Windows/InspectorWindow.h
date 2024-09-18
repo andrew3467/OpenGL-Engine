@@ -7,6 +7,7 @@
 #include <glm/vec3.hpp>
 
 #include "EditorWindow.h"
+#include "Renderer/Texture.h"
 
 namespace GLE {
     class InspectorWindow : public EditorWindow {
@@ -19,7 +20,7 @@ namespace GLE {
 
 
         void DrawVec3(const std::string& name, glm::vec3& vec);
-        void DrawTextureSelectionWindow(void* dest, const std::string& title);
+        void DrawTextureSelectionWindow(std::shared_ptr<Texture2D>& dest, const std::string& title);
 
 
         template<typename C>

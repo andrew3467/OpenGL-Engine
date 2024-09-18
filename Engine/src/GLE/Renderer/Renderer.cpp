@@ -221,7 +221,7 @@ namespace GLE {
     void Renderer::BindMaterial(const Material &material) {
         auto& shader = material.Shader;
 
-        if(shader == nullptr) {
+        if(!shader) {
             GLE_ERROR("ERROR: Material passed to BindMaterial missing shader");
             return;
         }

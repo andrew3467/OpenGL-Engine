@@ -120,30 +120,33 @@ namespace GLE {
             }
         }
 
+
         if(curEntity.HasComponent<MaterialComponent>()) {
             enabled = ImGui::TreeNodeEx((void*)3,flags, "Material");
             if(enabled) {
-                auto material = curEntity.GetComponent<MaterialComponent>().Material;
+                auto& material = curEntity.GetComponent<MaterialComponent>().Material;
 
                 glm::vec3 color = material->Albedo;
                 ImGui::ColorPicker3("Albedo", &color.x);
                 material->Albedo = color;
 
+
                 ImGui::Text("Albedo Map");
                 ImGui::SameLine();
-                DrawTextureSelectionWindow((void*)material->AlbedoMap.get(), "Albedo Map");
+                DrawTextureSelectionWindow(material->AlbedoMap, "Albedo Map");
 
                 ImGui::Text("Normal Map");
                 ImGui::SameLine();
-                DrawTextureSelectionWindow((void*)material->AlbedoMap.get(), "Normal Map");
+                DrawTextureSelectionWindow(material->NormalMap, "Normal Map");
 
                 ImGui::Text("Diffuse Map");
                 ImGui::SameLine();
-                DrawTextureSelectionWindow((void*)material->AlbedoMap.get(), "Diffuse Map");
+                DrawTextureSelectionWindow(material->DiffuseMap, "Diffuse Map");
 
                 ImGui::TreePop();
             }
         }
+
 
         ImGui::End();
     }
@@ -206,16 +209,25 @@ namespace GLE {
         ImGui::PopID();
     }
 
-    void InspectorWindow::DrawTextureSelectionWindow(void *dest, const std::string &title)
+    void InspectorWindow::DrawTextureSelectionWindow(std::shared_ptr<Texture2D>& dest, const std::string &title)
     {
         if(ImGui::Button(title.c_str()))
         {
-            ImGui::OpenPopup("Texture Selection");
+            ImGui::OpenPopup(title.c_str());
         }
 
-        if(ImGui::BeginPopup("Texture Selection"))
+        auto& curName = dest->GetName();
+        if(ImGui::BeginPopup(title.c_str()))
         {
             ImGui::Text("Texture selector");
+
+            for(auto& tex : Texture2D::GetTextures()) {
+                auto& name = tex.first;
+
+                if(name == curName) continue;
+
+                ImGui::Spacing();
+            }
 
             ImGui::EndPopup();
         }

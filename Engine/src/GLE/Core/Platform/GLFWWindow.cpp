@@ -58,6 +58,12 @@ namespace GLE {
 
         InitGLFW();
 
+
+        const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        //mData.Width = mode->width;
+        //mData.Height = mode->height;
+
+
         GLFWwindow* window = glfwCreateWindow(mData.Width, mData.Height, mData.Title.c_str(), nullptr, nullptr);
 
         GLE_ASSERT(window != nullptr, "Error: Failed to create GLFW window!");

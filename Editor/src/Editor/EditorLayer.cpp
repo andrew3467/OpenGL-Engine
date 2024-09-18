@@ -8,6 +8,7 @@
 
 #include "EditorCameraController.h"
 #include "imgui.h"
+#include "Core/Application.h"
 #include "Windows/InspectorWindow.h"
 #include "Core/Scene/ECS/Component/Components.h"
 #include "Renderer/Renderer.h"
@@ -74,7 +75,8 @@ namespace GLE
             window_flags |= ImGuiWindowFlags_NoBackground;
         }
 
-        ImGui::SetNextWindowSize(ImVec2(1280, 720));
+
+        ImGui::SetNextWindowSize(ImVec2(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight()));
         ImGui::Begin("Dockspace", nullptr, window_flags);
         ImGui::PopStyleVar(2);
         ImGuiID dockspace_id = ImGui::GetID("Dockspace");
