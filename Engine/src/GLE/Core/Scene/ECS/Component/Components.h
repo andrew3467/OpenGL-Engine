@@ -11,5 +11,6 @@
 #include "PrimitiveRendererComponent.h"
 #include "CameraComponent.h"
 #include "MaterialComponent.h"
+#include "LightComponent.h"
 
 #endif //COMPONENTS_H

@@ -25,7 +25,7 @@ namespace GLE {
         std::shared_ptr<Camera> mCamera;
 
         float mMoveSpeed = 10.f;
-        float mSensitivity = 20.f;
+        float mSensitivity = 10.f;
 
         float mPrevX, mPrevY;
     };

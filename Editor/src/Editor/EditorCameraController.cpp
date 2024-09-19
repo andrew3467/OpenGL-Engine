@@ -63,8 +63,7 @@ namespace GLE
             float xOffset = x - mPrevX;
             float yOffset = mPrevY - y;
 
-            const float sensitivity = 2.f;
-            mCamera->ProcessMouseMovement(xOffset, yOffset, sensitivity * dt);
+            mCamera->ProcessMouseMovement(xOffset, yOffset, mSensitivity * dt);
             mPrevX = x;
             mPrevY = y;
         }else {

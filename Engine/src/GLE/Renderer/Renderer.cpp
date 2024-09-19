@@ -25,6 +25,12 @@
 #endif
 
 namespace GLE {
+    struct Vertex {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoord;
+    };
+
     struct RendererData {
         glm::mat4 ViewProj;
 
@@ -57,41 +63,42 @@ namespace GLE {
                 22, 23, 20
             };
 
-            //Position, TexCoord
-            GLfloat vertices[] = {
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  // A 0
-                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  // B 1
-                0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  // C 2
-                -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  // D 3
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  // E 4
-                0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   // F 5
-                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   // G 6
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,   // H 7
+            //Position, Normal, TexCoord
+            Vertex vertices[] = {
+                    {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}},  // A 0
+                    {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}},  // B 1
+                    {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},  // C 2
+                    {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},  // D 3
+                    {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},  // E 4
+                    {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},   // F 5
+                    {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},   // G 6
+                    {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},   // H 7
 
-                -0.5f,  0.5f, -0.5f,  0.0f, 0.0f,  // D 8
-                -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  // A 9
-                -0.5f, -0.5f,  0.5f,  1.0f, 1.0f,  // E 10
-                -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  // H 11
-                0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   // B 12
-                0.5f,  0.5f, -0.5f,  1.0f, 0.0f,   // C 13
-                0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   // G 14
-                0.5f, -0.5f,  0.5f,  0.0f, 1.0f,   // F 15
+                    {{-0.5f, 0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},  // D 8
+                    {{-0.5f, -0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // A 9
+                    {{-0.5f, -0.5f, 0.5f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},  // E 10
+                    {{-0.5f, 0.5f, 0.5f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},  // H 11
+                    {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},   // B 12
+                    {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},   // C 13
+                    {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}, { 1.0f, 1.0f }},   // G 14
+                    {{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},   // F 15
 
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  // A 16
-                0.5f, -0.5f, -0.5f,  1.0f, 0.0f,   // B 17
-                0.5f, -0.5f,  0.5f,  1.0f, 1.0f,   // F 18
-                -0.5f, -0.5f,  0.5f,  0.0f, 1.0f,  // E 19
-                0.5f,  0.5f, -0.5f,   0.0f, 0.0f,  // C 20
-                -0.5f,  0.5f, -0.5f,  1.0f, 0.0f,  // D 21
-                -0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  // H 22
-                0.5f,  0.5f,  0.5f,   0.0f, 1.0f,  // G 23
+                    {{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},  // A 16
+                    {{0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},   // B 17
+                    {{0.5f, -0.5f, 0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},   // F 18
+                    {{-0.5f, -0.5f, 0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}},  // E 19
+                    {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},  // C 20
+                    {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},  // D 21
+                    {{-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},  // H 22
+                    {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},  // G 23
             };
 
             auto VA = VertexArray::Create();
 
-            auto VB = VertexBuffer::Create(vertices, sizeof(vertices) / sizeof(float));
+            auto VB = VertexBuffer::Create(&vertices[0].Position.x, sizeof(vertices) / sizeof(float));
             VB->SetLayout({
                                   {ShaderDataType::Float3, "aPosition"},
+                                  {ShaderDataType::Float3, "aNormal"},
                                   {ShaderDataType::Float2, "aTexCoord"},
 
                           });
@@ -232,17 +239,14 @@ namespace GLE {
 
         if(material.AlbedoMap != nullptr) {
             material.AlbedoMap->Bind(0);
-            //shader->SetInt("uAlbedoMap", 0);
         }
 
         if(material.DiffuseMap != nullptr) {
             material.DiffuseMap->Bind(1);
-            //shader->SetInt("uDiffuseMap", 1);
         }
 
         if(material.NormalMap != nullptr) {
             material.NormalMap->Bind(2);
-            //shader->SetInt("uNormalMap", 2);
         }
     }
 
