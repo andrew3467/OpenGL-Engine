@@ -32,9 +32,9 @@ in vec2 vTexCoord;
 uniform vec3 uColor;
 
 
-uniform sampler2D uAlbedoMap;       //Slot 0
-uniform sampler2D uDiffuseMap;      //Slot 1
-uniform sampler2D uNormalMap;       //Slot 2
+layout (binding = 0) uniform sampler2D uAlbedoMap;       //Slot 0
+layout (binding = 1)uniform sampler2D uDiffuseMap;      //Slot 1
+layout (binding = 2)uniform sampler2D uNormalMap;       //Slot 2
 
 
 in vec3 vPosition;

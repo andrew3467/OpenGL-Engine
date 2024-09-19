@@ -232,17 +232,17 @@ namespace GLE {
 
         if(material.AlbedoMap != nullptr) {
             material.AlbedoMap->Bind(0);
-            shader->SetInt("uAlbedoMap", 0);
+            //shader->SetInt("uAlbedoMap", 0);
         }
 
         if(material.DiffuseMap != nullptr) {
             material.DiffuseMap->Bind(1);
-            shader->SetInt("uDiffuseMap", 1);
+            //shader->SetInt("uDiffuseMap", 1);
         }
 
         if(material.NormalMap != nullptr) {
             material.NormalMap->Bind(2);
-            shader->SetInt("uNormalMap", 2);
+            //shader->SetInt("uNormalMap", 2);
         }
     }
 

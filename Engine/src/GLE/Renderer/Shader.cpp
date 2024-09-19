@@ -15,7 +15,7 @@ namespace GLE {
     std::unordered_map<std::string, std::shared_ptr<Shader>> sShaders;
 
     void Shader::Init() {
-        for(auto& file : fs::directory_iterator(ASSETS_FOLDER + "textures/")) {
+        for(auto& file : fs::directory_iterator(ASSETS_FOLDER + "shaders/")) {
             std::string path = file.path().string();
 
             auto shader = Shader::Create(path);
@@ -24,4 +24,11 @@ namespace GLE {
         }
     }
 
+    std::shared_ptr<Shader> Shader::Get(const std::string &name) {
+        return sShaders[name];
+    }
+
+    std::unordered_map<std::string, std::shared_ptr<Shader>> Shader::GetShaders() {
+        return sShaders;
+    }
 }

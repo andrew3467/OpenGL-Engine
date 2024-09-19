@@ -10,7 +10,28 @@
 #include "Renderer/Texture.h"
 
 
+void CheckOpenGLError(const char* stmt, const char* fname, int line)
+{
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR)
+    {
+        GLE_ASSERT(false, "GL ERROR")
+        GLE_ERROR("OpenGL error {0}, at {1}:{2} - for {3}\n", err, fname, line, stmt);
+    }
+}
+
+#ifdef _DEBUG
+    #define GL_CHECK(stmt) do { \
+    stmt; \
+    CheckOpenGLError(#stmt, __FILE__, __LINE__); \
+    } while (0)
+#else
+    #define GL_CHECK(stmt) stmt
+#endif
+
 namespace GLE {
+
+
     uint32_t Texture::LoadTextureData(const std::string& path) {
         stbi_set_flip_vertically_on_load(true);
         stbi_uc* data = stbi_load(path.c_str(), &mWidth, &mHeight, &mChannels, 0);
@@ -20,30 +41,50 @@ namespace GLE {
             GLE_ERROR("Failed to load texture at {0}", path);
         }
 
-        GLenum format;
+
         switch (mChannels) {
-            case 1: format = GL_RED;  break; //STBI_grey
-            case 2: format = GL_RG;   break; //STBI_grey_alpha
-            case 3: format = GL_RGB;  break; //STBI_rgb
-            case 4: format = GL_RGBA; break; //STBI_rgb_alpha
+            case 1:
+                mDataFormat = GL_R;
+                mInternalFormat = GL_R8;
+                break; //STBI_grey
+            case 2:
+                mDataFormat = GL_RG;
+                mInternalFormat = GL_RG8;
+                break; //STBI_grey_alpha
+            case 3:
+                mDataFormat = GL_RGB;
+                mInternalFormat = GL_RGB8;
+                break; //STBI_rgb
+
+            case 4:
+                mDataFormat = GL_RGBA;
+                mInternalFormat = GL_RGBA8;
+                break; //STBI_rgb_alpha
         }
 
         GLuint textureID;
-
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        glTexImage2D(
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+        GL_CHECK(glTexImage2D(
             GL_TEXTURE_2D,
-            0,                      //Mipmap level - 0
-            format,
+            0,
+            GL_RGB,
             mWidth,
             mHeight,
             0,
-            format,
+            GL_RGB,
             GL_UNSIGNED_BYTE,
             data
-            );
+        ));
+
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -69,7 +110,7 @@ namespace GLE {
     }
 
     void Texture::Bind(int loc) const {
-        GLE_ASSERT(loc < 31, "Cannot bind texture at location > 32");
+        GLE_ASSERT(loc < 31, std::string("Only 32 texture slots are supported, given slot: ") + std::to_string(loc));
 
         glActiveTexture(GL_TEXTURE0 + loc);
         glBindTexture(GL_TEXTURE_2D, mRendererID);
