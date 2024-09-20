@@ -74,6 +74,8 @@ namespace GLE {
 
         mWindowContainer.nativeWindow = window;
 
+        glfwSwapInterval(mData.VSYNC ? 1 : 0);
+
         SetupCallbacks();
     }
 

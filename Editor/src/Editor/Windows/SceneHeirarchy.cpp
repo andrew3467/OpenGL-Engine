@@ -55,6 +55,22 @@ namespace GLE
                     mSelectedEntity = entity;
                 }
 
+                ImGui::NewLine();
+                ImGui::Text("Lights");
+
+                if (ImGui::MenuItem("Point Light")) {
+                    auto entity = mActiveScene->CreateEntity("Point Light");
+                    entity.AddComponent<LightComponent>();
+
+                    //TEMP visualize lights
+                    entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+                    entity.AddComponent<MaterialComponent>();
+
+                    entity.GetComponent<TransformComponent>().Scale = glm::vec3(0.1f);
+
+                    mSelectedEntity = entity;
+                }
+
                 ImGui::EndMenu();
             }
 

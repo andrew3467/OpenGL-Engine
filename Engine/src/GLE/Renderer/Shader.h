@@ -7,6 +7,7 @@
 
 #include <glm/glm.hpp>
 #include "Core/../glepch.h"
+#include "Lights.h"
 
 
 namespace GLE {
@@ -43,6 +44,7 @@ namespace GLE {
         void SetFloat4x4(const char* name, const glm::mat4& v);
         void SetFloat3x3(const char* name, const glm::mat3& v);
 
+        void SetPointLight(std::string& name, const PointLight& light, const glm::vec3& position);
 
 
     private:

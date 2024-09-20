@@ -16,24 +16,8 @@ namespace GLE {
     struct LightComponent {
         LightComponent() = default;
         LightComponent(const LightComponent&) = default;
-        ~LightComponent() {
-            delete mLight;
-        }
-        
-        void Create(LightType type) {
-            switch (type)
-            {
-                case LightType::Point:      delete mLight; mLight = new PointLight; break;
-                case LightType::Directional:    delete mLight; mLight = new DirectionalLight; break;
-                case LightType::Spot:            delete mLight; mLight = new SpotLight; break;
-            }
-        }
+        ~LightComponent() = default;
 
-
-
-        LightType Type = LightType::Point;
-
-    private:
-        Light* mLight;
+        PointLight Light;
     };
 }

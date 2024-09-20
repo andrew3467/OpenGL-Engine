@@ -10,15 +10,15 @@ namespace GLE {
         glm::vec3 Ambient;
     };
 
-    struct PointLight : public Light {
+    struct PointLight : Light {
         glm::vec3 Position;
     };
 
-    struct DirectionalLight : public Light {
+    struct DirectionalLight : Light {
 
     };
 
-    struct SpotLight : public Light {
+    struct SpotLight : Light {
 
     };
 }

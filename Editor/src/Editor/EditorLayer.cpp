@@ -44,6 +44,21 @@ namespace GLE
         inspectorWindow->SetScene(mScene);
 
         EditorWindow::PushWindow(inspectorWindow);
+
+        auto lightEnt = mScene->CreateEntity("Point Light");
+        lightEnt.AddComponent<LightComponent>();
+
+        //TEMP visualize lights
+        lightEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+        lightEnt.AddComponent<MaterialComponent>();
+        lightEnt.GetComponent<MaterialComponent>().Material->Shader = Shader::Get("Unlit");
+
+        lightEnt.GetComponent<TransformComponent>().Scale = glm::vec3(0.1f);
+        lightEnt.GetComponent<TransformComponent>().Position = glm::vec3(1, 1, 1);
+
+        auto cubeEnt = mScene->CreateEntity("Cube");
+        cubeEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+        cubeEnt.AddComponent<MaterialComponent>().Material->AlbedoMap = Texture2D::Get("bricks");
     }
 
     void EditorLayer::OnUpdate(float dt)
@@ -90,6 +105,8 @@ namespace GLE
         auto rendererStats = Renderer::GetStats();
 
         ImGui::Text("Renderer Stats");
+        int fps = 1 / Time::GetTime();
+        ImGui::Text("FPS: %i", fps);
         ImGui::Text("Num Draw Calls: %i", rendererStats.NumDrawCalls);
         ImGui::NewLine();
 

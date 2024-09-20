@@ -245,6 +245,11 @@ namespace GLE {
         glUniformMatrix3fv(GetUniformLoc(name), 1, GL_FALSE, glm::value_ptr(v));
     }
 
+    void Shader::SetPointLight(std::string& name, const PointLight &light, const glm::vec3& position) {
+        SetFloat3((name + ".Color").c_str(), light.Ambient);
+        SetFloat3((name + ".Position").c_str(), position);
+    }
+
     //endregion
 }
 

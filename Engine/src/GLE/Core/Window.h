@@ -52,7 +52,7 @@ namespace GLE {
             uint32_t Width;
             uint32_t Height;
             std::string Title;
-            bool VSYNC = true;
+            bool VSYNC = false;
 
             EventCallbackFn EventCallback;
         };

@@ -28,17 +28,34 @@ namespace GLE {
     void Scene::Render() {
         auto entitiesToRender = mRegistry.group<PrimitiveRendererComponent, TransformComponent>();
 
+        //Get all lights in scene
+        auto lightEntities = mRegistry.group<LightComponent>();
+        std::vector<PointLight> pointLights;
+        std::vector<glm::vec3> positions;
+
+        for (auto e : lightEntities) {
+            Entity entity {e, this};
+            auto& lightcomp = entity.GetComponent<LightComponent>();
+            auto& transformcomp = entity.GetComponent<TransformComponent>();
+
+            pointLights.push_back(lightcomp.Light);
+            positions.push_back(transformcomp.Position);
+        }
+
         for(auto e : entitiesToRender) {
             Entity entity = {e, this};
 
             auto& transform = entity.GetComponent<TransformComponent>();
             auto& renderer = entity.GetComponent<PrimitiveRendererComponent>();
 
-
             if(entity.HasComponent<MaterialComponent>()) {
                 auto& material = entity.GetComponent<MaterialComponent>().Material;
                 Renderer::BindMaterial(*material);
+                Renderer::BindLights(pointLights, *material->Shader, positions);
+
                 Renderer::SubmitPrimitive(renderer.RenderType, *material->Shader, transform);
+
+                Renderer::UnbindMaterial(*material);
             }
             else {
                 GLE_WARN("Tried to render entity with no material");

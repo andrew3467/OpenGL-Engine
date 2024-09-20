@@ -60,6 +60,7 @@ namespace GLE {
             AddComponentDisplay<PrimitiveRendererComponent>("Primitive Renderer");
             AddComponentDisplay<CameraComponent>("Camera");
             AddComponentDisplay<MaterialComponent>("Material");
+            AddComponentDisplay<LightComponent>("Light");
 
 
             ImGui::EndPopup();
@@ -126,6 +127,9 @@ namespace GLE {
             if(enabled) {
                 auto& material = curEntity.GetComponent<MaterialComponent>().Material;
 
+                material->Shader = DrawShaderSelectionWindow(material->Shader);
+                ImGui::Spacing();
+
                 glm::vec3 color = material->Albedo;
                 ImGui::ColorPicker3("Albedo", &color.x);
                 material->Albedo = color;
@@ -142,6 +146,20 @@ namespace GLE {
                 ImGui::Text("Diffuse Map");
                 ImGui::SameLine();
                 material->DiffuseMap = DrawTextureSelectionWindow(material->DiffuseMap, "Diffuse Map");
+
+                ImGui::TreePop();
+            }
+        }
+
+        if(curEntity.HasComponent<LightComponent>())
+        {
+            bool enabled = ImGui::TreeNodeEx((void*)4,flags, "Light");
+            if(enabled) {
+                auto& lightComp = curEntity.GetComponent<LightComponent>();
+
+                glm::vec3 color = lightComp.Light.Ambient;
+                ImGui::ColorPicker3("Color", &color.x);
+                lightComp.Light.Ambient = color;
 
                 ImGui::TreePop();
             }
@@ -200,7 +218,7 @@ namespace GLE {
         ImGui::PopStyleColor(1);
 
         ImGui::SameLine();
-        ImGui::DragFloat("##z", &vec.y, 0.01f, 0.0f, 0.0f, "%.2f");
+        ImGui::DragFloat("##z", &vec.z, 0.01f, 0.0f, 0.0f, "%.2f");
         ImGui::PopItemWidth();
 
         ImGui::PopStyleVar();
@@ -236,6 +254,34 @@ namespace GLE {
             ImGui::EndPopup();
         }
         return selectedTex;
+    }
+
+    std::shared_ptr<Shader> InspectorWindow::DrawShaderSelectionWindow(std::shared_ptr<Shader> &currentShader) {
+        if(ImGui::Button("Shader Selector"))
+        {
+            ImGui::OpenPopup("Shader Selector");
+        }
+
+        auto selectedShader = currentShader;
+
+        if(ImGui::BeginPopup("Shader Selector"))
+        {
+            ImGui::Button("Texture selector");
+
+            for(auto& tex : Shader::GetShaders()) {
+                auto& name = tex.first;
+
+                if(currentShader != nullptr && currentShader->GetName() == name) continue;
+
+                if(ImGui::MenuItem(name.c_str())) {
+                    selectedShader = tex.second;
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
+            ImGui::EndPopup();
+        }
+        return selectedShader;
     }
 
     template<typename C>

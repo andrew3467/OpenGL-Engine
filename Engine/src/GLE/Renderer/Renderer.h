@@ -36,7 +36,9 @@ namespace GLE {
         static void RenderScene();
 
         static void BindMaterial(const Material &material);
+        static void UnbindMaterial(const Material &material);
 
+        static void BindLights(const std::vector<PointLight> &lights, Shader& shader, const std::vector<glm::vec3> &positions);
         static void SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform);
         static void Submit(VertexArray& VA, Shader& shader, const glm::mat4& transform);
 

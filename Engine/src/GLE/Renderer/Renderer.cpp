@@ -9,14 +9,14 @@
 #include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/Camera.h"
-#include "Core/Window.h"
+#include "RenderCommand.h"
+#include "Texture.h"
+
 
 #include "GLFW/glfw3.h"
 #include "Glad/glad.h"
-#include "glm/detail/type_quat.hpp"
 #include "glm/gtx/rotate_vector.hpp"
-#include "RenderCommand.h"
-#include "Texture.h"
+
 
 
 #ifdef GLE_PLATFORM_WINDOWS
@@ -33,6 +33,7 @@ namespace GLE {
 
     struct RendererData {
         glm::mat4 ViewProj;
+        glm::vec3 ViewPos;
 
         std::vector<std::shared_ptr<VertexArray>> VAs;
     };
@@ -212,6 +213,7 @@ namespace GLE {
     void Renderer::StartScene(Camera& camera) {
         //ViewProj == Proj * View
         sData.ViewProj = camera.GetViewProjection();
+        sData.ViewPos = camera.GetPosition();
 
         mStats = {};
     }
@@ -248,6 +250,33 @@ namespace GLE {
         if(material.NormalMap != nullptr) {
             material.NormalMap->Bind(2);
         }
+    }
+
+    void Renderer::UnbindMaterial(const Material &material) {
+        if(material.AlbedoMap != nullptr) {
+            material.AlbedoMap->Unbind();
+        }
+
+        if(material.DiffuseMap != nullptr) {
+            material.DiffuseMap->Unbind();
+        }
+
+        if(material.NormalMap != nullptr) {
+            material.NormalMap->Unbind();
+        }
+    }
+
+    void Renderer::BindLights(const std::vector<PointLight> &lights, Shader& shader, const std::vector<glm::vec3> &positions) {
+        shader.Bind();
+
+        shader.SetInt("uNumLights", lights.size());
+        for(int i = 0; i < lights.size(); i++) {
+            const PointLight &light = lights[i];
+
+            shader.SetPointLight(std::string("uPointLights[").append(std::to_string(i)).append("]"), light, positions[i]);
+        }
+
+        shader.SetFloat3("uViewPos", sData.ViewPos);
     }
 
     void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform) {
