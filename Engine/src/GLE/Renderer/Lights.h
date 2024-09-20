@@ -7,11 +7,11 @@
 
 namespace GLE {
     struct Light {
-        glm::vec3 Ambient;
+        glm::vec3 Ambient = {1,1,1};
     };
 
     struct PointLight : Light {
-        glm::vec3 Position;
+        glm::vec3 Position = {0,0,0};
     };
 
     struct DirectionalLight : Light {

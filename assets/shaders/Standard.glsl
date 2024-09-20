@@ -28,8 +28,8 @@ void main() {
 #version 460
 
 struct PointLight {
-    vec3 Position;
     vec3 Color;
+    vec3 Position;
 };
 
 const int MAX_POINT_LIGHTS = 32;
@@ -86,6 +86,8 @@ void main() {
     for(int i = 0; i < uNumLights; i++) {
         result += calcPointLight(uPointLights[i], normal, uViewPos);
     }
+
+    result *= uColor;
 
     FragColor = texture(uAlbedoMap, vTexCoord) * vec4(result, 1);
 }

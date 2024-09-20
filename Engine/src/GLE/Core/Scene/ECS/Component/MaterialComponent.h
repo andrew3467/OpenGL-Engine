@@ -13,7 +13,7 @@ namespace GLE {
 
     struct MaterialComponent {
         MaterialComponent() : Material(std::make_shared<GLE::Material>()) {}
-        MaterialComponent(const MaterialComponent&) = delete;
+        MaterialComponent(const MaterialComponent&) {}
         ~MaterialComponent()  {}
 
 

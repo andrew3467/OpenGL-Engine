@@ -12,6 +12,7 @@
 namespace GLE {
     class UUID;
     class Entity;
+    class System;
 
     class Scene {
     public:
@@ -19,7 +20,6 @@ namespace GLE {
         ~Scene();
 
         void Update(float dt);
-        void Render();
 
         Entity CreateEntity(const std::string& name = std::string());
         Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
@@ -39,9 +39,13 @@ namespace GLE {
     private:
         entt::registry mRegistry;
 
+        std::vector<System*> mSystems;
+
 
         friend class Entity;
         friend class SceneHierarchy;
         friend class InspectorWindow;
+        friend class RenderSystem;
+        friend class LightSystem;
     };
 }

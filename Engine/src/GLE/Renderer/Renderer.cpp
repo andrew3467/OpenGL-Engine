@@ -2,6 +2,7 @@
 // Created by Andrew Graser on 7/29/2024.
 //
 
+#include <variant>
 #include "Renderer/Renderer.h"
 
 #include "Core/Scene/ECS/Component/TransformComponent.h"
@@ -273,7 +274,13 @@ namespace GLE {
         for(int i = 0; i < lights.size(); i++) {
             const PointLight &light = lights[i];
 
-            shader.SetPointLight(std::string("uPointLights[").append(std::to_string(i)).append("]"), light, positions[i]);
+            auto index = std::string("uPointLights[").append(std::to_string(i)).append("]");
+
+
+            shader.SetFloat3((index + ".Position").c_str(), positions[i]);
+            shader.SetFloat3((index + ".Color").c_str(), light.Ambient);
+
+            //shader.SetPointLight(index, light, positions[i]);
         }
 
         shader.SetFloat3("uViewPos", sData.ViewPos);

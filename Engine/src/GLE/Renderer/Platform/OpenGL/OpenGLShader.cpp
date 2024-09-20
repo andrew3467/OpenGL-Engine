@@ -246,8 +246,8 @@ namespace GLE {
     }
 
     void Shader::SetPointLight(std::string& name, const PointLight &light, const glm::vec3& position) {
+        SetFloat3((name + ".Position").c_str(), glm::vec3(1, 0, 0));
         SetFloat3((name + ".Color").c_str(), light.Ambient);
-        SetFloat3((name + ".Position").c_str(), position);
     }
 
     //endregion

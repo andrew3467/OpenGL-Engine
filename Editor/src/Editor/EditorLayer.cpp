@@ -64,10 +64,9 @@ namespace GLE
     void EditorLayer::OnUpdate(float dt)
     {
         sceneCamera.Update(dt);
-        mScene->Update(dt);
 
         Renderer::StartScene(sceneCamera.GetCamera());
-        mScene->Render();
+        mScene->Update(dt);
         Renderer::RenderScene();
     }
 
@@ -108,8 +107,9 @@ namespace GLE
         int fps = 1 / Time::GetTime();
         ImGui::Text("FPS: %i", fps);
         ImGui::Text("Num Draw Calls: %i", rendererStats.NumDrawCalls);
-        ImGui::NewLine();
 
+
+        ImGui::NewLine();
         glm::vec3 pos = sceneCamera.GetPosition();
         ImGui::InputFloat3("Cam Postition", &pos.x);
 
