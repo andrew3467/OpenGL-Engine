@@ -16,6 +16,8 @@ namespace GLE {
 
     void LightSystem::Update()
     {
+return;
+
         auto lightEntities = mScene->mRegistry.group<LightComponent>();
         std::vector<PointLight> pointLights;
         std::vector<glm::vec3> positions;
@@ -37,12 +39,12 @@ namespace GLE {
             auto& mat = entity.GetComponent<MaterialComponent>();
             auto& material = mat.Material;
 
-            if(mat == nullptr) {
+            if(material == nullptr) {
                 GLE_WARN("Material Component contains null material!");
                 continue;
             }
 
-            auto& shader = *mat->Shader;
+            auto& shader = *material->Shader;
 
             shader.Bind();
 

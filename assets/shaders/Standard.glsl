@@ -89,5 +89,5 @@ void main() {
 
     result *= uColor;
 
-    FragColor = texture(uAlbedoMap, vTexCoord) * vec4(result, 1);
+    FragColor = texture(uAlbedoMap, vTexCoord);// * vec4(result, 1);
 }

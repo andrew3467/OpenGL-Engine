@@ -66,6 +66,8 @@ namespace GLE {
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
+        glTexStorage2D(GL_TEXTURE_2D, 1, mInternalFormat, mWidth, mHeight);
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -73,14 +75,14 @@ namespace GLE {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-        glTexImage2D(
-            GL_TEXTURE_2D,
+        glTexSubImage2D(
+            mRendererID,
             0,
-            GL_RGB,
+            0,
+            0,
             mWidth,
             mHeight,
-            0,
-            GL_RGB,
+            mDataFormat,
             GL_UNSIGNED_BYTE,
             data
         );
@@ -101,6 +103,26 @@ namespace GLE {
 
 #pragma region Texture2D
 
+
+    Texture2D::Texture2D(int width, int height)
+    {
+        mWidth = width;
+        mHeight = height;
+
+        mInternalFormat = GL_RGBA;
+
+        glGenTextures(1, &mRendererID);
+        glBindTexture(GL_TEXTURE_2D, mRendererID);
+
+        glTexStorage2D(GL_TEXTURE_2D, 1, mInternalFormat, mWidth, mHeight);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+
     Texture2D::Texture2D(const std::string &path) {
         mFileLoc = path;
         mRendererID = LoadTextureData(path);
@@ -108,6 +130,23 @@ namespace GLE {
 
     Texture2D::~Texture2D() {
         glDeleteTextures(1, &mRendererID);
+    }
+
+    void Texture2D::SetData(void *data, uint32_t size) {
+        uint32_t bpp = mDataFormat == GL_RGB ? 3 : 4;
+        GLE_ASSERT(size == mWidth * mHeight * bpp, "Data must consist of entire texture!");
+
+        glTexSubImage2D(
+            mRendererID,
+            0,
+            0,
+            0,
+            mWidth,
+            mHeight,
+            mDataFormat,
+            GL_UNSIGNED_BYTE,
+            data
+            );
     }
 
     void Texture::Bind(int loc) const {

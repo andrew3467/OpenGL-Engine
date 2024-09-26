@@ -51,12 +51,16 @@ namespace GLE {
     class Texture2D : public Texture {
     public:
         static std::shared_ptr<Texture2D> Create(const std::string& path) {return std::make_shared<Texture2D>(path);}
+        static std::shared_ptr<Texture2D> Create(int w, int h) {return std::make_shared<Texture2D>(w, h);}
         static void Init();
         static std::shared_ptr<Texture2D> Get(const std::string& name);
         static std::unordered_map<std::string, std::shared_ptr<Texture2D>> GetTextures();
 
     public:
+        Texture2D(int width, int height);
         Texture2D(const std::string& path);
         ~Texture2D();
+
+        void SetData(void* data, uint32_t size);
     };
 }
