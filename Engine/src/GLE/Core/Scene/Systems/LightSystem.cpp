@@ -37,14 +37,9 @@ namespace GLE {
             auto& mat = entity.GetComponent<MaterialComponent>();
             auto& material = mat.Material;
 
-            GLE_ASSERT(material != nullptr, "Material IS NULL");
+            //GLE_ASSERT(material != nullptr, "Material IS NULL");
 
-            if(material == nullptr) {
-                GLE_WARN("Material Component contains null material!");
-                continue;
-            }
-
-            auto& shader = *material->Shader;
+            auto& shader = *material.Shader;
 
             shader.Bind();
 

@@ -12,13 +12,10 @@
 namespace GLE {
 
     struct MaterialComponent {
-        MaterialComponent() {
-            Material = std::make_shared<GLE::Material>();
-        }
+        MaterialComponent() {}
         MaterialComponent(const MaterialComponent&) {}
         ~MaterialComponent()  {}
 
-
-        std::shared_ptr<Material> Material;
+        GLE::Material Material;
     };
 }

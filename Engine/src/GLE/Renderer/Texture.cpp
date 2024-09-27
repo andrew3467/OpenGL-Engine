@@ -13,7 +13,8 @@ namespace fs = std::filesystem;
 namespace GLE {
     std::unordered_map<std::string, std::shared_ptr<Texture2D>> sTextures;
 
-    void Texture2D::Init() { {
+    void Texture2D::Init() {
+        {
             GLE_INFO("Creating Default Texture");
 
             auto defTex = Create(1,1);
@@ -22,6 +23,8 @@ namespace GLE {
 
             sTextures.emplace("Default", defTex);
         }
+
+
         for(auto& file : fs::directory_iterator(ASSETS_FOLDER + "textures/")) {
             std::string path = file.path().string();
 

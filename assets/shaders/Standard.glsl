@@ -57,5 +57,5 @@ layout (binding = 1) uniform sampler2D uDiffuseMap;      //Slot 1
 layout (binding = 2) uniform sampler2D uNormalMap;       //Slot 2
 
 void main() {
-    FragColor = vec4(uColor, 1);
+    FragColor = texture(uAlbedoMap, vTexCoord) * vec4(uColor, 1);
 }

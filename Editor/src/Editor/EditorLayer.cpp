@@ -37,13 +37,12 @@ namespace GLE
 
         auto sceneHeirarchy = new SceneHierarchy;
         sceneHeirarchy->SetScene(mScene);
-
         EditorWindow::PushWindow(sceneHeirarchy);
 
         auto inspectorWindow = new InspectorWindow;
         inspectorWindow->SetScene(mScene);
-
         EditorWindow::PushWindow(inspectorWindow);
+
 
         auto lightEnt = mScene->CreateEntity("Point Light");
         lightEnt.AddComponent<LightComponent>();
@@ -51,14 +50,14 @@ namespace GLE
         //TEMP visualize lights
         lightEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
         lightEnt.AddComponent<MaterialComponent>();
-        lightEnt.GetComponent<MaterialComponent>().Material->Shader = Shader::Get("Unlit");
+        lightEnt.GetComponent<MaterialComponent>().Material.Shader = Shader::Get("Unlit");
 
         lightEnt.GetComponent<TransformComponent>().Scale = glm::vec3(0.1f);
         lightEnt.GetComponent<TransformComponent>().Position = glm::vec3(1, 1, 1);
 
         auto cubeEnt = mScene->CreateEntity("Cube");
         cubeEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
-        cubeEnt.AddComponent<MaterialComponent>();
+        auto& matcomp = cubeEnt.AddComponent<MaterialComponent>();
     }
 
     void EditorLayer::OnUpdate(float dt)

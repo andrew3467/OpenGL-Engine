@@ -28,11 +28,10 @@ namespace GLE {
 
             if(entity.HasComponent<MaterialComponent>()) {
                 auto& material = entity.GetComponent<MaterialComponent>().Material;
-                Renderer::BindMaterial(*material);
 
-                Renderer::SubmitPrimitive(renderer.RenderType, *material->Shader, transform);
-
-                Renderer::UnbindMaterial(*material);
+                Renderer::BindMaterial(material);
+                Renderer::SubmitPrimitive(renderer.RenderType, *material.Shader, transform);
+                Renderer::UnbindMaterial(material);
             }
             else {
                 GLE_WARN("Tried to render entity with no material");

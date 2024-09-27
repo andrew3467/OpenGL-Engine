@@ -108,8 +108,10 @@ namespace GLE {
     {
         mWidth = width;
         mHeight = height;
+        mChannels = 4;
 
         mInternalFormat = GL_RGBA;
+        mDataFormat = GL_RGBA;
 
         glGenTextures(1, &mRendererID);
         glBindTexture(GL_TEXTURE_2D, mRendererID);

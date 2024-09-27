@@ -127,25 +127,25 @@ namespace GLE {
             if(enabled) {
                 auto& material = curEntity.GetComponent<MaterialComponent>().Material;
 
-                material->Shader = DrawShaderSelectionWindow(material->Shader);
+                material.Shader = DrawShaderSelectionWindow(material.Shader);
                 ImGui::Spacing();
 
-                glm::vec3 color = material->Albedo;
+                glm::vec3 color = material.Albedo;
                 ImGui::ColorPicker3("Albedo", &color.x);
-                material->Albedo = color;
+                material.Albedo = color;
 
 
                 ImGui::Text("Albedo Map");
                 ImGui::SameLine();
-                material->AlbedoMap = DrawTextureSelectionWindow(material->AlbedoMap, "Albedo Map");
+                material.AlbedoMap = DrawTextureSelectionWindow(material.AlbedoMap, "Albedo Map");
 
                 ImGui::Text("Normal Map");
                 ImGui::SameLine();
-                material->NormalMap = DrawTextureSelectionWindow(material->NormalMap, "Normal Map");
+                material.NormalMap = DrawTextureSelectionWindow(material.NormalMap, "Normal Map");
 
                 ImGui::Text("Diffuse Map");
                 ImGui::SameLine();
-                material->DiffuseMap = DrawTextureSelectionWindow(material->DiffuseMap, "Diffuse Map");
+                material.DiffuseMap = DrawTextureSelectionWindow(material.DiffuseMap, "Diffuse Map");
 
                 ImGui::TreePop();
             }

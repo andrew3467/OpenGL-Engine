@@ -37,7 +37,6 @@ namespace GLE {
 
 
     protected:
-        unsigned char* mData;
         std::string mFileLoc;
         uint32_t mRendererID;
 
