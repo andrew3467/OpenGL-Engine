@@ -16,7 +16,10 @@ namespace GLE {
 
         Material() {
             Shader = Shader::Get("Standard");
+            
             AlbedoMap = Texture2D::Get("Default");
+            NormalMap = Texture2D::Get("Default");
+            DiffuseMap = Texture2D::Get("Default");
         }
         Material(const Material&) = delete;
 
