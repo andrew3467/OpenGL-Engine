@@ -6,6 +6,7 @@
 
 #include <Core/Scene/ECS/Component/Components.h>
 #include "Renderer/Lights.h"
+#include "Renderer/Renderer.h"
 
 namespace GLE {
 
@@ -17,7 +18,7 @@ namespace GLE {
     void LightSystem::Update()
     {
         auto lightEntities = mScene->mRegistry.group<LightComponent>();
-        std::vector<PointLight> pointLights;
+        std::vector<glm::vec3> pointLights;
         std::vector<glm::vec3> positions;
 
         for (auto e : lightEntities) {
@@ -25,7 +26,7 @@ namespace GLE {
             auto& lightcomp = entity.GetComponent<LightComponent>();
             auto& transformcomp = entity.GetComponent<TransformComponent>();
 
-            pointLights.push_back(lightcomp.Light);
+            pointLights.push_back(lightcomp.Light.Ambient);
             positions.push_back(transformcomp.Position);
         }
 
@@ -36,20 +37,9 @@ namespace GLE {
 
             auto& mat = entity.GetComponent<MaterialComponent>();
             auto& material = mat.Material;
-
-            //GLE_ASSERT(material != nullptr, "Material IS NULL");
-
             auto& shader = *material.Shader;
 
-            shader.Bind();
-
-            for(int i = 0; i < pointLights.size(); i++) {
-                std::string index =
-                        std::string("uPointLights[").
-                                append(std::to_string(i)).
-                                append("]");
-                shader.SetPointLight(index, pointLights[i], positions[i]);
-            }
+            Renderer::BindLights(pointLights, shader, positions);
         }
     }
 }

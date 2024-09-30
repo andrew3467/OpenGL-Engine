@@ -203,7 +203,7 @@ namespace GLE {
 
 
 
-    //region Uniforms
+    #pragma region Uniforms
 
     void Shader::SetFloat(const char *name, float v) {
         glUniform1f(GetUniformLoc(name), v);
@@ -246,11 +246,11 @@ namespace GLE {
     }
 
     void Shader::SetPointLight(std::string& name, const PointLight &light, const glm::vec3& position) {
-        SetFloat3((name + ".Position").c_str(), glm::vec3(1, 0, 0));
+        SetFloat3((name + ".Position").c_str(), position);
         SetFloat3((name + ".Color").c_str(), light.Ambient);
     }
 
-    //endregion
+#pragma endregion
 }
 
 

@@ -75,8 +75,8 @@ namespace GLE {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-        glTexSubImage2D(
-            mRendererID,
+        GL_CHECK(glTexSubImage2D(
+            GL_TEXTURE_2D,
             0,
             0,
             0,
@@ -85,7 +85,7 @@ namespace GLE {
             mDataFormat,
             GL_UNSIGNED_BYTE,
             data
-        );
+        ));
 
         glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -104,19 +104,20 @@ namespace GLE {
 #pragma region Texture2D
 
 
-    Texture2D::Texture2D(int width, int height)
-    {
+    Texture2D::Texture2D(int width, int height, const std::string& name) {
+        mName = name;
+
         mWidth = width;
         mHeight = height;
         mChannels = 4;
 
-        mInternalFormat = GL_RGBA;
+        mInternalFormat = GL_RGBA8;
         mDataFormat = GL_RGBA;
 
         glGenTextures(1, &mRendererID);
         glBindTexture(GL_TEXTURE_2D, mRendererID);
 
-        glTexStorage2D(GL_TEXTURE_2D, 1, mInternalFormat, mWidth, mHeight);
+        GL_CHECK(glTexStorage2D(GL_TEXTURE_2D, 1, mInternalFormat, mWidth, mHeight));
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -134,12 +135,14 @@ namespace GLE {
         glDeleteTextures(1, &mRendererID);
     }
 
-    void Texture2D::SetData(void *data, uint32_t size) {
+    void Texture2D::SetData(void *data, uint32_t size) const {
         uint32_t bpp = mDataFormat == GL_RGB ? 3 : 4;
         GLE_ASSERT(size == mWidth * mHeight * bpp, "Data must consist of entire texture!");
 
-        glTexSubImage2D(
-            mRendererID,
+        glBindTexture(GL_TEXTURE_2D, mRendererID);
+
+        GL_CHECK(glTexSubImage2D(
+            GL_TEXTURE_2D,
             0,
             0,
             0,
@@ -148,7 +151,7 @@ namespace GLE {
             mDataFormat,
             GL_UNSIGNED_BYTE,
             data
-            );
+            ));
     }
 
     void Texture::Bind(int loc) const {

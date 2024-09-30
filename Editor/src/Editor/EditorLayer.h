@@ -8,7 +8,6 @@
 #include "Windows/SceneHierarchy.h"
 #include "GLE/Core/Layer.h"
 
-
 class Event;
 
 namespace GLE {

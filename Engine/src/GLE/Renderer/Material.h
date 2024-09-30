@@ -12,22 +12,18 @@
 namespace GLE {
     class Material {
     public:
-        static std::shared_ptr<Material> Create() {return std::make_shared<Material>(); }
-
         Material() {
-            Shader = Shader::Get("Standard");
+            Shader = Shader::Get("Unlit");
             
             AlbedoMap = Texture2D::Get("Default");
             NormalMap = Texture2D::Get("Default");
             DiffuseMap = Texture2D::Get("Default");
         }
-        Material(const Material&) = delete;
 
+        Material(const Material&) = default;
         ~Material() = default;
 
 
-
-    public:
         std::shared_ptr<Shader> Shader = nullptr;
 
         glm::vec3 Albedo = glm::vec3(1.0f, 1.0f, 1.0f);

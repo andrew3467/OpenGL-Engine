@@ -29,6 +29,8 @@ namespace GLE {
         [[nodiscard]] uint32_t GetWidth() const {return mWidth;}
         [[nodiscard]] uint32_t GetHeight() const {return mHeight;}
         [[nodiscard]] const std::string& GetName() const {return mName;}
+        [[nodiscard]] uint32_t GetID() const {return mRendererID;}
+        void SetName(const std::string& name) {mName = name;}
 
 
     protected:
@@ -50,16 +52,16 @@ namespace GLE {
     class Texture2D : public Texture {
     public:
         static std::shared_ptr<Texture2D> Create(const std::string& path) {return std::make_shared<Texture2D>(path);}
-        static std::shared_ptr<Texture2D> Create(int w, int h) {return std::make_shared<Texture2D>(w, h);}
+        static std::shared_ptr<Texture2D> Create(int w, int h, const std::string& name);
         static void Init();
         static std::shared_ptr<Texture2D> Get(const std::string& name);
         static std::unordered_map<std::string, std::shared_ptr<Texture2D>> GetTextures();
 
     public:
-        Texture2D(int width, int height);
+        Texture2D(int width, int height, const std::string& name);
         Texture2D(const std::string& path);
         ~Texture2D();
 
-        void SetData(void* data, uint32_t size);
+        void SetData(void* data, uint32_t size) const;
     };
 }

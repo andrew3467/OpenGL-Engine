@@ -17,7 +17,7 @@
 
 namespace GLE {
     Scene::Scene() {
-        mSystems.emplace_back(new LightSystem(this));
+        //mSystems.emplace_back(new LightSystem(this));
         mSystems.emplace_back(new RenderSystem(this));
     }
 

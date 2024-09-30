@@ -13,15 +13,21 @@ namespace fs = std::filesystem;
 namespace GLE {
     std::unordered_map<std::string, std::shared_ptr<Texture2D>> sTextures;
 
+    std::shared_ptr<Texture2D> Texture2D::Create(int w, int h, const std::string &name) {
+        auto tex = std::make_shared<Texture2D>(w, h, name);
+        sTextures[name] = tex;
+        return tex;
+    }
+
     void Texture2D::Init() {
         {
             GLE_INFO("Creating Default Texture");
 
-            auto defTex = Create(1,1);
+            auto defTex = Create(1,1, "Default");
             uint32_t data = 0xffffffff;
             defTex->SetData(&data, sizeof(uint32_t));
 
-            sTextures.emplace("Default", defTex);
+            sTextures.emplace(defTex->GetName(), defTex);
         }
 
 

@@ -5,6 +5,7 @@
 #include <variant>
 #include "Renderer/Renderer.h"
 
+#include "Framebuffer.h"
 #include "Core/Scene/ECS/Component/TransformComponent.h"
 #include "Renderer/PrimitiveType.h"
 #include "Renderer/Shader.h"
@@ -26,6 +27,8 @@
 #endif
 
 namespace GLE {
+    class Framebuffer;
+
     struct Vertex {
         glm::vec3 Position;
         glm::vec3 Normal;
@@ -37,13 +40,21 @@ namespace GLE {
         glm::vec3 ViewPos;
 
         std::vector<std::shared_ptr<VertexArray>> VAs;
+
+        std::vector<glm::vec3> LightColors;
+        std::vector<glm::vec3> LightPositions;
+
     };
 
     RendererData sData = {};
 
     RendererStats  Renderer::mStats = {};
 
+    Framebuffer *framebuffer;
+
     void InitData() {
+        framebuffer = new Framebuffer(1280, 720);
+
         sData.VAs.resize(2);
 
         {
@@ -267,23 +278,9 @@ namespace GLE {
         }
     }
 
-    void Renderer::BindLights(const std::vector<PointLight> &lights, Shader& shader, const std::vector<glm::vec3> &positions) {
-        shader.Bind();
-
-        shader.SetInt("uNumLights", lights.size());
-        for(int i = 0; i < lights.size(); i++) {
-            const PointLight &light = lights[i];
-
-            auto index = std::string("uPointLights[").append(std::to_string(i)).append("]");
-
-
-            shader.SetFloat3((index + ".Position").c_str(), positions[i]);
-            shader.SetFloat3((index + ".Color").c_str(), light.Ambient);
-
-            //shader.SetPointLight(index, light, positions[i]);
-        }
-
-        shader.SetFloat3("uViewPos", sData.ViewPos);
+    void Renderer::BindLights(const std::vector<glm::vec3> &lights, Shader& shader, const std::vector<glm::vec3> &positions) {
+        sData.LightColors = lights;
+        sData.LightPositions = positions;
     }
 
     void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform) {
@@ -293,10 +290,25 @@ namespace GLE {
     void Renderer::Submit(VertexArray &VA, Shader &shader, const glm::mat4 &transform) {
         shader.Bind();
 
+        shader.SetInt("uNumLights", sData.LightPositions.size());
+        for(int i = 0; i < sData.LightPositions.size(); i++) {
+            auto index = std::string("uPointLights[").append(std::to_string(i)).append("]");
+
+
+            shader.SetFloat3((index + ".Position").c_str(), sData.LightPositions[i]);
+            shader.SetFloat3((index + ".Color").c_str(), sData.LightColors[i]);
+        }
+
+        shader.SetFloat3("uViewPos", sData.ViewPos);
+
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", transform);
 
         mStats.NumDrawCalls++;
+        framebuffer->Bind();
+        RenderCommand::DrawIndexed(VA);
+        framebuffer->Unbind();
+        RenderCommand::ClearBuffers();
         RenderCommand::DrawIndexed(VA);
     }
 }
