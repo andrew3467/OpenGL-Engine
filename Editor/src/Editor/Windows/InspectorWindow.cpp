@@ -84,7 +84,7 @@ namespace GLE {
             if(enabled) {
                 ImGuiComboFlags flags = ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightRegular;
 
-                const char* items[] = {"Cube", "Sphere", "Capsule"};
+                const char* items[] = {"Quad", "Cube", "Sphere", "Capsule"};
                 static const char* curItem = items[0];
 
                 auto& renderer = curEntity.GetComponent<PrimitiveRendererComponent>();

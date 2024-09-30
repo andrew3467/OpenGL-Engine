@@ -30,7 +30,7 @@ namespace GLE {
                 auto& material = entity.GetComponent<MaterialComponent>().Material;
 
                 Renderer::BindMaterial(material);
-                Renderer::SubmitPrimitive(renderer.RenderType, *material.Shader, transform);
+                Renderer::SubmitPrimitive(renderer.RenderType, material, transform);
                 Renderer::UnbindMaterial(material);
             }
             else {

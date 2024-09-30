@@ -12,12 +12,10 @@
 #include "Renderer/VertexArray.h"
 #include "Renderer/Camera.h"
 #include "RenderCommand.h"
-#include "Texture.h"
 
 
 #include "GLFW/glfw3.h"
 #include "Glad/glad.h"
-#include "glm/gtx/rotate_vector.hpp"
 
 
 
@@ -26,7 +24,10 @@
 #include <windows.h>
 #endif
 
+
 namespace GLE {
+    using InstancedData = std::map<std::shared_ptr<VertexArray>, std::vector<glm::mat4>>;
+
     class Framebuffer;
 
     struct Vertex {
@@ -44,6 +45,7 @@ namespace GLE {
         std::vector<glm::vec3> LightColors;
         std::vector<glm::vec3> LightPositions;
 
+        std::map<Material, InstancedData> InstanceData;
     };
 
     RendererData sData = {};
@@ -55,7 +57,37 @@ namespace GLE {
     void InitData() {
         framebuffer = new Framebuffer(1280, 720);
 
-        sData.VAs.resize(2);
+        sData.VAs.resize(4);
+
+        {
+            GLuint indices[] = {
+                    0, 3, 2,
+                    2, 1, 0
+            };
+
+            Vertex vertices[] = {
+                    {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}},  // A 0
+                    {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}},  // B 1
+                    {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},  // C 2
+                    {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},  // D 3
+            };
+
+            auto VA = VertexArray::Create();
+
+            auto VB = VertexBuffer::Create(&vertices[0].Position.x, sizeof(vertices) / sizeof(float));
+            VB->SetLayout({
+                                  {ShaderDataType::Float3, "aPosition"},
+                                  {ShaderDataType::Float3, "aNormal"},
+                                  {ShaderDataType::Float2, "aTexCoord"},
+
+                          });
+            VA->SetVertexBuffer(VB);
+
+            auto IB = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+            VA->SetIndexBuffer(IB);
+
+            sData.VAs[(int)PrimitiveType::Quad] = VA;
+        }
 
         {
             GLuint indices[] = {
@@ -230,10 +262,6 @@ namespace GLE {
         mStats = {};
     }
 
-    void Renderer::RenderScene() {
-
-    }
-
     /// Note: All texture in shader programs must follow below bindings
     /// Albedo - 0
     /// Diffuse - 1
@@ -283,13 +311,14 @@ namespace GLE {
         sData.LightPositions = positions;
     }
 
-    void Renderer::SubmitPrimitive(PrimitiveType primitive, Shader& shader, const glm::mat4& transform) {
-         Submit(*sData.VAs[(int)primitive], shader, transform);
+    void Renderer::SubmitPrimitive(PrimitiveType primitive, Material& material, const glm::mat4& transform) {
+         Submit(sData.VAs[(int)primitive], material, transform);
     }
 
-    void Renderer::Submit(VertexArray &VA, Shader &shader, const glm::mat4 &transform) {
+    void Renderer::Submit(std::shared_ptr<VertexArray>& VA, Material &material, const glm::mat4 &transform) {
+        auto shader = *material.Shader;
         shader.Bind();
-
+#if 0
         shader.SetInt("uNumLights", sData.LightPositions.size());
         for(int i = 0; i < sData.LightPositions.size(); i++) {
             auto index = std::string("uPointLights[").append(std::to_string(i)).append("]");
@@ -298,17 +327,18 @@ namespace GLE {
             shader.SetFloat3((index + ".Position").c_str(), sData.LightPositions[i]);
             shader.SetFloat3((index + ".Color").c_str(), sData.LightColors[i]);
         }
+#endif
 
         shader.SetFloat3("uViewPos", sData.ViewPos);
 
         shader.SetFloat4x4("uViewProj", sData.ViewProj);
         shader.SetFloat4x4("uModel", transform);
 
-        mStats.NumDrawCalls++;
-        framebuffer->Bind();
-        RenderCommand::DrawIndexed(VA);
-        framebuffer->Unbind();
-        RenderCommand::ClearBuffers();
-        RenderCommand::DrawIndexed(VA);
+        //sData.InstanceData[material][VA].push_back(transform);
+
+        RenderCommand::DrawIndexed(*VA);
     }
-}
+
+    void Renderer::RenderScene() {
+    }
+};

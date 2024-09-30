@@ -35,9 +35,9 @@ namespace GLE {
         for(auto e : materialEntities) {
             Entity entity = {e, mScene};
 
-            auto& mat = entity.GetComponent<MaterialComponent>();
-            auto& material = mat.Material;
-            auto& shader = *material.Shader;
+            auto material = Material::Get(entity.GetComponent<MaterialComponent>().matID);
+            
+            auto& shader = *material->Shader;
 
             Renderer::BindLights(pointLights, shader, positions);
         }

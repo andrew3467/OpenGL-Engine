@@ -16,6 +16,6 @@ namespace GLE {
         MaterialComponent(const MaterialComponent&) {}
         ~MaterialComponent()  {}
 
-        GLE::Material Material;
+        MaterialID matID;
     };
 }
