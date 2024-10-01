@@ -18,6 +18,10 @@ namespace GLE {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    void RenderCommand::DrawIndexedInstanced(VertexArray &VA, uint32_t instanceCount) {
+        glDrawElementsInstanced(GL_TRIANGLES, VA.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr, instanceCount);
+    }
+
     void RenderCommand::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) {
         glViewport(x, y, width, height);
     }

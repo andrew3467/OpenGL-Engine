@@ -107,10 +107,12 @@ namespace GLE {
 
 class VertexBuffer {
     public:
-        inline static std::shared_ptr<VertexBuffer> Create(float* data, uint32_t count) {return std::make_shared<VertexBuffer>(data, count);}
+        static std::shared_ptr<VertexBuffer> Create(float* data, uint32_t count) {return std::make_shared<VertexBuffer>(data, count);}
 
         VertexBuffer(float* data, uint32_t count);
         ~VertexBuffer();
+
+        void SetData(float* data, uint32_t count) const;
 
         void SetLayout(const BufferLayout& layout) {mLayout = layout;}
         const BufferLayout& GetLayout() const {return mLayout;}

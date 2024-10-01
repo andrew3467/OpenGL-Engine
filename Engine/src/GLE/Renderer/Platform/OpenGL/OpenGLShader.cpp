@@ -193,9 +193,9 @@ namespace GLE {
         glUseProgram(0);
     }
 
-    uint32_t Shader::GetUniformLoc(const char *name) {
+    uint32_t Shader::GetUniformLoc(const std::string& name) {
         if(!mUniforms.contains(name)) {
-            mUniforms[name] = glGetUniformLocation(mRendererID, name);
+            mUniforms[name] = glGetUniformLocation(mRendererID, name.c_str());
         }
 
         return mUniforms[name];
@@ -203,51 +203,57 @@ namespace GLE {
 
 
 
-    #pragma region Uniforms
 
-    void Shader::SetFloat(const char *name, float v) {
+#pragma region Uniforms
+
+    void Shader::SetBool(const std::string& name, bool value) {
+        glUniform1i(GetUniformLoc(name), value);
+    }
+
+
+    void Shader::SetFloat(const std::string& name, float v) {
         glUniform1f(GetUniformLoc(name), v);
     }
 
-    void Shader::SetFloat2(const char *name, const glm::vec2 &v) {
+    void Shader::SetFloat2(const std::string& name, const glm::vec2 &v) {
         glUniform2f(GetUniformLoc(name), v.x, v.y);
     }
 
-    void Shader::SetFloat3(const char *name, const glm::vec3& v) {
+    void Shader::SetFloat3(const std::string& name, const glm::vec3& v) {
         glUniform3f(GetUniformLoc(name), v.x, v.y, v.z);
     }
 
-    void Shader::SetFloat4(const char *name, const glm::vec4 &v) {
+    void Shader::SetFloat4(const std::string& name, const glm::vec4 &v) {
         glUniform4f(GetUniformLoc(name), v.x, v.y, v.z, v.w);
     }
 
-    void Shader::SetInt(const char *name, int v) {
+    void Shader::SetInt(const std::string& name, int v) {
         glUniform1i(GetUniformLoc(name), v);
     }
 
-    void Shader::SetInt2(const char *name, const glm::ivec2 &v) {
+    void Shader::SetInt2(const std::string& name, const glm::ivec2 &v) {
         glUniform2i(GetUniformLoc(name), v.x, v.y);
     }
 
-    void Shader::SetInt3(const char *name, const glm::ivec3 &v) {
+    void Shader::SetInt3(const std::string& name, const glm::ivec3 &v) {
         glUniform3i(GetUniformLoc(name), v.x, v.y, v.z);
     }
 
-    void Shader::SetInt4(const char *name, const glm::ivec4 &v) {
+    void Shader::SetInt4(const std::string& name, const glm::ivec4 &v) {
         glUniform4i(GetUniformLoc(name), v.x, v.y, v.z, v.w);
     }
 
-    void Shader::SetFloat4x4(const char *name, const glm::mat4 &v) {
+    void Shader::SetFloat4x4(const std::string& name, const glm::mat4 &v) {
         glUniformMatrix4fv(GetUniformLoc(name), 1, GL_FALSE, glm::value_ptr(v));
     }
 
-    void Shader::SetFloat3x3(const char *name, const glm::mat3 &v) {
+    void Shader::SetFloat3x3(const std::string& name, const glm::mat3 &v) {
         glUniformMatrix3fv(GetUniformLoc(name), 1, GL_FALSE, glm::value_ptr(v));
     }
 
     void Shader::SetPointLight(std::string& name, const PointLight &light, const glm::vec3& position) {
-        SetFloat3((name + ".Position").c_str(), position);
-        SetFloat3((name + ".Color").c_str(), light.Ambient);
+        SetFloat3(name + ".Position", position);
+        SetFloat3(name + ".Color", light.Ambient);
     }
 
 #pragma endregion

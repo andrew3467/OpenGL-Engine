@@ -21,7 +21,9 @@
 
 #include <string>
 #include <functional>
+#include <glad/glad.h>
 
+#include "Input.h"
 #include "Renderer/Shader.h"
 
 #define BIT(x) (1 << x)
@@ -57,6 +59,8 @@ namespace GLE {
         //Init after opengl bindings are generated
         Shader::Init();
         Texture2D::Init();
+
+        Material::DefaultMaterial = Material::Create();
 
         Renderer::SetClearColor(0.2, 0.2, 0.2);
 
@@ -94,6 +98,12 @@ namespace GLE {
             Renderer::Clear();
 
             Time::Update();
+
+            static bool wireframe = false;
+            if(Input::GetKey(GLFW_KEY_SPACE)) {
+                glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_FILL : GL_LINE);
+                wireframe = !wireframe;
+            }
         }
     }
 

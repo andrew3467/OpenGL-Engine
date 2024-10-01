@@ -13,15 +13,23 @@ out VS_OUT{
 } vs_out;
 
 uniform mat4 uViewProj;
-uniform mat4 uModel;
+uniform mat4 uModels[256];
+
+uniform bool uInstanced;
 
 void main() {
     vs_out.Normal = aNormal;
     vs_out.TexCoord = aTexCoord;
 
-    vs_out.FragPos = vec3(uModel * vec4(aPosition, 1));
+    if (uInstanced) {
+        gl_Position = uViewProj * uModels[gl_InstanceID] * vec4(aPosition, 1.0);
+        vs_out.FragPos = vec3(uModels[gl_InstanceID] * vec4(aPosition, 1));
+    } else {
+        gl_Position = uViewProj * uModels[0] * vec4(aPosition, 1.0);
+        vs_out.FragPos = vec3(uModels[0] * vec4(aPosition, 1));
+    }
 
-    gl_Position = uViewProj * uModel * vec4(aPosition, 1.0);
+    gl_Position = vec4(aPosition, 1);
 }
 
 

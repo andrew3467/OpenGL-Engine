@@ -43,8 +43,8 @@ namespace GLE {
         glBindVertexArray(0);
     }
 
-    void VertexArray::SetVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer) {
-        mVertexBuffer = buffer;
+    void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer) {
+        mVertexBuffers.push_back(buffer);
 
         glBindVertexArray(mRendererID);
         buffer->Bind();

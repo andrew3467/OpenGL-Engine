@@ -12,6 +12,7 @@
 #include "Renderer/VertexArray.h"
 #include "Renderer/Camera.h"
 #include "RenderCommand.h"
+#include "Core/Input.h"
 
 
 #include "GLFW/glfw3.h"
@@ -42,10 +43,13 @@ namespace GLE {
 
         std::vector<std::shared_ptr<VertexArray>> VAs;
 
+        std::shared_ptr<VertexBuffer> InstanceVBO;
+
+
         std::vector<glm::vec3> LightColors;
         std::vector<glm::vec3> LightPositions;
 
-        std::map<Material, InstancedData> InstanceData;
+        std::map<MaterialID, InstancedData> InstanceData;
     };
 
     RendererData sData = {};
@@ -56,6 +60,10 @@ namespace GLE {
 
     void InitData() {
         framebuffer = new Framebuffer(1280, 720);
+        sData.InstanceVBO = VertexBuffer::Create(nullptr, 0);
+        sData.InstanceVBO->SetLayout({
+                {ShaderDataType::Mat4, "aModel"}
+        });
 
         sData.VAs.resize(4);
 
@@ -79,9 +87,9 @@ namespace GLE {
                                   {ShaderDataType::Float3, "aPosition"},
                                   {ShaderDataType::Float3, "aNormal"},
                                   {ShaderDataType::Float2, "aTexCoord"},
-
                           });
-            VA->SetVertexBuffer(VB);
+            VA->AddVertexBuffer(VB);
+            VA->AddVertexBuffer(sData.InstanceVBO);
 
             auto IB = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
             VA->SetIndexBuffer(IB);
@@ -142,12 +150,13 @@ namespace GLE {
 
             auto VB = VertexBuffer::Create(&vertices[0].Position.x, sizeof(vertices) / sizeof(float));
             VB->SetLayout({
-                                  {ShaderDataType::Float3, "aPosition"},
-                                  {ShaderDataType::Float3, "aNormal"},
-                                  {ShaderDataType::Float2, "aTexCoord"},
+                                      {ShaderDataType::Float3, "aPosition"},
+                                      {ShaderDataType::Float3, "aNormal"},
+                                      {ShaderDataType::Float2, "aTexCoord"},
 
                           });
-            VA->SetVertexBuffer(VB);
+            VA->AddVertexBuffer(VB);
+            VA->AddVertexBuffer(sData.InstanceVBO);
 
             auto IB = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
             VA->SetIndexBuffer(IB);
@@ -254,12 +263,13 @@ namespace GLE {
     }
 
 
-    void Renderer::StartScene(Camera& camera) {
+    void Renderer::StartScene(const Camera& camera) {
         //ViewProj == Proj * View
         sData.ViewProj = camera.GetViewProjection();
         sData.ViewPos = camera.GetPosition();
 
         mStats = {};
+        sData.InstanceData.clear();
     }
 
     /// Note: All texture in shader programs must follow below bindings
@@ -267,8 +277,9 @@ namespace GLE {
     /// Diffuse - 1
     /// Normal - 2
     /// Roughness - 3
-    void Renderer::BindMaterial(const Material &material) {
-        auto& shader = material.Shader;
+    void Renderer::BindMaterial(const MaterialID &materialID) {
+        const auto& material = *Material::Get(materialID);
+        const auto& shader = material.Shader;
 
         if(!shader) {
             GLE_ERROR("ERROR: Material passed to BindMaterial missing shader");
@@ -292,7 +303,8 @@ namespace GLE {
         }
     }
 
-    void Renderer::UnbindMaterial(const Material &material) {
+    void Renderer::UnbindMaterial(const MaterialID &materialID) {
+        auto& material = *Material::Get(materialID);
         if(material.AlbedoMap != nullptr) {
             material.AlbedoMap->Unbind();
         }
@@ -311,13 +323,11 @@ namespace GLE {
         sData.LightPositions = positions;
     }
 
-    void Renderer::SubmitPrimitive(PrimitiveType primitive, Material& material, const glm::mat4& transform) {
-         Submit(sData.VAs[(int)primitive], material, transform);
+    void Renderer::SubmitPrimitive(PrimitiveType primitive, const MaterialID& materialID, const glm::mat4& transform) {
+         Submit(sData.VAs[(int)primitive], materialID, transform);
     }
 
-    void Renderer::Submit(std::shared_ptr<VertexArray>& VA, Material &material, const glm::mat4 &transform) {
-        auto shader = *material.Shader;
-        shader.Bind();
+    void Renderer::Submit(std::shared_ptr<VertexArray>& VA, const MaterialID &materialID, const glm::mat4 &transform) {
 #if 0
         shader.SetInt("uNumLights", sData.LightPositions.size());
         for(int i = 0; i < sData.LightPositions.size(); i++) {
@@ -329,16 +339,52 @@ namespace GLE {
         }
 #endif
 
-        shader.SetFloat3("uViewPos", sData.ViewPos);
-
-        shader.SetFloat4x4("uViewProj", sData.ViewProj);
-        shader.SetFloat4x4("uModel", transform);
-
-        //sData.InstanceData[material][VA].push_back(transform);
-
-        RenderCommand::DrawIndexed(*VA);
+        sData.InstanceData[materialID][VA].push_back(transform);
     }
 
+    bool sDrawInstanced = true;
     void Renderer::RenderScene() {
+        if(Input::GetKey(GLFW_KEY_F)) {
+            sDrawInstanced = !sDrawInstanced;
+        }
+
+        for(auto& materialIT : sData.InstanceData) {
+            auto& matID = materialIT.first;
+            auto& material = *Material::Get(matID);
+            auto& shader = material.Shader;
+
+            shader->Bind();
+            BindMaterial(matID);
+
+            shader->SetFloat4x4("uViewProj", sData.ViewProj);
+            shader->SetFloat3("uViewPos", sData.ViewPos);
+            shader->SetBool("uInstanced", sDrawInstanced);
+
+            for(auto& [VA, models] : materialIT.second) {
+                sData.InstanceVBO->SetData((float*)(&models[0]), models.size());
+
+                if(sDrawInstanced) {
+                    for(int i = 0; i < models.size(); i++) {
+                        shader->SetFloat4x4("uModels[" + std::to_string(i) + "]", models[i]);
+                    }
+
+                    shader->SetFloat4x4("uModel", models[0]);
+
+                    mStats.NumDrawCalls++;
+                    RenderCommand::DrawIndexedInstanced(*VA, models.size());
+
+                } else {
+                    for(auto& model : models) {
+                        shader->SetFloat4x4("uModels[0]", model);
+                        shader->SetFloat4x4("uModel", model);
+
+                        mStats.NumDrawCalls++;
+                        RenderCommand::DrawIndexed(*VA);
+                    }
+                }
+             }
+
+            UnbindMaterial(matID);
+        }
     }
 };

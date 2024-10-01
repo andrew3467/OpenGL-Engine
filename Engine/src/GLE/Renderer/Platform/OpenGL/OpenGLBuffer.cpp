@@ -21,6 +21,11 @@ namespace GLE {
         glDeleteBuffers(1, &mRendererID);
     }
 
+    void VertexBuffer::SetData(float *data, uint32_t count) const {
+        glBindBuffer(GL_ARRAY_BUFFER, mRendererID);
+        glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), data, GL_STATIC_DRAW);
+    }
+
     void VertexBuffer::Bind() const {
         glBindBuffer(GL_ARRAY_BUFFER, mRendererID);
     }

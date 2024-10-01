@@ -47,7 +47,6 @@ namespace GLE
         auto cubeEnt = mScene->CreateEntity("Cube");
         cubeEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
         auto& matcomp = cubeEnt.AddComponent<MaterialComponent>();
-        matcomp.Material.AlbedoMap = Texture2D::Get("bricks");
     }
 
     void EditorLayer::OnUpdate(float dt)

@@ -20,17 +20,19 @@ namespace GLE {
         void Bind();
         void Unbind();
 
-        inline VertexBuffer& GetVertexBuffer() { return *mVertexBuffer;}
-        inline IndexBuffer& GetIndexBuffer() { return *mIndexBuffer;}
+        std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffer() { return mVertexBuffers;}
+        IndexBuffer& GetIndexBuffer() { return *mIndexBuffer;}
 
-        void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& buffer);
+        void AddVertexBuffer(const std::shared_ptr<VertexBuffer> & vb);
         void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& buffer);
+
+
 
     private:
         uint32_t mRendererID;
         uint32_t mVertexBufferIndex = 0;
 
-        std::shared_ptr<VertexBuffer> mVertexBuffer;
+        std::vector<std::shared_ptr<VertexBuffer>> mVertexBuffers;
         std::shared_ptr<IndexBuffer> mIndexBuffer;
     };
 }

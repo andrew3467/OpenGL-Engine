@@ -18,6 +18,7 @@ namespace GLE {
     public:
         static MaterialID Create();
         static std::shared_ptr<Material> Get(MaterialID id);
+        static MaterialID DefaultMaterial;
 
     public:
 
@@ -32,7 +33,7 @@ namespace GLE {
         Material(const Material&) = default;
         ~Material() = default;
 
-        MaterialID GetID() const {return mID;}
+        [[nodiscard]] MaterialID GetID() const {return mID;}
 
 
         std::shared_ptr<Shader> Shader = nullptr;

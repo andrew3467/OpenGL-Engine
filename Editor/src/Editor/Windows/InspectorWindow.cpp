@@ -82,12 +82,12 @@ namespace GLE {
         if(curEntity.HasComponent<PrimitiveRendererComponent>()){
             enabled = ImGui::TreeNodeEx((void*)1,flags, "Primitive Renderer");
             if(enabled) {
-                ImGuiComboFlags flags = ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightRegular;
+                auto& renderer = curEntity.GetComponent<PrimitiveRendererComponent>();
 
                 const char* items[] = {"Quad", "Cube", "Sphere", "Capsule"};
-                static const char* curItem = items[0];
+                static const char* curItem = items[(int)renderer.RenderType];
 
-                auto& renderer = curEntity.GetComponent<PrimitiveRendererComponent>();
+                ImGuiComboFlags flags = ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightRegular;
                 if(ImGui::BeginCombo(curItem, "", flags)) {
 
                     for(int i = 0; i < IM_ARRAYSIZE(items); i++) {
@@ -125,7 +125,7 @@ namespace GLE {
         if(curEntity.HasComponent<MaterialComponent>()) {
             enabled = ImGui::TreeNodeEx((void*)3,flags, "Material");
             if(enabled) {
-                auto& material = curEntity.GetComponent<MaterialComponent>().Material;
+                auto& material = *Material::Get(curEntity.GetComponent<MaterialComponent>().matID);
 
                 material.Shader = DrawShaderSelectionWindow(material.Shader);
                 ImGui::Spacing();

@@ -7,6 +7,8 @@
 namespace GLE {
     std::unordered_map<MaterialID, std::shared_ptr<Material>> sMaterials;
 
+    MaterialID Material::DefaultMaterial;
+
     MaterialID Material::Create()
     {
         auto mat = std::make_shared<Material>();

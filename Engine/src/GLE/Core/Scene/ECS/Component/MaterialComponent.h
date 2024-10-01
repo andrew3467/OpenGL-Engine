@@ -12,10 +12,12 @@
 namespace GLE {
 
     struct MaterialComponent {
-        MaterialComponent() {}
+        MaterialComponent() {
+            matID = Material::DefaultMaterial;
+        }
         MaterialComponent(const MaterialComponent&) {}
         ~MaterialComponent()  {}
 
-        MaterialID matID;
+        MaterialID matID = 0;
     };
 }

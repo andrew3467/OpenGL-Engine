@@ -32,15 +32,15 @@ namespace GLE {
         static void SetClearColor(float r, float g, float b);
         static void Clear();
 
-        static void StartScene(Camera& camera);
+        static void StartScene(const Camera& camera);
         static void RenderScene();
 
-        static void BindMaterial(const Material &material);
-        static void UnbindMaterial(const Material &material);
+        static void BindMaterial(const MaterialID &materialID);
+        static void UnbindMaterial(const MaterialID &materialID);
 
         static void BindLights(const std::vector<glm::vec3> &lights, Shader& shader, const std::vector<glm::vec3> &positions);
-        static void SubmitPrimitive(PrimitiveType primitive, Material& material, const glm::mat4& transform);
-        static void Submit(std::shared_ptr<VertexArray>& VA, Material& material, const glm::mat4& transform);
+        static void SubmitPrimitive(PrimitiveType primitive, const MaterialID& materialID, const glm::mat4& transform);
+        static void Submit(std::shared_ptr<VertexArray>& VA, const MaterialID& materialID, const glm::mat4& transform);
 
     private:
         static bool sInitialized;

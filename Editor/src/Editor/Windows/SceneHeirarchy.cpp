@@ -50,7 +50,7 @@ namespace GLE
                 {
                     auto entity = mActiveScene->CreateEntity("Cube");
                     entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
-                    entity.AddComponent<MaterialComponent>().Material.Shader = Shader::Get("Unlit");
+                    entity.AddComponent<MaterialComponent>();
 
                     mSelectedEntity = entity;
                 }

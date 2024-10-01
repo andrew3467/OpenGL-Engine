@@ -15,6 +15,8 @@ namespace GLE {
         void DrawIndexed(VertexArray &VA);
 
         void ClearBuffers();
+
+        void DrawIndexedInstanced(VertexArray &VA, uint32_t instanceCount);
     }
 }
 
