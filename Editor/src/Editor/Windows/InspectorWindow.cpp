@@ -12,7 +12,9 @@
 
 
 namespace GLE {
-    InspectorWindow::InspectorWindow() {
+    InspectorWindow::InspectorWindow()
+        : EditorWindow("Inspector")
+    {
 
     }
 
@@ -22,14 +24,14 @@ namespace GLE {
 
     void InspectorWindow::ImGuiRender() {
 
-        ImGui::Begin("Inspector");
+        ImGui::Begin(mName.c_str());
 
-        if(!SceneHierarchy::mSelectedEntity) {
+        if(!EditorWindow::GetSelectedEntity()) {
             ImGui::End();
             return;
         }
 
-        auto& curEntity = SceneHierarchy::mSelectedEntity;
+        auto curEntity = EditorWindow::GetSelectedEntity();
 
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected;
         flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -287,7 +289,7 @@ namespace GLE {
     template<typename C>
     void InspectorWindow::AddComponentDisplay(const std::string& name)
     {
-        auto& selection = SceneHierarchy::mSelectedEntity;
+        auto selection = EditorWindow::GetSelectedEntity();
         if(selection.GetHandle() != entt::null) {
             if(!selection.HasComponent<C>()) {
                 if(ImGui::MenuItem(name.c_str())) {

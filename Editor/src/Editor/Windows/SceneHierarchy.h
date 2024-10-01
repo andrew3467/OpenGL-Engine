@@ -23,8 +23,5 @@ namespace GLE {
 
     private:
         friend class Scene;
-
-    public:
-        static Entity mSelectedEntity;
     };
 }

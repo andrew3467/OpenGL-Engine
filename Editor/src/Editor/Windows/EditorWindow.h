@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <Core/Scene/ECS/Entity.h>
+
 namespace GLE {
     class Scene;
 
@@ -13,13 +15,18 @@ namespace GLE {
         static void PushWindow(EditorWindow* window);
         static void PopWindow();
 
+        static void SetSelectedEntity(const Entity& entity);
+        static Entity GetSelectedEntity();
+
     public:
-        EditorWindow() = default;
+        EditorWindow(const std::string& name = "New Window") : mName(name) {}
         virtual ~EditorWindow() {
             for(auto& window : sActiveWindows) {
                 delete window;
             }
         }
+
+        const std::string& GetName() const {return mName;}
 
         void SetScene(const std::shared_ptr<Scene>& scene) {mActiveScene = scene;}
 
@@ -28,6 +35,8 @@ namespace GLE {
 
     protected:
         std::shared_ptr<Scene> mActiveScene;
+
+        std::string mName;
 
 
     private:

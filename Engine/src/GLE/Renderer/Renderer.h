@@ -33,6 +33,7 @@ namespace GLE {
         static void Clear();
 
         static void StartScene(const Camera& camera);
+        static void EndScene();
         static void RenderScene();
 
         static void BindMaterial(const MaterialID &materialID);

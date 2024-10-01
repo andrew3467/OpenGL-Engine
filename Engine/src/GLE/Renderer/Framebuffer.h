@@ -21,6 +21,7 @@ namespace GLE {
 
     private:
         uint32_t mRendererID = 0;
+        uint32_t mWidth = 0, mHeight = 0;
 
         std::shared_ptr<Texture2D> mOutputTexture;
     };

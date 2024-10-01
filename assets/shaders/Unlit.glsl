@@ -9,6 +9,9 @@ layout (location = 2) in vec2 aTexCoord;
 layout (location = 3) in mat4 aModel;
 
 
+
+in int gl_InstanceID;
+
 out VS_OUT{
     vec3 FragPos;
     vec2 TexCoord;
@@ -21,11 +24,13 @@ uniform mat4 uModel;
 
 uniform bool uInstanced;
 
+
+
 void main() {
     vs_out.TexCoord = aTexCoord;
 
-    gl_Position = uViewProj * aModel * vec4(aPosition, 1.0);
-    vs_out.FragPos = vec3(aModel * vec4(aPosition, 1));
+    gl_Position = uViewProj * uModels[gl_InstanceID] * vec4(aPosition, 1.0);
+    vs_out.FragPos = vec3(uModels[gl_InstanceID] * vec4(aPosition, 1));
 }
 
 
@@ -49,5 +54,5 @@ layout (binding = 0) uniform sampler2D uAlbedoMap;
 
 
 void main() {
-    FragColor = vec4(uColor, 1.0) * texture(uAlbedoMap, fs_in.TexCoord);
+    FragColor = vec4(uColor, 1) * texture(uAlbedoMap, fs_in.TexCoord);
 }

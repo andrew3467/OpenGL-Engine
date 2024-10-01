@@ -23,7 +23,7 @@ namespace GLE {
         std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffer() { return mVertexBuffers;}
         IndexBuffer& GetIndexBuffer() { return *mIndexBuffer;}
 
-        void AddVertexBuffer(const std::shared_ptr<VertexBuffer> & vb);
+        void AddVertexBuffer(const std::shared_ptr<VertexBuffer> & vb, bool instanced = false);
         void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& buffer);
 
 

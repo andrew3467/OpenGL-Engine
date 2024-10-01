@@ -12,9 +12,8 @@
 
 namespace GLE
 {
-    Entity SceneHierarchy::mSelectedEntity;
-
     SceneHierarchy::SceneHierarchy()
+        : EditorWindow("Scene Hierarchy")
     {
 
     }
@@ -28,12 +27,12 @@ namespace GLE
     {
 
 
-        ImGui::Begin("Scene Hierarchy");
+        ImGui::Begin(mName.c_str());
 
         //Deselect
         if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
         {
-            mSelectedEntity = {};
+            EditorWindow::SetSelectedEntity(Entity());
         }
 
         // Right-click on blank space
@@ -44,7 +43,7 @@ namespace GLE
             {
                 if (ImGui::MenuItem("Empty"))
                 {
-                    mSelectedEntity = mActiveScene->CreateEntity("Empty");
+                   EditorWindow::SetSelectedEntity(mActiveScene->CreateEntity("Empty"));
                 }
                 if (ImGui::MenuItem("Cube"))
                 {
@@ -52,7 +51,7 @@ namespace GLE
                     entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
                     entity.AddComponent<MaterialComponent>();
 
-                    mSelectedEntity = entity;
+                    EditorWindow::SetSelectedEntity(entity);
                 }
 
                 ImGui::NewLine();
@@ -68,7 +67,7 @@ namespace GLE
 
                     entity.GetComponent<TransformComponent>().Scale = glm::vec3(0.1f);
 
-                    mSelectedEntity = entity;
+                    EditorWindow::SetSelectedEntity(entity);
                 }
 
                 ImGui::EndMenu();
@@ -103,7 +102,7 @@ namespace GLE
         bool opened = ImGui::TreeNodeEx((void*)entity.GetHandle(), flags, name.c_str());
         if (ImGui::IsMouseDown(0) && ImGui::IsItemClicked())
         {
-            mSelectedEntity = entity;
+            EditorWindow::SetSelectedEntity(entity);
         }
 
 

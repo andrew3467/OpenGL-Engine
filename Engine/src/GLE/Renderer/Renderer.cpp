@@ -343,11 +343,24 @@ namespace GLE {
     }
 
     bool sDrawInstanced = true;
-    void Renderer::RenderScene() {
+    void Renderer::EndScene() {
         if(Input::GetKey(GLFW_KEY_F)) {
             sDrawInstanced = !sDrawInstanced;
         }
 
+        //Framebuffer pass
+        framebuffer->Bind();
+        RenderScene();
+        framebuffer->Unbind();
+        RenderCommand::ClearBuffers();
+
+        //Primary Pass
+        RenderScene();
+
+    }
+
+    void Renderer::RenderScene()
+    {
         for(auto& materialIT : sData.InstanceData) {
             auto& matID = materialIT.first;
             auto& material = *Material::Get(matID);
@@ -382,7 +395,7 @@ namespace GLE {
                         RenderCommand::DrawIndexed(*VA);
                     }
                 }
-             }
+            }
 
             UnbindMaterial(matID);
         }

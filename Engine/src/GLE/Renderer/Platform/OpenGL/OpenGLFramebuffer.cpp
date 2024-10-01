@@ -9,7 +9,9 @@
 #include <glad/glad.h>
 
 namespace GLE {
-    Framebuffer::Framebuffer(int width, int height) {
+    Framebuffer::Framebuffer(int width, int height)
+        : mWidth(width), mHeight(height)
+    {
         mOutputTexture = Texture2D::Create(width, height, "Framebuffer output");
 
         glGenFramebuffers(1, &mRendererID);

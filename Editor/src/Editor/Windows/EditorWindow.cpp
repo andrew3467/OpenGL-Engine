@@ -7,7 +7,7 @@
 
 namespace GLE {
     std::vector<EditorWindow*> EditorWindow::sActiveWindows;
-
+    Entity sSelectedEntity;
 
     void EditorWindow::PushWindow(EditorWindow *window) {
         sActiveWindows.push_back(window);
@@ -21,5 +21,15 @@ namespace GLE {
         for(auto& window : sActiveWindows) {
             window->ImGuiRender();
         }
+    }
+
+    void EditorWindow::SetSelectedEntity(const Entity &entity)
+    {
+        sSelectedEntity = entity;
+    }
+
+    Entity EditorWindow::GetSelectedEntity()
+    {
+        return sSelectedEntity;
     }
 }

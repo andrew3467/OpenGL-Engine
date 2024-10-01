@@ -5,6 +5,7 @@
 #include "EditorLayer.h"
 
 #include <glm/vec3.hpp>
+#include <Windows/AssetBrowserWindow.h>
 
 #include "EditorCameraController.h"
 #include "imgui.h"
@@ -44,6 +45,10 @@ namespace GLE
         inspectorWindow->SetScene(mScene);
         EditorWindow::PushWindow(inspectorWindow);
 
+        auto assetBrowser = new AssetBrowserWindow;
+        assetBrowser->SetScene(mScene);
+        EditorWindow::PushWindow(assetBrowser);
+
         auto cubeEnt = mScene->CreateEntity("Cube");
         cubeEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
         auto& matcomp = cubeEnt.AddComponent<MaterialComponent>();
@@ -55,7 +60,7 @@ namespace GLE
 
         Renderer::StartScene(sceneCamera.GetCamera());
         mScene->Update(dt);
-        Renderer::RenderScene();
+        Renderer::EndScene();
     }
 
     void EditorLayer::OnImGuiRender()

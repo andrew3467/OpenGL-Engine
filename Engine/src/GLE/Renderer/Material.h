@@ -18,11 +18,15 @@ namespace GLE {
     public:
         static MaterialID Create();
         static std::shared_ptr<Material> Get(MaterialID id);
+        static std::vector<std::shared_ptr<Material>> GetMaterials();
+
         static MaterialID DefaultMaterial;
 
     public:
 
-        Material() {
+        Material()
+            : mName("New Material")
+        {
             Shader = Shader::Get("Unlit");
             
             AlbedoMap = Texture2D::Get("Default");
@@ -33,8 +37,13 @@ namespace GLE {
         Material(const Material&) = default;
         ~Material() = default;
 
+        void SetName(const std::string& name) {mName = name;}
+        const std::string& GetName() const {return mName;}
+
         [[nodiscard]] MaterialID GetID() const {return mID;}
 
+
+        std::string mName;
 
         std::shared_ptr<Shader> Shader = nullptr;
 

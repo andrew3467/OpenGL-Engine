@@ -25,4 +25,15 @@ namespace GLE {
         GLE_ASSERT(false, "Invalid Material ID!");
         return nullptr;
     }
+
+    std::vector<std::shared_ptr<Material>> Material::GetMaterials()
+    {
+        std::vector<std::shared_ptr<Material>> mats;
+
+        for(auto& [id, material] : sMaterials) {
+            mats.push_back(material);
+        }
+
+        return mats;
+    }
 }

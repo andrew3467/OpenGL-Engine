@@ -43,14 +43,13 @@ namespace GLE {
         glBindVertexArray(0);
     }
 
-    void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer) {
+    void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer> &buffer, bool instanced) {
         mVertexBuffers.push_back(buffer);
 
         glBindVertexArray(mRendererID);
         buffer->Bind();
 
 
-        int index = 0;
         const auto& layout = buffer->GetLayout();
         for(const auto& element : layout) {
             switch (element.Type)
@@ -82,6 +81,10 @@ namespace GLE {
                         ShaderDataTypeToOpenGLBaseType(element.Type),
                         layout.GetStride(),
                         (const void*)element.Offset);
+
+                    if(instanced)
+                        glVertexAttribDivisor(0,1);
+
                     mVertexBufferIndex++;
                     break;
                 }
@@ -101,6 +104,9 @@ namespace GLE {
                         glVertexAttribDivisor(mVertexBufferIndex, 1);
                         mVertexBufferIndex++;
                     }
+
+                    if(instanced)
+                        glVertexAttribDivisor(0,1);
                     break;
                 }
                 default:
