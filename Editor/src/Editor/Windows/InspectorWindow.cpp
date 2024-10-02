@@ -22,26 +22,17 @@ namespace GLE {
 
     }
 
-    void InspectorWindow::ImGuiRender() {
-
-        ImGui::Begin(mName.c_str());
-
-        if(!EditorWindow::GetSelectedEntity()) {
-            ImGui::End();
-            return;
-        }
-
-        auto curEntity = EditorWindow::GetSelectedEntity();
+    void InspectorWindow::DrawEntityInfo(Entity &entity)
+    {
+        if(!entity) return;
 
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_Selected;
         flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
 
-
         //Name
-
         {
-            auto& name = curEntity.GetComponent<NameComponent>();
+            auto& name = entity.GetComponent<NameComponent>();
 
             char buffer[256];
             memset(buffer, 0, sizeof(buffer));
@@ -73,7 +64,7 @@ namespace GLE {
         //Transform
         bool enabled = ImGui::TreeNodeEx((void*)0, flags, "Transform");
         if(enabled) {
-            auto& transform = curEntity.GetComponent<TransformComponent>();
+            auto& transform = entity.GetComponent<TransformComponent>();
 
             DrawVec3("Position", transform.Position);
             DrawVec3("Rotation", transform.Rotation);
@@ -81,10 +72,10 @@ namespace GLE {
             ImGui::TreePop();
         }
 
-        if(curEntity.HasComponent<PrimitiveRendererComponent>()){
+        if(entity.HasComponent<PrimitiveRendererComponent>()){
             enabled = ImGui::TreeNodeEx((void*)1,flags, "Primitive Renderer");
             if(enabled) {
-                auto& renderer = curEntity.GetComponent<PrimitiveRendererComponent>();
+                auto& renderer = entity.GetComponent<PrimitiveRendererComponent>();
 
                 const char* items[] = {"Quad", "Cube", "Sphere", "Capsule"};
                 static const char* curItem = items[(int)renderer.RenderType];
@@ -112,52 +103,32 @@ namespace GLE {
             }
         }
 
-        if(curEntity.HasComponent<CameraComponent>()) {
+        if(entity.HasComponent<CameraComponent>()) {
             enabled = ImGui::TreeNodeEx((void*)2,flags, "Camera");
             if(enabled) {
 
-                auto pos = curEntity.GetComponent<CameraComponent>().Camera->GetPosition();
+                auto pos = entity.GetComponent<CameraComponent>().Camera->GetPosition();
                 ImGui::InputFloat3("Position", &pos.x);
 
                 ImGui::TreePop();
             }
         }
 
-
-        if(curEntity.HasComponent<MaterialComponent>()) {
+        if(entity.HasComponent<MaterialComponent>()) {
             enabled = ImGui::TreeNodeEx((void*)3,flags, "Material");
             if(enabled) {
-                auto& material = *Material::Get(curEntity.GetComponent<MaterialComponent>().matID);
-
-                material.Shader = DrawShaderSelectionWindow(material.Shader);
-                ImGui::Spacing();
-
-                glm::vec3 color = material.Albedo;
-                ImGui::ColorPicker3("Albedo", &color.x);
-                material.Albedo = color;
-
-
-                ImGui::Text("Albedo Map");
-                ImGui::SameLine();
-                material.AlbedoMap = DrawTextureSelectionWindow(material.AlbedoMap, "Albedo Map");
-
-                ImGui::Text("Normal Map");
-                ImGui::SameLine();
-                material.NormalMap = DrawTextureSelectionWindow(material.NormalMap, "Normal Map");
-
-                ImGui::Text("Diffuse Map");
-                ImGui::SameLine();
-                material.DiffuseMap = DrawTextureSelectionWindow(material.DiffuseMap, "Diffuse Map");
+                auto& matcomp = entity.GetComponent<MaterialComponent>();
+                matcomp.matID = DrawMaterialSelectionWindow(matcomp.matID);
 
                 ImGui::TreePop();
             }
         }
 
-        if(curEntity.HasComponent<LightComponent>())
+        if(entity.HasComponent<LightComponent>())
         {
             bool enabled = ImGui::TreeNodeEx((void*)4,flags, "Light");
             if(enabled) {
-                auto& lightComp = curEntity.GetComponent<LightComponent>();
+                auto& lightComp = entity.GetComponent<LightComponent>();
 
                 glm::vec3 color = lightComp.Light.Ambient;
                 ImGui::ColorPicker3("Color", &color.x);
@@ -166,6 +137,49 @@ namespace GLE {
                 ImGui::TreePop();
             }
         }
+    }
+
+    void InspectorWindow::DrawAssetInfo(MaterialID matID)
+    {
+        auto material = Material::Get(matID);
+        if(!material) return;
+
+        material->Shader = DrawShaderSelectionWindow(material->Shader);
+        ImGui::Spacing();
+
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        strncpy_s(buffer, material->GetName().c_str(), sizeof(buffer));
+        if(ImGui::InputText("##Name", buffer, sizeof(buffer))) {
+            material->SetName(buffer);
+        }
+
+        glm::vec3 color = material->Albedo;
+        ImGui::ColorPicker3("Albedo", &color.x);
+        material->Albedo = color;
+
+
+        ImGui::Text("Albedo Map");
+        ImGui::SameLine();
+        material->AlbedoMap = DrawTextureSelectionWindow(material->AlbedoMap, "Albedo Map");
+
+        ImGui::Text("Normal Map");
+        ImGui::SameLine();
+        material->NormalMap = DrawTextureSelectionWindow(material->NormalMap, "Normal Map");
+
+        ImGui::Text("Diffuse Map");
+        ImGui::SameLine();
+        material->DiffuseMap = DrawTextureSelectionWindow(material->DiffuseMap, "Diffuse Map");
+    }
+
+    void InspectorWindow::ImGuiRender() {
+
+        ImGui::Begin(mName.c_str());
+
+        auto selectedEntity = EditorWindow::GetSelectedEntity();
+        DrawEntityInfo(selectedEntity);
+
+        DrawAssetInfo(EditorWindow::GetSelectedAsset());
 
 
         ImGui::End();
@@ -268,7 +282,7 @@ namespace GLE {
 
         if(ImGui::BeginPopup("Shader Selector"))
         {
-            ImGui::Button("Texture selector");
+            ImGui::Button("Shader selector");
 
             for(auto& tex : Shader::GetShaders()) {
                 auto& name = tex.first;
@@ -284,6 +298,36 @@ namespace GLE {
             ImGui::EndPopup();
         }
         return selectedShader;
+    }
+
+    MaterialID InspectorWindow::DrawMaterialSelectionWindow(const MaterialID &curID) {
+        MaterialID selectedMat = curID;
+
+        if(ImGui::Button("Material Selector")){
+            ImGui::OpenPopup("Material Selector");
+        }
+
+        if(ImGui::BeginPopup("Material Selector")) {
+            ImGui::Button("Material Selector");
+
+            if(ImGui::Button("Create")) {
+                selectedMat = Material::Create();
+                ImGui::CloseCurrentPopup();
+            }
+
+            for(auto& id : Material::GetIDS()) {
+                if(id == curID) continue;
+
+                if(ImGui::MenuItem(Material::Get(id)->GetName().c_str())) {
+                    selectedMat = id;
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
+            ImGui::EndPopup();
+        }
+
+        return selectedMat;
     }
 
     template<typename C>

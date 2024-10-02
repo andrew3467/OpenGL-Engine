@@ -29,22 +29,11 @@ namespace GLE {
         {
             auto materials =  Material::GetMaterials();
             for(auto& mat : materials) {
-                if(ImGui::Button("Material Icon"))
+
+                if(ImGui::Button(mat->GetName().c_str()))
                 {
-                    ImGui::OpenPopup("Material Icon");
-                }
-
-                if(ImGui::BeginPopup("Material Icon")) {
-                    char buffer[256];
-                    memset(buffer, 0, sizeof(buffer));
-                    strncpy_s(buffer, mat->GetName().c_str(), sizeof(buffer));
-
-                    if(ImGui::InputText("##Name", buffer, sizeof(buffer))) {
-                        mat->SetName(buffer);
-                    }
-
-
-                    ImGui::EndPopup();
+                    EditorWindow::SetSelectedEntity({});
+                    EditorWindow::SetSelectedAsset(mat->GetID());
                 }
             }
         }

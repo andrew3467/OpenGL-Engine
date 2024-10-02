@@ -19,6 +19,7 @@ namespace GLE {
         static MaterialID Create();
         static std::shared_ptr<Material> Get(MaterialID id);
         static std::vector<std::shared_ptr<Material>> GetMaterials();
+        static std::vector<MaterialID> GetIDS();
 
         static MaterialID DefaultMaterial;
 

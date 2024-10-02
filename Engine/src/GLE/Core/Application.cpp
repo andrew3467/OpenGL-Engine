@@ -61,6 +61,7 @@ namespace GLE {
         Texture2D::Init();
 
         Material::DefaultMaterial = Material::Create();
+        Material::Get(Material::DefaultMaterial)->SetName("Default");
 
         Renderer::SetClearColor(0.2, 0.2, 0.2);
 

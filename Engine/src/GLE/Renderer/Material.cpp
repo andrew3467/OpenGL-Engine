@@ -18,6 +18,8 @@ namespace GLE {
 
     std::shared_ptr<Material> Material::Get(MaterialID id)
     {
+        if(id == 0) return nullptr;
+
         if(sMaterials.contains(id)) {
             return sMaterials[id];
         }
@@ -32,6 +34,17 @@ namespace GLE {
 
         for(auto& [id, material] : sMaterials) {
             mats.push_back(material);
+        }
+
+        return mats;
+    }
+
+    std::vector<MaterialID> Material::GetIDS()
+    {
+        std::vector<MaterialID> mats;
+
+        for(auto& [id, material] : sMaterials) {
+            mats.push_back(id);
         }
 
         return mats;

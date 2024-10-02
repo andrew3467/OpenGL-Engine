@@ -33,6 +33,7 @@ namespace GLE
         if (ImGui::IsMouseClicked(0) && ImGui::IsWindowHovered())
         {
             EditorWindow::SetSelectedEntity(Entity());
+            EditorWindow::SetSelectedAsset(0);
         }
 
         // Right-click on blank space

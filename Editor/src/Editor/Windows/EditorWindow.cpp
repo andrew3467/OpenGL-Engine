@@ -8,6 +8,7 @@
 namespace GLE {
     std::vector<EditorWindow*> EditorWindow::sActiveWindows;
     Entity sSelectedEntity;
+    MaterialID sSelectedAsset;
 
     void EditorWindow::PushWindow(EditorWindow *window) {
         sActiveWindows.push_back(window);
@@ -31,5 +32,15 @@ namespace GLE {
     Entity EditorWindow::GetSelectedEntity()
     {
         return sSelectedEntity;
+    }
+
+    void EditorWindow::SetSelectedAsset(MaterialID id)
+    {
+        sSelectedAsset = id;
+    }
+
+    MaterialID EditorWindow::GetSelectedAsset()
+    {
+        return sSelectedAsset;
     }
 }

@@ -6,6 +6,7 @@
 #pragma once
 
 #include <Core/Scene/ECS/Entity.h>
+#include <Renderer/Material.h>
 
 namespace GLE {
     class Scene;
@@ -17,6 +18,9 @@ namespace GLE {
 
         static void SetSelectedEntity(const Entity& entity);
         static Entity GetSelectedEntity();
+
+        static void SetSelectedAsset(MaterialID id);
+        static MaterialID GetSelectedAsset();
 
     public:
         EditorWindow(const std::string& name = "New Window") : mName(name) {}
