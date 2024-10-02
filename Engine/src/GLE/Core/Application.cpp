@@ -22,6 +22,7 @@
 #include <string>
 #include <functional>
 #include <glad/glad.h>
+#include <Renderer/RenderCommand.h>
 
 #include "Input.h"
 #include "Renderer/Shader.h"
@@ -99,12 +100,6 @@ namespace GLE {
             Renderer::Clear();
 
             Time::Update();
-
-            static bool wireframe = false;
-            if(Input::GetKey(GLFW_KEY_SPACE)) {
-                glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_FILL : GL_LINE);
-                wireframe = !wireframe;
-            }
         }
     }
 

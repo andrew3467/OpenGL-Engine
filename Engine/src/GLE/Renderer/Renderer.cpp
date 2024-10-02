@@ -348,12 +348,13 @@ namespace GLE {
             sDrawInstanced = !sDrawInstanced;
         }
 
+#if 0
         //Framebuffer pass
         framebuffer->Bind();
         RenderScene();
         framebuffer->Unbind();
         RenderCommand::ClearBuffers();
-
+#endif
         //Primary Pass
         RenderScene();
 

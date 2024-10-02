@@ -17,6 +17,8 @@ namespace GLE {
         void ClearBuffers();
 
         void DrawIndexedInstanced(VertexArray &VA, uint32_t instanceCount);
+
+        void ToggleWireframe(bool toggle);
     }
 }
 

@@ -24,6 +24,19 @@ namespace GLE {
     void AssetBrowserWindow::ImGuiRender()
     {
         ImGui::Begin(mName.c_str());
+        //Creation menu
+        if (ImGui::IsMouseClicked(1) && ImGui::IsWindowHovered()) {
+            ImGui::OpenPopup("Asset Creator");
+        }
+
+        if(ImGui::BeginPopup("Asset Creator")) {
+            if(ImGui::Button("Material")) {
+                SetSelectedAsset(Material::Create());
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
 
         //Render Materials
         {

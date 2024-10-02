@@ -6,6 +6,7 @@
 
 #include <glm/vec3.hpp>
 #include <Windows/AssetBrowserWindow.h>
+#include <Renderer/RenderCommand.h>
 
 #include "EditorCameraController.h"
 #include "imgui.h"
@@ -92,8 +93,16 @@ namespace GLE
 
         EditorWindow::RenderWindows();
 
-        ImGui::Begin("Frame Data");
 
+        ImGui::Begin("Debug");
+
+        static bool wireframe = false;
+        if(ImGui::Button("Wireframe")) {
+            wireframe = !wireframe;
+            RenderCommand::ToggleWireframe(wireframe);
+        }
+
+        ImGui::Spacing();
         auto rendererStats = Renderer::GetStats();
 
         ImGui::Text("Renderer Stats");

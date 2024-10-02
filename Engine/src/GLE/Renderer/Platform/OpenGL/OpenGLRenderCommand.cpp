@@ -30,6 +30,11 @@ namespace GLE {
         VA.Bind();
         glDrawElements(GL_TRIANGLES, VA.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);
     }
+
+    void RenderCommand::ToggleWireframe(bool toggle)
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, toggle ? GL_FILL : GL_LINE);
+    }
 }
 
 #endif
