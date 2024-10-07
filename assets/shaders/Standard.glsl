@@ -38,8 +38,8 @@ void main() {
 #version 460
 
 struct PointLight {
-    vec3 Color;
     vec3 Position;
+    vec3 Color;
 };
 
 const int MAX_POINT_LIGHTS = 32;
@@ -79,7 +79,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
     vec3 diffuse = diff * light.Color;
 
 
-    const int shininess = 32;
+    const int shininess = 4;
     const float specularStrenth = 0.5;
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0), shininess);
@@ -88,13 +88,17 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
     return ambient + diffuse + specular;
 }
 
+vec3 calcDirLight(vec3 FragPos) {
+    return vec3(0);
+}
+
 void main() {
     vec3 normal = normalize(fs_in.Normal);
     vec3 viewDir = normalize(uViewPos - fs_in.FragPos);
 
-    vec3 outColor = texture(uAlbedoMap, fs_in.TexCoord).rgb;
+    vec3 outColor = texture(uAlbedoMap, fs_in.TexCoord).rgb * uColor;
 
-    vec3 lighting = vec3(0);
+    vec3 lighting = calcDirLight(fs_in.FragPos);
     for(int i = 0; i < uNumLights; i++) {
         lighting += calcPointLight(uPointLights[i], normal, fs_in.FragPos);
     }

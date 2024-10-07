@@ -30,16 +30,6 @@ namespace GLE {
             positions.push_back(transformcomp.Position);
         }
 
-        auto materialEntities = mScene->mRegistry.group<MaterialComponent>();
-
-        for(auto e : materialEntities) {
-            Entity entity = {e, mScene};
-
-            auto material = Material::Get(entity.GetComponent<MaterialComponent>().matID);
-            
-            auto& shader = *material->Shader;
-
-            Renderer::BindLights(pointLights, shader, positions);
-        }
+        Renderer::SetLightData(pointLights, positions);
     }
 }

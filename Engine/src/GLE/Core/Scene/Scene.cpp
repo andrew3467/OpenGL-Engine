@@ -12,12 +12,11 @@
 
 #include "ECS/Component/Components.h"
 #include "ECS/Entity.h"
-#include "Renderer/Renderer.h"
 
 
 namespace GLE {
     Scene::Scene() {
-        //mSystems.emplace_back(new LightSystem(this));
+        mSystems.emplace_back(new LightSystem(this));
         mSystems.emplace_back(new RenderSystem(this));
     }
 

@@ -28,7 +28,7 @@ namespace GLE {
         Material()
             : mName("New Material")
         {
-            Shader = Shader::Get("Unlit");
+            Shader = Shader::Get("Standard");
             
             AlbedoMap = Texture2D::Get("Default");
             NormalMap = Texture2D::Get("Default");

@@ -318,7 +318,7 @@ namespace GLE {
         }
     }
 
-    void Renderer::BindLights(const std::vector<glm::vec3> &lights, Shader& shader, const std::vector<glm::vec3> &positions) {
+    void Renderer::SetLightData(const std::vector<glm::vec3> &lights, const std::vector<glm::vec3> &positions) {
         sData.LightColors = lights;
         sData.LightPositions = positions;
     }
@@ -369,6 +369,13 @@ namespace GLE {
 
             shader->Bind();
             BindMaterial(matID);
+
+            //Set light data
+            shader->SetInt("uNumLights", sData.LightPositions.size());
+            for(int i = 0; i < sData.LightPositions.size(); i++) {
+                shader->SetFloat3("uPointLights[" + std::to_string(i) + "].Position", sData.LightPositions[i]);
+                shader->SetFloat3("uPointLights[" + std::to_string(i) + "].Color", sData.LightColors[i]);
+            }
 
             shader->SetFloat4x4("uViewProj", sData.ViewProj);
             shader->SetFloat3("uViewPos", sData.ViewPos);

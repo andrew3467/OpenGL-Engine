@@ -19,6 +19,77 @@
 
 namespace GLE
 {
+    void CreateTestScene(const std::shared_ptr<Scene>& scene) {
+        auto worldParent = scene->CreateEntity("World");
+        auto lightParent = scene->CreateEntity("Lights");
+        
+        auto& worldParentTrans = worldParent.GetComponent<TransformComponent>();
+        auto& lightParentTrans = lightParent.GetComponent<TransformComponent>();
+
+        {
+            auto floor = scene->CreateEntity("Floor");
+            floor.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+            floor.AddComponent<MaterialComponent>();
+            auto& transform = floor.GetComponent<TransformComponent>();
+            transform.Scale = {4, 0.25, 6};
+
+            transform.SetParent(worldParent);
+            worldParentTrans.AddChild(floor);
+        }
+
+        {
+            auto wall = scene->CreateEntity("Wall A");
+            wall.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+            wall.AddComponent<MaterialComponent>();
+            auto& transform = wall.GetComponent<TransformComponent>();
+            transform.Position.x = 2;
+            transform.Position.y = 1;
+            transform.Scale = {0.25, 2, 6};
+
+            transform.SetParent(worldParent);
+            worldParentTrans.AddChild(wall);
+        }
+
+        {
+            auto wall = scene->CreateEntity("Wall B");
+            wall.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+            wall.AddComponent<MaterialComponent>();
+            auto& transform = wall.GetComponent<TransformComponent>();
+            transform.Position.x = -2;
+            transform.Position.y = 1;
+            transform.Scale = {0.25, 2, 6};
+
+            transform.SetParent(worldParent);
+            worldParentTrans.AddChild(wall);
+        }
+
+        {
+            auto wall = scene->CreateEntity("Wall C");
+            wall.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
+            wall.AddComponent<MaterialComponent>();
+            auto& transform = wall.GetComponent<TransformComponent>();
+            transform.Position.y = 1;
+            transform.Position.z = -3;
+            transform.Scale = {4, 2, 0.25};
+
+            transform.SetParent(worldParent);
+            worldParentTrans.AddChild(wall);
+        }
+
+        {
+            auto light = scene->CreateEntity("Point Light A");
+            light.AddComponent<LightComponent>();
+            auto& transform = light.GetComponent<TransformComponent>();
+
+            transform.Position = {
+                    0, 5, 0
+            };
+            transform.SetParent(lightParent);
+
+            lightParentTrans.AddChild(light);
+        }
+    }
+
     EditorCameraController sceneCamera;
 
 
@@ -50,9 +121,7 @@ namespace GLE
         assetBrowser->SetScene(mScene);
         EditorWindow::PushWindow(assetBrowser);
 
-        auto cubeEnt = mScene->CreateEntity("Cube");
-        cubeEnt.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;
-        auto& matcomp = cubeEnt.AddComponent<MaterialComponent>();
+        CreateTestScene(mScene);
     }
 
     void EditorLayer::OnUpdate(float dt)
