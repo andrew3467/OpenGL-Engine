@@ -78,7 +78,7 @@ namespace GLE
 
         {
             auto light = scene->CreateEntity("Point Light A");
-            light.AddComponent<LightComponent>();
+            light.AddComponent<PointLightComponent>();
             auto& transform = light.GetComponent<TransformComponent>();
 
             transform.Position = {
@@ -87,6 +87,16 @@ namespace GLE
             transform.SetParent(lightParent);
 
             lightParentTrans.AddChild(light);
+        }
+
+        {
+            auto light = scene->CreateEntity("Directional Light");
+            light.AddComponent<DirectionalLightComponent>();
+
+            auto& transform = light.GetComponent<TransformComponent>();
+            transform.SetParent(lightParent);
+            lightParentTrans.AddChild(light);
+
         }
     }
 

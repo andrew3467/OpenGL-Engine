@@ -7,17 +7,19 @@
 #include "Renderer/Lights.h"
 
 namespace GLE {
-    enum class LightType {
-        Point,
-        Directional,
-        Spot
-    };
-
-    struct LightComponent {
-        LightComponent() = default;
-        LightComponent(const LightComponent&) = default;
-        ~LightComponent() = default;
+    struct PointLightComponent {
+        PointLightComponent() = default;
+        PointLightComponent(const PointLightComponent&) = default;
+        ~PointLightComponent() = default;
 
         PointLight Light;
+    };
+
+    struct DirectionalLightComponent {
+        DirectionalLightComponent() = default;
+        DirectionalLightComponent(const DirectionalLightComponent&) = default;
+        ~DirectionalLightComponent() = default;
+
+        DirectionalLight Light;
     };
 }

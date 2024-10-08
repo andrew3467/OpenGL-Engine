@@ -60,7 +60,7 @@ namespace GLE
 
                 if (ImGui::MenuItem("Point Light")) {
                     auto entity = mActiveScene->CreateEntity("Point Light");
-                    entity.AddComponent<LightComponent>();
+                    entity.AddComponent<PointLightComponent>();
 
                     //TEMP visualize lights
                     entity.AddComponent<PrimitiveRendererComponent>().RenderType = PrimitiveType::Cube;

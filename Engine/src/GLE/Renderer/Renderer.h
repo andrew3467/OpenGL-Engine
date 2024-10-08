@@ -39,7 +39,9 @@ namespace GLE {
         static void BindMaterial(const MaterialID &materialID);
         static void UnbindMaterial(const MaterialID &materialID);
 
-        static void SetLightData(const std::vector<glm::vec3> &lights, const std::vector<glm::vec3> &positions);
+        static void SetPointLightData(const std::vector<PointLight> &lights);
+        static void SetDirLightData(const glm::vec3 &ambient, const glm::vec3 &direction);
+
         static void SubmitPrimitive(PrimitiveType primitive, const MaterialID& materialID, const glm::mat4& transform);
         static void Submit(std::shared_ptr<VertexArray>& VA, const MaterialID& materialID, const glm::mat4& transform);
 

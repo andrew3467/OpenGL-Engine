@@ -17,19 +17,26 @@ namespace GLE {
 
     void LightSystem::Update()
     {
-        auto lightEntities = mScene->mRegistry.group<LightComponent>();
-        std::vector<glm::vec3> pointLights;
-        std::vector<glm::vec3> positions;
+        auto lightEntities = mScene->mRegistry.group<PointLightComponent>();
+        std::vector<PointLight> pointLights;
 
         for (auto e : lightEntities) {
             Entity entity {e, mScene};
-            auto& lightcomp = entity.GetComponent<LightComponent>();
-            auto& transformcomp = entity.GetComponent<TransformComponent>();
+            auto light = entity.GetComponent<PointLightComponent>().Light;
+            light.Position = entity.GetComponent<TransformComponent>().Position;
 
-            pointLights.push_back(lightcomp.Light.Ambient);
-            positions.push_back(transformcomp.Position);
+            pointLights.push_back(light);
         }
 
-        Renderer::SetLightData(pointLights, positions);
+        Renderer::SetPointLightData(pointLights);
+
+        auto dirLightEntities = mScene->mRegistry.group<DirectionalLightComponent>();
+
+        for(auto e : dirLightEntities) {
+            Entity entity {e, mScene};
+            auto& light = entity.GetComponent<DirectionalLightComponent>().Light;
+
+            Renderer::SetDirLightData(light.Ambient, light.Direction);
+        }
     }
 }

@@ -40,9 +40,18 @@ void main() {
 struct PointLight {
     vec3 Position;
     vec3 Color;
+
+    float Constant;
+    float Linear;
+    float Quadratic;
 };
 
 const int MAX_POINT_LIGHTS = 32;
+
+struct DirLight {
+    vec3 Direction;
+    vec3 Color;
+};
 
 
 
@@ -58,6 +67,8 @@ in VS_OUT{
 uniform int uNumLights;
 uniform PointLight uPointLights[MAX_POINT_LIGHTS];
 
+uniform DirLight uDirLight;
+
 uniform vec3 uViewPos;
 
 
@@ -71,10 +82,6 @@ layout (binding = 2) uniform sampler2D uNormalMap;       //Slot 2
 vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
     vec3 lightDir = normalize(light.Position - fs_in.FragPos);
 
-    const float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * light.Color;
-
-
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = diff * light.Color;
 
@@ -85,11 +92,31 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 viewDir) {
     float spec = pow(max(dot(viewDir, reflectDir), 0), shininess);
     vec3 specular = specularStrenth * spec * light.Color;
 
-    return ambient + diffuse + specular;
+    float distance = length(light.Position - fs_in.FragPos);
+    float attenuation = 1 / (
+        light.Constant +
+        light.Linear * distance +
+        light.Quadratic * (distance * distance)
+    );
+
+    return (light.Color * 0.2 + diffuse + specular) * attenuation;
 }
 
-vec3 calcDirLight(vec3 FragPos) {
-    return vec3(0);
+vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
+    vec3 lightDir = normalize(-light.Direction);
+
+    float diff = max(dot(normal, lightDir), 0);
+
+    const int shininess = 32;
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0), shininess);
+
+    vec3 ambient = light.Color;
+    vec3 diffuse = light.Color * diff;
+    vec3 specular = light.Color * spec;
+
+
+    return normalize(ambient + diffuse + specular);
 }
 
 void main() {
@@ -98,7 +125,8 @@ void main() {
 
     vec3 outColor = texture(uAlbedoMap, fs_in.TexCoord).rgb * uColor;
 
-    vec3 lighting = calcDirLight(fs_in.FragPos);
+    //vec3 lighting = calcDirLight(uDirLight, normal, viewDir);
+    vec3 lighting = vec3(0);
     for(int i = 0; i < uNumLights; i++) {
         lighting += calcPointLight(uPointLights[i], normal, fs_in.FragPos);
     }

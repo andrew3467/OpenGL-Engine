@@ -18,7 +18,7 @@ namespace GLE {
     class InspectorWindow : public EditorWindow {
     public:
         InspectorWindow();
-        ~InspectorWindow() override;
+        ~InspectorWindow() override = default;
 
         void ImGuiRender() override;
 

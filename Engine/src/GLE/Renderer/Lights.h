@@ -6,19 +6,21 @@
 
 
 namespace GLE {
-    struct Light {
+    struct PointLight {
         glm::vec3 Ambient = {1,1,1};
-    };
-
-    struct PointLight : Light {
         glm::vec3 Position = {0,0,0};
+
+        float Constant = 1;
+        float Linear = 1;
+        float Quadratic = 1;
     };
 
-    struct DirectionalLight : Light {
-
+    struct DirectionalLight {
+        glm::vec3 Ambient = {1,1,1};
+        glm::vec3 Direction = {45, 90, 45};      //Measured in degrees
     };
 
-    struct SpotLight : Light {
-
+    struct SpotLight {
+        glm::vec3 Ambient = {1,1,1};
     };
 }

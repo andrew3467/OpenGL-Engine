@@ -46,8 +46,10 @@ namespace GLE {
         std::shared_ptr<VertexBuffer> InstanceVBO;
 
 
-        std::vector<glm::vec3> LightColors;
-        std::vector<glm::vec3> LightPositions;
+        std::vector<PointLight> PointLights;
+
+        glm::vec3 DirLightColor;
+        glm::vec3 DirLightDirection;
 
         std::map<MaterialID, InstancedData> InstanceData;
     };
@@ -318,9 +320,14 @@ namespace GLE {
         }
     }
 
-    void Renderer::SetLightData(const std::vector<glm::vec3> &lights, const std::vector<glm::vec3> &positions) {
-        sData.LightColors = lights;
-        sData.LightPositions = positions;
+    void Renderer::SetPointLightData(const std::vector<PointLight> &pointLights) {
+        sData.PointLights = pointLights;
+    }
+
+    void Renderer::SetDirLightData(const glm::vec3 &ambient, const glm::vec3 &direction)
+    {
+        sData.DirLightColor = ambient;
+        sData.DirLightDirection = direction;
     }
 
     void Renderer::SubmitPrimitive(PrimitiveType primitive, const MaterialID& materialID, const glm::mat4& transform) {
@@ -371,11 +378,18 @@ namespace GLE {
             BindMaterial(matID);
 
             //Set light data
-            shader->SetInt("uNumLights", sData.LightPositions.size());
-            for(int i = 0; i < sData.LightPositions.size(); i++) {
-                shader->SetFloat3("uPointLights[" + std::to_string(i) + "].Position", sData.LightPositions[i]);
-                shader->SetFloat3("uPointLights[" + std::to_string(i) + "].Color", sData.LightColors[i]);
+            shader->SetInt("uNumLights", sData.PointLights.size());
+            for(int i = 0; i < sData.PointLights.size(); i++) {
+                shader->SetFloat3("uPointLights[" + std::to_string(i) + "].Position", sData.PointLights[i].Position);
+                shader->SetFloat3("uPointLights[" + std::to_string(i) + "].Color", sData.PointLights[i].Ambient);
+
+                shader->SetFloat("uPointLights[" + std::to_string(i) + "].Constant", sData.PointLights[i].Constant);
+                shader->SetFloat("uPointLights[" + std::to_string(i) + "].Linear", sData.PointLights[i].Linear);
+                shader->SetFloat("uPointLights[" + std::to_string(i) + "].Quadratic", sData.PointLights[i].Quadratic);
             }
+
+            shader->SetFloat3("uDirLight.Direction", sData.DirLightDirection);
+            shader->SetFloat3("uDirLight.Color", sData.DirLightColor);
 
             shader->SetFloat4x4("uViewProj", sData.ViewProj);
             shader->SetFloat3("uViewPos", sData.ViewPos);

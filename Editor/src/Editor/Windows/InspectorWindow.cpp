@@ -18,9 +18,6 @@ namespace GLE {
 
     }
 
-    InspectorWindow::~InspectorWindow() {
-
-    }
 
     void InspectorWindow::DrawEntityInfo(Entity &entity)
     {
@@ -53,7 +50,8 @@ namespace GLE {
             AddComponentDisplay<PrimitiveRendererComponent>("Primitive Renderer");
             AddComponentDisplay<CameraComponent>("Camera");
             AddComponentDisplay<MaterialComponent>("Material");
-            AddComponentDisplay<LightComponent>("Light");
+            AddComponentDisplay<PointLightComponent>("Point Light");
+            AddComponentDisplay<DirectionalLightComponent>("Directional Light");
 
 
             ImGui::EndPopup();
@@ -124,15 +122,34 @@ namespace GLE {
             }
         }
 
-        if(entity.HasComponent<LightComponent>())
+        if(entity.HasComponent<PointLightComponent>())
         {
             bool enabled = ImGui::TreeNodeEx((void*)4,flags, "Light");
             if(enabled) {
-                auto& lightComp = entity.GetComponent<LightComponent>();
+                auto& light = entity.GetComponent<PointLightComponent>().Light;
 
-                glm::vec3 color = lightComp.Light.Ambient;
+                glm::vec3 color = light.Ambient;
                 ImGui::ColorPicker3("Color", &color.x);
-                lightComp.Light.Ambient = color;
+                light.Ambient = color;
+
+                ImGui::SliderFloat("Constant", &light.Constant, 0, 1);
+                ImGui::SliderFloat("Linear", &light.Linear, 0, 1);
+                ImGui::SliderFloat("Quadratic", &light.Quadratic, 0, 1);
+
+                ImGui::TreePop();
+            }
+        }
+
+        if(entity.HasComponent<DirectionalLightComponent>()) {
+            bool enabled = ImGui::TreeNodeEx((void*)4,flags, "Light");
+            if(enabled) {
+                auto& light = entity.GetComponent<DirectionalLightComponent>().Light;
+
+                glm::vec3 color = light.Ambient;
+                ImGui::ColorPicker3("Color", &color.x);
+                light.Ambient = color;
+
+                DrawVec3("Direction", light.Direction);
 
                 ImGui::TreePop();
             }
